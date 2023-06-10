@@ -1,6 +1,5 @@
 package org.example;
 
-import javax.swing.*;
 import java.util.ArrayList;
 
 public class Player {
@@ -9,16 +8,20 @@ public class Player {
     int x;
     int y;
     int mana;
-    ArrayList<Object> inv;
+    int atk;
+    int dfs;
+    ArrayList<Item> inv;
     String name;
 
     public Player(String name) {
         this.name = name;
-        this.level = 0;
+        this.level = 1;
         this.hp = 100;
         this.x = 10;
         this.y = 10;
         this.mana = 100;
+        this.atk = 1;
+        this.dfs = 0;
         this.inv = new ArrayList<>();
     }
 
@@ -51,11 +54,19 @@ public class Player {
         return mana;
     }
 
-    public ArrayList<Object> getInv() {
+    public ArrayList<Item> getInv() {
         return inv;
     }
 
     public String getName() {
         return name;
+    }
+
+    public int getAtk() {
+        return atk;
+    }
+
+    public int getDfs() {
+        return dfs;
     }
 }
