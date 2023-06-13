@@ -34,7 +34,7 @@ public class Game extends JFrame implements KeyListener {
         this.player = player;
         enemies = new ArrayList<>();
         items = new ArrayList<>();
-        terminal = new AsciiPanel(170, 85, AsciiFont.TALRYTH_15_15); //Taille de la fenêtre + police
+        terminal = new AsciiPanel(170, 85, AsciiFont.CP437_8x8); //Taille de la fenêtre + police
         addKeyListener(this); //Ajout de l'écouteur de touches
         font = new Color(0, 255, 0);
         background = new Color(0, 0, 0);
@@ -153,8 +153,18 @@ public class Game extends JFrame implements KeyListener {
         for (int i = 0 ; i < items.size() ; i++) {
             if (items.get(i).x == player.x+x && items.get(i).y == player.y+y) {
                 player.inv.add(items.get(i));
+                for (int j = 0 ; j < 6 ; j++) {
+                    terminal.write(Character.toString(2 - j%2), player.x + x, player.y + y, playerColor, background);
+                    add(terminal);
+                    terminal.paintImmediately(terminal.getBounds()); //On force le repaint
+                    try {
+                        Thread.sleep(250);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
                 for (int j = 140 ; j < 168 ; j++) {
-                    terminal.write(Character.toString(32), j, 15, font, background);
+                    terminal.write(Character.toString(32), j, 21, font, background);
                 }
                 affMsg("You picked up a " + items.get(i).name, 140, 21);
                 items.remove(i);
