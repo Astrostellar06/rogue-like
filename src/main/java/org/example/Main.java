@@ -5,8 +5,6 @@ public class Main {
         //Partie pour mes tests
         Player player = new Player("Astrostellar");
         Enemy enemy = new Enemy(100, 10, 1);
-        Item item1 = new AtkItem();
-        Item item2 = new DefItem();
         Item item3 = new ManaItem();
         String[] map1 = new Room(1).getMap();
         String[] map2 = new Room(2).getMap();
@@ -27,8 +25,10 @@ public class Main {
 
         //Partie pour afficher mes objets tests
         app.addEnemy(enemy);
-        app.addItem(item1);
-        app.addItem(item2);
+        for (int i = 0 ; i < 3 ; i++) {
+            app.addItem(new AtkItem());
+            app.addItem(new DefItem());
+        }
         app.addItem(item3);
     }
 }

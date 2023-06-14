@@ -5,11 +5,13 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class AtkItem extends Item {
     private int atk;
+    boolean isEquipped;
 
     public AtkItem() {
         super();
         int randomNum = ThreadLocalRandom.current().nextInt(0, 5);
         colorItem = new Color(255, 115, 0);
+        this.isEquipped = false;
         switch (randomNum) {
             case 0:
                 this.name = "Sword";
@@ -36,5 +38,13 @@ public class AtkItem extends Item {
 
     public int getAtk() {
         return atk;
+    }
+
+    public boolean getIsEquipped() {
+        return isEquipped;
+    }
+
+    public void setIsEquipped(boolean isEquipped) {
+        this.isEquipped = isEquipped;
     }
 }

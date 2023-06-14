@@ -24,4 +24,10 @@ public abstract class Item {
     public String getName() {
         return name;
     }
+
+    public boolean getIsEquipped() {
+        return false;
+    }
+
+    public void setIsEquipped(boolean isEquipped) {}
 }

@@ -4,11 +4,13 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class DefItem extends Item{
     private int dfs;
+    boolean isEquipped;
 
     public DefItem() {
         super();
         int randomNum = ThreadLocalRandom.current().nextInt(0, 5);
         colorItem = new java.awt.Color(0, 130, 255);
+        this.isEquipped = false;
         switch (randomNum) {
             case 0:
                 this.name = "Shield";
@@ -31,5 +33,17 @@ public class DefItem extends Item{
                 this.dfs = 25;
                 break;
         }
+    }
+
+    public boolean getIsEquipped() {
+        return isEquipped;
+    }
+
+    public void setIsEquipped(boolean isEquipped) {
+        this.isEquipped = isEquipped;
+    }
+
+    public int getDfs() {
+        return dfs;
     }
 }
