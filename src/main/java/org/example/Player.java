@@ -10,6 +10,7 @@ public class Player {
     int mana;
     int atk;
     int dfs;
+    int coins;
     ArrayList<Item> inv;
     String name;
 
@@ -22,6 +23,7 @@ public class Player {
         this.mana = 100;
         this.atk = 1;
         this.dfs = 0;
+        this.coins = 0;
         this.inv = new ArrayList<>();
     }
 
@@ -60,6 +62,10 @@ public class Player {
 
     public String getName() {
         return name;
+    }
+
+    public int getCoins() {
+        return coins;
     }
 
     public int getAtk() {

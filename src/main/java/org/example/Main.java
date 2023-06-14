@@ -8,8 +8,6 @@ public class Main {
         Item item1 = new AtkItem();
         Item item2 = new DefItem();
         Item item3 = new ManaItem();
-
-        //Partie qui restera
         String[] map1 = new Room(1).getMap();
         String[] map2 = new Room(2).getMap();
         String[] map3 = new Room(3).getMap();
@@ -24,9 +22,10 @@ public class Main {
         for (int i = 0; i < map1.length; i++)
             map[i + 2*map1.length] = map1[i] + map2[i] + map6[i + map1.length] + map4[i + map1.length];
 
-        Game app = new Game(map, player);
+        Game app = new Game(map, player); //Création de la fenêtre
+        //L'idée, c'est qu'il n'y a aucune boucle dans la classe Game, tout est géré par des évènements
 
-        //Partie pour mes afficher mes objets tests
+        //Partie pour afficher mes objets tests
         app.addEnemy(enemy);
         app.addItem(item1);
         app.addItem(item2);
