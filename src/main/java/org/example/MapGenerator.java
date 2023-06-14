@@ -16,6 +16,8 @@ public class MapGenerator {
 
         generateMediumRooms(taken, rooms, ids);
 
+        generateSmallRooms(taken, rooms, ids);
+
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 8; j++) {
                 System.out.print(ids[i*8 + j]);
@@ -34,6 +36,17 @@ public class MapGenerator {
         return rooms;
     }
 
+    public static void generateSmallRooms(boolean[] taken, List<Room> rooms, int[] ids) {
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 5; y++) {
+                if(!taken[x + y*8]) {
+                    rooms.add(new Room(x, y, 1, 1, Rooms.room1x1, 8));;
+                    ids[x + y * 8] = 8;
+                    taken[x + y * 8] = true;
+                }
+            }
+        }
+    }
     public static void generateSmallRoomAndDoors(boolean[] taken, List<Room> rooms, int[] ids) {
         HashMap<Room, List<Room>> liaisons = new HashMap<Room, List<Room>>();
         for (int x = 0; x < 8; x++) {

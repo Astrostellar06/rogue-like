@@ -20,22 +20,15 @@ public class Game extends JFrame implements KeyListener {
 
     private static final long serialVersionUID = 1060623638149583738L;
     private AsciiPanel terminal;
-    private int x = 0;
-    private int y = 0;
+    private int x = 0, y = 0;
     private String[] map;
     private Player player;
     private ArrayList<Enemy> enemies;
-    private ArrayList<Item> items;
-    private Color font;
-    private Color background;
-    private Color playerColor;
-    private Color roomColor;
-    private Color pathColor;
-    private boolean invOpen = false;
-    private boolean pickUp = false;
-    private int itemSelected = 0;
-    private boolean justPickedUp = false;
-    private int itemInv = 0;
+    static ArrayList<Item> items;
+    static ArrayList<Coin> coins;
+    private Color font, background, playerColor, roomColor, pathColor;
+    private boolean invOpen = false, justPickedUp = false, pickUp = false;
+    private int itemSelected = 0, itemInv = 0;
     private long tempsInactif = 0;
 
     public Game(String[] map, Player player) { //Création du jeu
@@ -44,7 +37,8 @@ public class Game extends JFrame implements KeyListener {
         this.player = player;
         enemies = new ArrayList<>();
         items = new ArrayList<>();
-        terminal = new AsciiPanel(170, 85, AsciiFont.CP437_8x8); //Taille de la fenêtre + police
+        coins = new ArrayList<>();
+        terminal = new AsciiPanel(170, 85, AsciiFont.TALRYTH_15_15); //Taille de la fenêtre + police
         addKeyListener(this); //Ajout de l'écouteur de touches
         font = new Color(0, 255, 0);
         background = new Color(0, 0, 0);
@@ -90,6 +84,8 @@ public class Game extends JFrame implements KeyListener {
         for (Item item : items) {
             affItem(item);
         }
+
+        affCoins();
 
         //Génération stats + déco
         for (int i = 1 ; i < 84 ; i++) {
@@ -224,6 +220,17 @@ public class Game extends JFrame implements KeyListener {
                 //Laisse le jeu dans un état ou les seuls inputs possibles sont E ou R
             }
         }
+        for (int i = 0 ; i < coins.size() ; i++) {
+            if (coins.get(i).x == player.x+x && coins.get(i).y == player.y+y) {
+                coins.remove(i);
+                player.coins++;
+                clearSideAff();
+                terminal.write("+1 coin", 140, 25, font, background);
+                add(terminal);
+                terminal.repaint();
+                affStats();
+            }
+        }
     }
 
     public void clearSideAff() {
@@ -262,11 +269,8 @@ public class Game extends JFrame implements KeyListener {
             terminal.write(msg.charAt(i), x + i, y, font, background);
             add(terminal);
             terminal.paintImmediately(terminal.getBounds());
-            try {
-                Thread.sleep(20);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            long temps = System.currentTimeMillis();
+            while (System.currentTimeMillis() - temps < 20) {}
         }
         add(terminal);
         terminal.repaint();
@@ -295,6 +299,19 @@ public class Game extends JFrame implements KeyListener {
         terminal.repaint();
     }
 
+    public void addCoins(int x) {
+        for (int i = 0; i < x; i++)
+            coins.add(new Coin());
+        affCoins();
+    }
+
+    public void affCoins() {
+        for (int i = 0; i < coins.size(); i++)
+            terminal.write(Character.toString(7), coins.get(i).x, coins.get(i).y, new Color(255, 204, 0), roomColor);
+        add(terminal);
+        terminal.repaint();
+    }
+
     //On touche pas ce qui est en dessous
 
     @Override
@@ -305,7 +322,7 @@ public class Game extends JFrame implements KeyListener {
     //Méthode très importante
     @Override
     public void keyPressed(KeyEvent e) { //Méthode pour gérer les inputs
-        if (System.currentTimeMillis() > tempsInactif + 20) {
+        if (System.currentTimeMillis() - tempsInactif > 20) {
             if (!pickUp) {
                 if (e.getKeyCode() == KeyEvent.VK_I) {
                     itemInv = 0;
@@ -332,6 +349,11 @@ public class Game extends JFrame implements KeyListener {
                         }
                     }
                 } else {//Si inv est open
+                    if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_E || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
+                        terminal.write("                 ", 140, 61, Color.WHITE, Color.BLACK);
+                        add(terminal);
+                        terminal.repaint();
+                    }
                     if (e.getKeyCode() == KeyEvent.VK_UP) {
                         itemInv--;
                         if (itemInv == -1)
@@ -357,6 +379,8 @@ public class Game extends JFrame implements KeyListener {
                                 player.atk = 1;
                             else if (player.inv.get(itemInv) instanceof DefItem)
                                 player.dfs = 0;
+                            affInv();
+                            affStats();
                         } else if (!(player.inv.get(itemInv) instanceof ManaItem) && !player.inv.get(itemInv).getIsEquipped()) {
                             for (int i = 0; i < player.inv.size(); i++) {
                                 if (player.inv.get(i).getIsEquipped() && player.inv.get(i).getClass() == player.inv.get(itemInv).getClass())
@@ -367,9 +391,12 @@ public class Game extends JFrame implements KeyListener {
                                 player.atk = ((AtkItem) player.inv.get(itemInv)).getAtk();
                             else if (player.inv.get(itemInv) instanceof DefItem)
                                 player.dfs = ((DefItem) player.inv.get(itemInv)).getDfs();
+                            affInv();
+                            affStats();
+                        } else if (player.inv.get(itemInv) instanceof ManaItem) {
+                            terminal.write("Cannot be equiped", 140, 61, font, background);
+                            add(terminal);
                         }
-                        affInv();
-                        affStats();
                     }
                 }
             } else {//si on est sur un item
@@ -400,6 +427,10 @@ public class Game extends JFrame implements KeyListener {
     @Override
     public int getY() {
         return y;
+    }
+
+    public ArrayList<Item> getItems() {
+        return items;
     }
 
     public String[] getMap() {

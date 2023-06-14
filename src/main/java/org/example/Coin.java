@@ -1,15 +1,13 @@
 package org.example;
-import java.awt.*;
+
 import java.util.concurrent.ThreadLocalRandom;
 
-public abstract class Item {
-    String name;
+public class Coin {
     int x;
     int y;
-    Color colorItem;
 
-    public Item() {
-        boolean empty = true;
+    public Coin() {
+        boolean empty;
         do {
             empty = true;
             this.x = ThreadLocalRandom.current().nextInt(17, 30);
@@ -17,6 +15,12 @@ public abstract class Item {
             if (Game.items != null) {
                 for (int i = 0; i < Game.items.size(); i++) {
                     if (Game.items.get(i).getX() == this.x && Game.items.get(i).getY() == this.y)
+                        empty = false;
+                }
+            }
+            if (Game.coins != null) {
+                for (int i = 0; i < Game.coins.size(); i++) {
+                    if (Game.coins.get(i).getX() == this.x && Game.coins.get(i).getY() == this.y)
                         empty = false;
                 }
             }
@@ -30,14 +34,4 @@ public abstract class Item {
     public int getY() {
         return y;
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public boolean getIsEquipped() {
-        return false;
-    }
-
-    public void setIsEquipped(boolean isEquipped) {}
 }
