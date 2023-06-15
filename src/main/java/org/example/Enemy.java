@@ -37,8 +37,6 @@ public class Enemy {
                 empty = false;
             }
         } while (!empty);
-        System.out.println(Game.charRoom(this.x, this.y));
-
     }
 
     public int getHp() {

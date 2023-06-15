@@ -9,13 +9,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadLocalRandom;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 
 public class Game extends JFrame implements KeyListener {
 
@@ -328,14 +322,15 @@ public class Game extends JFrame implements KeyListener {
                 affMsg("You picked up the " + items.get(i).name, 140, 25);
                 items.remove(i);
             } else {
-                affMsg("You can't carry more than 10 items", 140, 25);
+                affMsg("You can't carry more", 140, 25);
+                affMsg("than 10 items", 140, 26);
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                affMsg("You decided to let", 140, 27);
-                affMsg("the " + items.get(i).name, 140, 28);
+                affMsg("You decided to let", 140, 28);
+                affMsg("the " + items.get(i).name, 140, 29);
             }
         } else {
             affMsg("You decided to let", 140, 25);

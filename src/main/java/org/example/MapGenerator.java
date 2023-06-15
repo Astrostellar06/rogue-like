@@ -120,7 +120,6 @@ public class MapGenerator {
                     System.out.println(s);
                 }
                 System.out.println();*/
-                System.out.println("Sx: " + room.getSx() + " : Sy: " + room.getSy());
                 return room;
             }
         }
