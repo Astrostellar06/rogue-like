@@ -31,22 +31,47 @@ public class Game extends JFrame implements KeyListener {
     private boolean invOpen = false, justPickedUp = false, pickUp = false;
     private int itemSelected = 0, itemInv = 0;
     private long tempsInactif = 0;
+    private ArrayList<Room> listRooms;
 
-    public Game(String[] map, Player player) { //Création du jeu
+
+    public Game(Player player, ArrayList<Room> listRooms) { //Création du jeu
         super(); //Utilisation de JFrame et de AsciiPanel
         this.map = map;
         this.player = player;
         enemies = new ArrayList<>();
         items = new ArrayList<>();
         coins = new ArrayList<>();
-        terminal = new AsciiPanel(170, 85, AsciiFont.CP437_8x8); //Taille de la fenêtre + police
+        terminal = new AsciiPanel(170, 85, AsciiFont.TALRYTH_15_15); //Taille de la fenêtre + police
         addKeyListener(this); //Ajout de l'écouteur de touches
         font = new Color(0, 255, 0);
         background = new Color(0, 0, 0);
         playerColor = new Color(255, 255, 0);
         roomColor = new Color(0, 0, 0);
         pathColor = new Color(0, 0, 0);
+        this.listRooms = listRooms;
         aff();
+    }
+
+    public void affRooms(Room room) {
+        for (int cy = 0 ; cy < room.getRoom().length ; cy++) {
+            char[] line = room.getRoom()[cy].toCharArray();
+            for (int cx = 0 ; cx < line.length ; cx++) {
+                if (line[cx] == '|')
+                    terminal.write(Character.toString(179), room.getX()*17 + cx, room.getY()*17 + cy, font, background);
+                else if (line[cx] == '-')
+                    terminal.write(Character.toString(196), room.getX()*17 + cx, room.getY()*17 + cy, font, background);
+                else if (line[cx] == '1')
+                    terminal.write(Character.toString(218), room.getX()*17 + cx, room.getY()*17 + cy, font, background);
+                else if (line[cx] == '2')
+                    terminal.write(Character.toString(191), room.getX()*17 + cx, room.getY()*17 + cy, font, background);
+                else if (line[cx] == '3')
+                    terminal.write(Character.toString(192), room.getX()*17 + cx, room.getY()*17 + cy, font, background);
+                else if (line[cx] == '4')
+                    terminal.write(Character.toString(217), room.getX()*17 + cx, room.getY()*17 + cy, font, background);
+                else
+                    terminal.write(Character.toString(32), room.getX()*17 + cx, room.getY()*17 + cy, font, background);
+            }
+        }
     }
 
     public void aff() { //Affichage de la fenêtre
@@ -56,7 +81,12 @@ public class Game extends JFrame implements KeyListener {
             }
         }
 
-        for (int y = 0; y < map.length; y++)
+
+        for (Room room : listRooms) {
+            affRooms(room);
+        }
+
+        /*for (int y = 0; y < map.length; y++)
             for (int x = 0; x < map[0].length(); x++)
                 if (map[y].charAt(x) == '|')
                     terminal.write(Character.toString(179), x, y, font, background);
@@ -75,7 +105,7 @@ public class Game extends JFrame implements KeyListener {
                 else if (map[y].charAt(x) == '*')
                     terminal.write(Character.toString(32), x, y, font, pathColor);
                 else
-                    terminal.write(Character.toString(32), x, y, font, background);
+                    terminal.write(Character.toString(32), x, y, font, background);*/
         terminal.write(Character.toString(1), player.x, player.y, playerColor, roomColor);
 
         for (Enemy enemy : enemies) {
@@ -292,7 +322,7 @@ public class Game extends JFrame implements KeyListener {
             enemy.y += b;
             if (enemy.x == player.x + x && enemy.y == player.y + y)
                 attack(enemy);
-            terminal.write(Character.toString(232), enemy.x, enemy.y, enemy.color, roomColor);
+            terminal.write(Character.toString(234), enemy.x, enemy.y, enemy.color, roomColor);
         }
         add(terminal);
         terminal.repaint();
@@ -352,7 +382,7 @@ public class Game extends JFrame implements KeyListener {
     }
 
     public void affEnemy(Enemy enemy) {
-        terminal.write(Character.toString(232), enemy.x, enemy.y, enemy.color, roomColor);
+        terminal.write(Character.toString(234), enemy.x, enemy.y, enemy.color, roomColor);
         add(terminal);
         terminal.repaint();
     }

@@ -46,4 +46,22 @@ public abstract class Item {
     }
 
     public void setIsEquipped(boolean isEquipped) {}
+
+    /*
+    x = ThreadLocalRandom.current().nextInt(0, 170);
+    y = ThreadLocalRandom.current().nextInt(0, 85);
+
+    X = x//17;
+    Y = y//17;
+
+    dx = x%17;
+    dy = y%17;
+
+    Room room = mapGenerator.getRoomByXY(listRooms, X, Y);
+    if (room != null) {
+        if (room.getRoom()[dy].charAt(dx) == '.') {
+            addItem();
+        }
+    }
+    */
 }

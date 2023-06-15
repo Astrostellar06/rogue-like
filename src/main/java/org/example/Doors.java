@@ -9,13 +9,13 @@ public class Doors {
             String line = ref[i];
             switch (i) {
                 case 7:
-                    line = line.substring(0, line.length()-4) + "└───";
+                    line = line.substring(0, line.length()-4) + "3---";
                     break;
                 case 8:
-                    line = line.substring(0, line.length()-4) + "    ";
+                    line = line.substring(0, line.length()-4) + "****";
                     break;
                 case 9:
-                    line = line.substring(0, line.length()-4) + "┌───";
+                    line = line.substring(0, line.length()-4) + "1---";
                     break;
                 default:
                     break;
@@ -32,13 +32,13 @@ public class Doors {
             String line = ref[i];
             switch (i) {
                 case 7:
-                    line = "───┘" + line.substring(4);
+                    line = "---4" + line.substring(4);
                     break;
                 case 8:
-                    line = "    " + line.substring(4);
+                    line = "****" + line.substring(4);
                     break;
                 case 9:
-                    line =  "───┐" + line.substring(4);
+                    line =  "---2" + line.substring(4);
                     break;
                 default:
                     break;
@@ -55,10 +55,10 @@ public class Doors {
             String line = ref[i];
             switch (i) {
                 case 0:
-                    line = line.substring(0,7) + "│ │" + line.substring(10);
+                    line = line.substring(0,7) + "|*|" + line.substring(10);
                     break;
                 case 1:
-                    line = line.substring(0,7) + "┘ └" + line.substring(10);
+                    line = line.substring(0,7) + "4*3" + line.substring(10);
                     break;
                 default:
                     break;
@@ -75,10 +75,10 @@ public class Doors {
             String line = ref[i];
             switch (i) {
                 case 15:
-                    line = line.substring(0,7) + "│ │" + line.substring(10);
+                    line = line.substring(0,7) + "|*|" + line.substring(10);
                     break;
                 case 16:
-                    line = line.substring(0,7) + "┐ ┌" + line.substring(10);
+                    line = line.substring(0,7) + "2*1" + line.substring(10);
                     break;
                 default:
                     break;

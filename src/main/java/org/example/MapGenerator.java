@@ -4,8 +4,8 @@ import java.util.*;
 
 public class MapGenerator {
 
-    public static List<Room> generate() {
-        List<Room> rooms = new ArrayList<>();
+    public static ArrayList<Room> generate() {
+        ArrayList<Room> rooms = new ArrayList<>();
         boolean[] taken = new boolean[40];
         int[] ids = new int[40];
         for (int i = 0; i<40; i++) {
@@ -15,8 +15,6 @@ public class MapGenerator {
         generateBigRooms(taken, rooms, ids);
 
         generateMediumRooms(taken, rooms, ids);
-
-        generateSmallRooms(taken, rooms, ids);
 
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 8; j++) {
@@ -36,17 +34,6 @@ public class MapGenerator {
         return rooms;
     }
 
-    public static void generateSmallRooms(boolean[] taken, List<Room> rooms, int[] ids) {
-        for (int x = 0; x < 8; x++) {
-            for (int y = 0; y < 5; y++) {
-                if(!taken[x + y*8]) {
-                    rooms.add(new Room(x, y, 1, 1, Rooms.room1x1, 8));;
-                    ids[x + y * 8] = 8;
-                    taken[x + y * 8] = true;
-                }
-            }
-        }
-    }
     public static void generateSmallRoomAndDoors(boolean[] taken, List<Room> rooms, int[] ids) {
         HashMap<Room, List<Room>> liaisons = new HashMap<Room, List<Room>>();
         for (int x = 0; x < 8; x++) {
@@ -57,41 +44,53 @@ public class MapGenerator {
                             Room currentRoom = getRoomByXY(rooms, x, y);
                             if (taken[x + 8 * y + 1]) {
                                 Room rightRoom = getRoomByXY(rooms, x+1,y);
-                                System.out.println("The test: " + rightRoom.equals(currentRoom));
                                 if (!rightRoom.equals(currentRoom)) {
-                                    System.out.println("differents !");
                                     addLiaisons(liaisons, currentRoom, rightRoom);
 
-
-                                    System.out.println(x + " : " + y);
-
                                     boolean verif = y == currentRoom.getY();
-                                    String[] strs = Arrays.copyOfRange(currentRoom.getRoom(), y==currentRoom.getY() ? 0 : 17, y==currentRoom.getY() ? 16 : 33);
-                                    String[] others = Arrays.copyOfRange(currentRoom.getRoom(), y==currentRoom.getY() ? 17 : 0, y==currentRoom.getY() ? 33 : 16);
+                                    boolean doubleY = currentRoom.getSy() == 2;
 
-                                    for (String f : strs) {
-                                        System.out.println(f);
-                                    }
-                                    System.out.println();
+                                    String[] strs = Arrays.copyOfRange(currentRoom.getRoom(), y==currentRoom.getY() ? 0 : 17, y==currentRoom.getY() ? 17 : 34);
+
+
+                                    String[] others = new String[17];
+                                    if (doubleY) others = Arrays.copyOfRange(currentRoom.getRoom(), y==currentRoom.getY() ? 17 : 0, y==currentRoom.getY() ? 34 : 17);
 
 
                                     strs = Doors.generateRightDoor(strs);
 
-                                    for (String s : strs) {
-                                        System.out.println(s);
-                                    }
-                                    System.out.println();
-
                                     String[] def = new String[currentRoom.getRoom().length];
                                     for (int i = 0; i < def.length; i++) {
-                                        def[i] = verif ? (i < 17 ? strs[i] : others[17-i]) : (i < 17 ? others[i] : strs[17-i]);
+                                        if (doubleY) {
+                                            def[i] = verif ? (i < 17 ? strs[i] : others[i-17]) : (i < 17 ? others[i] : strs[i-17]);
+                                        } else {
+                                            def[i] = strs[i];
+                                        }
                                     }
                                     currentRoom.setRoom(def);
 
-                                    for (String s : currentRoom.getRoom()) {
-                                        System.out.println(s);
+
+                                    verif = y == rightRoom.getY();
+                                    doubleY = rightRoom.getSy() == 2;
+
+                                    strs = Arrays.copyOfRange(rightRoom.getRoom(), y==rightRoom.getY() ? 0 : 17, y==rightRoom.getY() ? 17 : 34);
+
+
+                                    others = new String[17];
+                                    if (doubleY) others = Arrays.copyOfRange(rightRoom.getRoom(), y==rightRoom.getY() ? 17 : 0, y==rightRoom.getY() ? 34 : 17);
+
+
+                                    strs = Doors.generateLeftDoor(strs);
+
+                                    def = new String[rightRoom.getRoom().length];
+                                    for (int i = 0; i < def.length; i++) {
+                                        if (doubleY) {
+                                            def[i] = verif ? (i < 17 ? strs[i] : others[i-17]) : (i < 17 ? others[i] : strs[i-17]);
+                                        } else {
+                                            def[i] = strs[i];
+                                        }
                                     }
-                                    System.out.println();
+                                    rightRoom.setRoom(def);
                                 }
                             }
                         }
@@ -167,8 +166,8 @@ public class MapGenerator {
 
                         ids[x + y * 8] = 7;
                         ids[x + (y + 1) * 8] = 7;
-                        taken[x + y * 8] = false;
-                        taken[x + (y + 1) * 8] = false;
+                        taken[x + y * 8] = true;
+                        taken[x + (y + 1) * 8] = true;
                     } else {
                         i--;
                     }
