@@ -1,18 +1,23 @@
 package org.example;
 
+import java.awt.*;
+import java.util.concurrent.ThreadLocalRandom;
+
 public class Enemy {
     int hp;
     int atk;
     int type;
     int x;
     int y;
+    Color color;
 
     public Enemy(int hp, int atk, int type) {
         this.hp = hp;
         this.atk = atk;
         this.type = type;
-        x = 15;
-        y = 15;
+        this.color = new Color(ThreadLocalRandom.current().nextInt(0, 255), ThreadLocalRandom.current().nextInt(0, 255), ThreadLocalRandom.current().nextInt(0, 255));
+        x = ThreadLocalRandom.current().nextInt(11, 30);
+        y = ThreadLocalRandom.current().nextInt(11, 18);
     }
 
     public int getHp() {

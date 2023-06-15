@@ -27,7 +27,7 @@ public class Player {
         this.inv = new ArrayList<>();
     }
 
-    public  void move(int x, int y, Game app) {
+    public void move(int x, int y, Game app) {
         char c = app.getMap()[this.y + y].charAt(this.x + x);
         if (c != ' ' && c != '|' && c != '-' && c != '1' && c != '2' && c != '3' && c != '4') {
             app.updateAff();

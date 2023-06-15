@@ -20,6 +20,12 @@ public abstract class Item {
                         empty = false;
                 }
             }
+            if (Game.enemies != null) {
+                for (int i = 0; i < Game.enemies.size(); i++) {
+                    if (Game.enemies.get(i).getX() == this.x && Game.enemies.get(i).getY() == this.y)
+                        empty = false;
+                }
+            }
         } while (!empty);
     }
 

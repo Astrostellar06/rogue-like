@@ -6,7 +6,6 @@ public class Main {
     public static void main(String[] args) {
         //Partie pour mes tests
         Player player = new Player("Astrostellar");
-        Enemy enemy = new Enemy(100, 10, 1);
         Item item3 = new ManaItem();
         String[] map1 = new Room(1).getMap();
         String[] map2 = new Room(2).getMap();
@@ -26,10 +25,12 @@ public class Main {
         //L'idée, c'est qu'il n'y a aucune boucle dans la classe Game, tout est géré par des évènements
 
         //Partie pour afficher mes objets tests
-        app.addEnemy(enemy);
-        for (int i = 0 ; i < 3 ; i++) {
+        for (int i = 0 ; i <  3; i++) {
             app.addItem(new AtkItem());
             app.addItem(new DefItem());
+        }
+        for (int i = 0 ; i < 3 ; i++) {
+            app.addEnemy(new Enemy(100, 10, 1));
         }
         app.addItem(item3);
         app.addCoins(10);

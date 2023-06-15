@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -23,7 +24,7 @@ public class Game extends JFrame implements KeyListener {
     private int x = 0, y = 0;
     private String[] map;
     private Player player;
-    private ArrayList<Enemy> enemies;
+    static ArrayList<Enemy> enemies;
     static ArrayList<Item> items;
     static ArrayList<Coin> coins;
     private Color font, background, playerColor, roomColor, pathColor;
@@ -38,7 +39,7 @@ public class Game extends JFrame implements KeyListener {
         enemies = new ArrayList<>();
         items = new ArrayList<>();
         coins = new ArrayList<>();
-        terminal = new AsciiPanel(170, 85, AsciiFont.TALRYTH_15_15); //Taille de la fenêtre + police
+        terminal = new AsciiPanel(170, 85, AsciiFont.CP437_8x8); //Taille de la fenêtre + police
         addKeyListener(this); //Ajout de l'écouteur de touches
         font = new Color(0, 255, 0);
         background = new Color(0, 0, 0);
@@ -188,8 +189,31 @@ public class Game extends JFrame implements KeyListener {
         else if (map[player.y + y].charAt(player.x + x) == '*')
             terminal.write(Character.toString(1), player.x + x, player.y + y, playerColor, pathColor);
 
+        for (int i = 0 ; i < coins.size() ; i++) {
+            if (coins.get(i).x == player.x+x && coins.get(i).y == player.y+y) {
+                coins.remove(i);
+                player.coins++;
+                clearSideAff();
+                terminal.write("+1 coin", 140, 25, font, background);
+                add(terminal);
+                terminal.repaint();
+                affStats();
+            }
+        }
+
         add(terminal);
-        terminal.repaint();
+        boolean isEnemy = false;
+        for (int i = 0 ; i < enemies.size() ; i++) {
+            if (enemies.get(i).x == player.x + x && enemies.get(i).y == player.y + y) {
+                attack(enemies.get(i));
+                isEnemy = true;
+            }
+        }
+        if (!isEnemy) {
+            moveEnemies();
+            affAllItems();
+            affCoins();
+        }
 
         for (int i = 0 ; i < items.size() ; i++) {
             if (items.get(i).x == player.x+x && items.get(i).y == player.y+y) {
@@ -220,17 +244,62 @@ public class Game extends JFrame implements KeyListener {
                 //Laisse le jeu dans un état ou les seuls inputs possibles sont E ou R
             }
         }
-        for (int i = 0 ; i < coins.size() ; i++) {
-            if (coins.get(i).x == player.x+x && coins.get(i).y == player.y+y) {
-                coins.remove(i);
-                player.coins++;
-                clearSideAff();
-                terminal.write("+1 coin", 140, 25, font, background);
-                add(terminal);
-                terminal.repaint();
-                affStats();
+    }
+
+    public void moveEnemies() {
+        for(Enemy enemy : enemies) {
+            int a = 0;
+            int b = 0;
+            terminal.write(Character.toString(32), enemy.x, enemy.y, enemy.color, roomColor);
+            if (ThreadLocalRandom.current().nextInt(0,2) != 0) {
+                if (ThreadLocalRandom.current().nextInt(0,2) == 0) {
+                    if (enemy.x < player.x && map[enemy.y].charAt(enemy.x + 1) == '.')
+                        a = 1;
+                    else if (enemy.x > player.x && map[enemy.y].charAt(enemy.x - 1) == '.')
+                        a = -1;
+                    else if (enemy.y < player.y && map[enemy.y + 1].charAt(enemy.x) == '.')
+                        b = 1;
+                    else if (enemy.y > player.y && map[enemy.y - 1].charAt(enemy.x) == '.')
+                        b = -1;
+                } else {
+                    if (enemy.y < player.y && map[enemy.y + 1].charAt(enemy.x) == '.')
+                        b = 1;
+                    else if (enemy.y > player.y && map[enemy.y - 1].charAt(enemy.x) == '.')
+                        b = -1;
+                    else if (enemy.x < player.x && map[enemy.y].charAt(enemy.x + 1) == '.')
+                        a = 1;
+                    else if (enemy.x > player.x && map[enemy.y].charAt(enemy.x - 1) == '.')
+                        a = -1;
+                }
+            } else {
+                int j = ThreadLocalRandom.current().nextInt(1,4);
+                if (j == 1 && map[enemy.y].charAt(enemy.x + 1) == '.')
+                    a = 1;
+                else if (j == 2 && map[enemy.y].charAt(enemy.x - 1) == '.')
+                    a = -1;
+                else if (j == 3 && map[enemy.y + 1].charAt(enemy.x) == '.')
+                    b = 1;
+                else if (j == 4 && map[enemy.y - 1].charAt(enemy.x) == '.')
+                    b = -1;
             }
+            for (int j = 0 ; j < enemies.size() ; j++) {
+                if (enemy.x + a == enemies.get(j).x && enemy.y + b == enemies.get(j).y && enemy != enemies.get(j)) {
+                    a = 0;
+                    b = 0;
+                }
+            }
+            enemy.x += a;
+            enemy.y += b;
+            if (enemy.x == player.x + x && enemy.y == player.y + y)
+                attack(enemy);
+            terminal.write(Character.toString(232), enemy.x, enemy.y, enemy.color, roomColor);
         }
+        add(terminal);
+        terminal.repaint();
+    }
+
+    public void attack(Enemy enemy) {
+
     }
 
     public void clearSideAff() {
@@ -283,7 +352,7 @@ public class Game extends JFrame implements KeyListener {
     }
 
     public void affEnemy(Enemy enemy) {
-        terminal.write(Character.toString(232), enemy.x, enemy.y, new Color(255, 0, 0), roomColor);
+        terminal.write(Character.toString(232), enemy.x, enemy.y, enemy.color, roomColor);
         add(terminal);
         terminal.repaint();
     }
@@ -306,10 +375,29 @@ public class Game extends JFrame implements KeyListener {
     }
 
     public void affCoins() {
-        for (int i = 0; i < coins.size(); i++)
-            terminal.write(Character.toString(7), coins.get(i).x, coins.get(i).y, new Color(255, 204, 0), roomColor);
+        for (Coin coin : coins) {
+            boolean aff = true;
+            for (Enemy enemy : enemies) {
+                if (coin.x == enemy.x && coin.y == enemy.y)
+                    aff = false;
+            }
+            if (aff)
+                terminal.write(Character.toString(7), coin.x, coin.y, new Color(255, 204, 0), roomColor);
+        }
         add(terminal);
         terminal.repaint();
+    }
+
+    public void affAllItems() {
+        for (Item item : items) {
+            boolean aff = true;
+            for (Enemy enemy : enemies) {
+                if (item.x == enemy.x && item.y == enemy.y)
+                    aff = false;
+            }
+            if (aff)
+                affItem(item);
+        }
     }
 
     //On touche pas ce qui est en dessous
@@ -329,7 +417,7 @@ public class Game extends JFrame implements KeyListener {
                     invOpen = !invOpen;
                     affInv();
                 }
-                if (!invOpen) {
+                if (!invOpen) { //Dans le jeu normal
                     if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D)
                         x = 1;
                     else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_Q)
@@ -344,8 +432,7 @@ public class Game extends JFrame implements KeyListener {
                         y = 0;
                         if (justPickedUp) {
                             justPickedUp = false;
-                            for (int i = 0; i < items.size(); i++)
-                                affItem(items.get(i));
+                            affAllItems();
                         }
                     }
                 } else {//Si inv est open
