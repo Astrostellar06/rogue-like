@@ -12,20 +12,22 @@ public abstract class Item {
         boolean empty = true;
         do {
             empty = true;
-            this.x = ThreadLocalRandom.current().nextInt(17, 30);
-            this.y = ThreadLocalRandom.current().nextInt(17, 30);
+            this.x = ThreadLocalRandom.current().nextInt(0, 170);
+            this.y = ThreadLocalRandom.current().nextInt(0, 85);
             if (Game.items != null) {
                 for (int i = 0; i < Game.items.size(); i++) {
                     if (Game.items.get(i).getX() == this.x && Game.items.get(i).getY() == this.y)
                         empty = false;
                 }
             }
-            if (Game.enemies != null) {
+            if (empty && Game.enemies != null) {
                 for (int i = 0; i < Game.enemies.size(); i++) {
                     if (Game.enemies.get(i).getX() == this.x && Game.enemies.get(i).getY() == this.y)
                         empty = false;
                 }
             }
+            if (empty && Game.charRoom(this.x, this.y) != '.')
+                empty = false;
         } while (!empty);
     }
 

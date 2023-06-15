@@ -22,7 +22,6 @@ public class Game extends JFrame implements KeyListener {
     private static final long serialVersionUID = 1060623638149583738L;
     private AsciiPanel terminal;
     private int x = 0, y = 0;
-    private String[] map;
     private Player player;
     static ArrayList<Enemy> enemies;
     static ArrayList<Item> items;
@@ -31,13 +30,12 @@ public class Game extends JFrame implements KeyListener {
     private boolean invOpen = false, justPickedUp = false, pickUp = false;
     private int itemSelected = 0, itemInv = 0;
     private long tempsInactif = 0;
-    private ArrayList<Room> listRooms;
+    static ArrayList<Room> listRooms = MapGenerator.generate();
 
 
-    public Game(Player player, ArrayList<Room> listRooms) { //Création du jeu
+    public Game() { //Création du jeu
         super(); //Utilisation de JFrame et de AsciiPanel
-        this.map = map;
-        this.player = player;
+        this.player = new Player("Astrostellar");
         enemies = new ArrayList<>();
         items = new ArrayList<>();
         coins = new ArrayList<>();
@@ -53,30 +51,30 @@ public class Game extends JFrame implements KeyListener {
     }
 
     public void affRooms(Room room) {
-        for (int cy = 0 ; cy < room.getRoom().length ; cy++) {
+        for (int cy = 0; cy < room.getRoom().length; cy++) {
             char[] line = room.getRoom()[cy].toCharArray();
-            for (int cx = 0 ; cx < line.length ; cx++) {
+            for (int cx = 0; cx < line.length; cx++) {
                 if (line[cx] == '|')
-                    terminal.write(Character.toString(179), room.getX()*17 + cx, room.getY()*17 + cy, font, background);
+                    terminal.write(Character.toString(179), room.getX() * 17 + cx, room.getY() * 17 + cy, font, background);
                 else if (line[cx] == '-')
-                    terminal.write(Character.toString(196), room.getX()*17 + cx, room.getY()*17 + cy, font, background);
+                    terminal.write(Character.toString(196), room.getX() * 17 + cx, room.getY() * 17 + cy, font, background);
                 else if (line[cx] == '1')
-                    terminal.write(Character.toString(218), room.getX()*17 + cx, room.getY()*17 + cy, font, background);
+                    terminal.write(Character.toString(218), room.getX() * 17 + cx, room.getY() * 17 + cy, font, background);
                 else if (line[cx] == '2')
-                    terminal.write(Character.toString(191), room.getX()*17 + cx, room.getY()*17 + cy, font, background);
+                    terminal.write(Character.toString(191), room.getX() * 17 + cx, room.getY() * 17 + cy, font, background);
                 else if (line[cx] == '3')
-                    terminal.write(Character.toString(192), room.getX()*17 + cx, room.getY()*17 + cy, font, background);
+                    terminal.write(Character.toString(192), room.getX() * 17 + cx, room.getY() * 17 + cy, font, background);
                 else if (line[cx] == '4')
-                    terminal.write(Character.toString(217), room.getX()*17 + cx, room.getY()*17 + cy, font, background);
+                    terminal.write(Character.toString(217), room.getX() * 17 + cx, room.getY() * 17 + cy, font, background);
                 else
-                    terminal.write(Character.toString(32), room.getX()*17 + cx, room.getY()*17 + cy, font, background);
+                    terminal.write(Character.toString(32), room.getX() * 17 + cx, room.getY() * 17 + cy, font, background);
             }
         }
     }
 
     public void aff() { //Affichage de la fenêtre
-        for (int i = 0 ; i < 85 ; i++) {
-            for (int j = 0 ; j < 170 ; j++) {
+        for (int i = 0; i < 85; i++) {
+            for (int j = 0; j < 170; j++) {
                 terminal.write(Character.toString(32), j, i, font, background);
             }
         }
@@ -86,26 +84,6 @@ public class Game extends JFrame implements KeyListener {
             affRooms(room);
         }
 
-        /*for (int y = 0; y < map.length; y++)
-            for (int x = 0; x < map[0].length(); x++)
-                if (map[y].charAt(x) == '|')
-                    terminal.write(Character.toString(179), x, y, font, background);
-                else if (map[y].charAt(x) == '-')
-                    terminal.write(Character.toString(196), x, y, font, background);
-                else if (map[y].charAt(x) == '1')
-                    terminal.write(Character.toString(218), x, y, font, background);
-                else if (map[y].charAt(x) == '2')
-                    terminal.write(Character.toString(191), x, y, font, background);
-                else if (map[y].charAt(x) == '3')
-                    terminal.write(Character.toString(192), x, y, font, background);
-                else if (map[y].charAt(x) == '4')
-                    terminal.write(Character.toString(217), x, y, font, background);
-                else if (map[y].charAt(x) == '.')
-                    terminal.write(Character.toString(32), x, y, font, roomColor);
-                else if (map[y].charAt(x) == '*')
-                    terminal.write(Character.toString(32), x, y, font, pathColor);
-                else
-                    terminal.write(Character.toString(32), x, y, font, background);*/
         terminal.write(Character.toString(1), player.x, player.y, playerColor, roomColor);
 
         for (Enemy enemy : enemies) {
@@ -119,12 +97,12 @@ public class Game extends JFrame implements KeyListener {
         affCoins();
 
         //Génération stats + déco
-        for (int i = 1 ; i < 84 ; i++) {
+        for (int i = 1; i < 84; i++) {
             terminal.write(Character.toString(186), 137, i, font, background);
             terminal.write(Character.toString(179), 0, i, font, background);
             terminal.write(Character.toString(179), 169, i, font, background);
         }
-        for (int i = 1 ; i < 169 ; i++) {
+        for (int i = 1; i < 169; i++) {
             terminal.write(Character.toString(196), i, 84, font, background);
             terminal.write(Character.toString(196), i, 0, font, background);
         }
@@ -149,7 +127,7 @@ public class Game extends JFrame implements KeyListener {
 
         affStats();
 
-        for (int i = 0 ; i < 31 ; i++)
+        for (int i = 0; i < 31; i++)
             terminal.write(Character.toString(196), 138 + i, 21, font, background);
         terminal.write(Character.toString(199), 137, 21, font, background);
         terminal.write(Character.toString(180), 169, 21, font, background);
@@ -164,7 +142,7 @@ public class Game extends JFrame implements KeyListener {
 
     public void affStats() {
         terminal.write(player.getName(), 140, 2, font, background);
-        for (int i = 0 ; i < player.getName().length() ; i++)
+        for (int i = 0; i < player.getName().length(); i++)
             terminal.write(Character.toString(196), 140 + i, 3, font, background);
         terminal.write("HP: " + player.getHp() + "  ", 140, 7, Color.red, background);
         terminal.write("Mana: " + player.getMana() + "  ", 140, 9, new Color(100, 0, 255), background);
@@ -193,11 +171,11 @@ public class Game extends JFrame implements KeyListener {
             if (player.inv.size() != 0) {
                 for (int i = 0; i < player.inv.size(); i++) {
                     if (i == itemInv)
-                        terminal.write("> " + player.inv.get(i).getName(), 140, 28 + 2*i, font, background);
+                        terminal.write("> " + player.inv.get(i).getName(), 140, 28 + 2 * i, font, background);
                     else
-                        terminal.write(player.inv.get(i).getName() + "  ", 140, 28 + 2*i, font, background);
-                    if(player.inv.get(i).getIsEquipped())
-                        terminal.write("Equipped", 160, 28 + 2*i, font, background);
+                        terminal.write(player.inv.get(i).getName() + "  ", 140, 28 + 2 * i, font, background);
+                    if (player.inv.get(i).getIsEquipped())
+                        terminal.write("Equipped", 160, 28 + 2 * i, font, background);
                 }
             } else {
                 terminal.write("Nothing seems to be here...", 140, 28, font, background);
@@ -209,18 +187,18 @@ public class Game extends JFrame implements KeyListener {
 
     //Méthode très importante
     public void updateAff() { //Mise à jour de l'affichage après un déplacement + test de la case sur laquelle le joueur se trouve
-        if (map[player.y].charAt(player.x) == '.')
+        if (charRoom(player.x, player.y) == '.')
             terminal.write(Character.toString(32), player.x, player.y, font, roomColor);
-        else if (map[player.y].charAt(player.x) == '*')
+        else if (charRoom(player.x, player.y) == '*')
             terminal.write(Character.toString(32), player.x, player.y, font, pathColor);
 
-        if (map[player.y + y].charAt(player.x + x) == '.')
+        if (charRoom(player.x+x, player.y+y) == '.')
             terminal.write(Character.toString(1), player.x + x, player.y + y, playerColor, roomColor);
-        else if (map[player.y + y].charAt(player.x + x) == '*')
+        else if (charRoom(player.x+x, player.y+y) == '*')
             terminal.write(Character.toString(1), player.x + x, player.y + y, playerColor, pathColor);
 
-        for (int i = 0 ; i < coins.size() ; i++) {
-            if (coins.get(i).x == player.x+x && coins.get(i).y == player.y+y) {
+        for (int i = 0; i < coins.size(); i++) {
+            if (coins.get(i).x == player.x + x && coins.get(i).y == player.y + y) {
                 coins.remove(i);
                 player.coins++;
                 clearSideAff();
@@ -233,7 +211,7 @@ public class Game extends JFrame implements KeyListener {
 
         add(terminal);
         boolean isEnemy = false;
-        for (int i = 0 ; i < enemies.size() ; i++) {
+        for (int i = 0; i < enemies.size(); i++) {
             if (enemies.get(i).x == player.x + x && enemies.get(i).y == player.y + y) {
                 attack(enemies.get(i));
                 isEnemy = true;
@@ -245,10 +223,10 @@ public class Game extends JFrame implements KeyListener {
             affCoins();
         }
 
-        for (int i = 0 ; i < items.size() ; i++) {
-            if (items.get(i).x == player.x+x && items.get(i).y == player.y+y) {
-                for (int j = 0 ; j < 6 ; j++) {
-                    terminal.write(Character.toString(2 - j%2), player.x + x, player.y + y, playerColor, background);
+        for (int i = 0; i < items.size(); i++) {
+            if (items.get(i).x == player.x + x && items.get(i).y == player.y + y) {
+                for (int j = 0; j < 6; j++) {
+                    terminal.write(Character.toString(2 - j % 2), player.x + x, player.y + y, playerColor, background);
                     add(terminal);
                     terminal.paintImmediately(terminal.getBounds());
                     try {
@@ -257,7 +235,7 @@ public class Game extends JFrame implements KeyListener {
                         e.printStackTrace();
                     }
                 }
-                for (int j = 140 ; j < 169 ; j++)
+                for (int j = 140; j < 169; j++)
                     terminal.write(Character.toString(32), j, 25, font, background);
                 pickUp = true;
                 itemSelected = i;
@@ -277,42 +255,44 @@ public class Game extends JFrame implements KeyListener {
     }
 
     public void moveEnemies() {
-        for(Enemy enemy : enemies) {
+        for (Enemy enemy : enemies) {
             int a = 0;
             int b = 0;
             terminal.write(Character.toString(32), enemy.x, enemy.y, enemy.color, roomColor);
-            if (ThreadLocalRandom.current().nextInt(0,2) != 0) {
-                if (ThreadLocalRandom.current().nextInt(0,2) == 0) {
-                    if (enemy.x < player.x && map[enemy.y].charAt(enemy.x + 1) == '.')
+            //test si le joueur est dans la même salle que l'ennemi + petit random pour que l'ennemi ne soit pas trop prévisible
+            if (ThreadLocalRandom.current().nextInt(0, 3) != 0 && MapGenerator.getRoomByXY(listRooms, (player.x)/17, (player.y)/17).getX() == MapGenerator.getRoomByXY(listRooms, (enemy.x)/17, (enemy.y)/17).getX() && MapGenerator.getRoomByXY(listRooms, (player.x)/17, (player.y)/17).getY() == MapGenerator.getRoomByXY(listRooms, (enemy.x)/17, (enemy.y)/17).getY()) {
+                //petit random pour que l'ennemi se rapproche soit en x soit en y du joueur
+                if (ThreadLocalRandom.current().nextInt(0, 2) == 0) {
+                    if (enemy.x < player.x && charRoom(enemy.x+1, enemy.y) == '.')
                         a = 1;
-                    else if (enemy.x > player.x && map[enemy.y].charAt(enemy.x - 1) == '.')
+                    else if (enemy.x > player.x && charRoom(enemy.x-1, enemy.y) == '.')
                         a = -1;
-                    else if (enemy.y < player.y && map[enemy.y + 1].charAt(enemy.x) == '.')
+                    else if (enemy.y < player.y && charRoom(enemy.x, enemy.y+1) == '.')
                         b = 1;
-                    else if (enemy.y > player.y && map[enemy.y - 1].charAt(enemy.x) == '.')
+                    else if (enemy.y > player.y && charRoom(enemy.x, enemy.y-1) == '.')
                         b = -1;
                 } else {
-                    if (enemy.y < player.y && map[enemy.y + 1].charAt(enemy.x) == '.')
+                    if (enemy.y < player.y && charRoom(enemy.x, enemy.y+1) == '.')
                         b = 1;
-                    else if (enemy.y > player.y && map[enemy.y - 1].charAt(enemy.x) == '.')
+                    else if (enemy.y > player.y && charRoom(enemy.x, enemy.y-1) == '.')
                         b = -1;
-                    else if (enemy.x < player.x && map[enemy.y].charAt(enemy.x + 1) == '.')
+                    else if (enemy.x < player.x && charRoom(enemy.x+1, enemy.y) == '.')
                         a = 1;
-                    else if (enemy.x > player.x && map[enemy.y].charAt(enemy.x - 1) == '.')
+                    else if (enemy.x > player.x && charRoom(enemy.x-1, enemy.y) == '.')
                         a = -1;
                 }
             } else {
-                int j = ThreadLocalRandom.current().nextInt(1,4);
-                if (j == 1 && map[enemy.y].charAt(enemy.x + 1) == '.')
+                int j = ThreadLocalRandom.current().nextInt(1, 5);
+                if (j == 1 && charRoom(enemy.x+1, enemy.y) == '.')
                     a = 1;
-                else if (j == 2 && map[enemy.y].charAt(enemy.x - 1) == '.')
+                else if (j == 2 && charRoom(enemy.x-1, enemy.y) == '.')
                     a = -1;
-                else if (j == 3 && map[enemy.y + 1].charAt(enemy.x) == '.')
+                else if (j == 3 && charRoom(enemy.x, enemy.y+1) == '.')
                     b = 1;
-                else if (j == 4 && map[enemy.y - 1].charAt(enemy.x) == '.')
+                else if (j == 4 && charRoom(enemy.x, enemy.y-1) == '.')
                     b = -1;
             }
-            for (int j = 0 ; j < enemies.size() ; j++) {
+            for (int j = 0; j < enemies.size(); j++) {
                 if (enemy.x + a == enemies.get(j).x && enemy.y + b == enemies.get(j).y && enemy != enemies.get(j)) {
                     a = 0;
                     b = 0;
@@ -333,8 +313,8 @@ public class Game extends JFrame implements KeyListener {
     }
 
     public void clearSideAff() {
-        for (int i = 25 ; i < 84 ; i++)
-            for (int j = 140 ; j < 169 ; j++)
+        for (int i = 25; i < 84; i++)
+            for (int j = 140; j < 169; j++)
                 terminal.write(Character.toString(32), j, i);
         terminal.write(Character.toString(218), 168, 83, font, background);
     }
@@ -364,12 +344,13 @@ public class Game extends JFrame implements KeyListener {
     }
 
     public void affMsg(String msg, int x, int y) { //Méthode pour afficher un message avec un effet de défilement
-        for (int i = 0 ; i < msg.length() ; i++) {
+        for (int i = 0; i < msg.length(); i++) {
             terminal.write(msg.charAt(i), x + i, y, font, background);
             add(terminal);
             terminal.paintImmediately(terminal.getBounds());
             long temps = System.currentTimeMillis();
-            while (System.currentTimeMillis() - temps < 20) {}
+            while (System.currentTimeMillis() - temps < 20) {
+            }
         }
         add(terminal);
         terminal.repaint();
@@ -428,6 +409,20 @@ public class Game extends JFrame implements KeyListener {
             if (aff)
                 affItem(item);
         }
+    }
+
+    public static char charRoom(int x, int y) {
+        int X = x/17;
+        int Y = y/17;
+
+        Room room = MapGenerator.getRoomByXY(listRooms, X, Y);
+
+
+        if (room == null)
+            return (' ');
+        int dx = x - (room.getX())*17;
+        int dy = y - (room.getY())*17;
+        return room.getRoom()[dy].charAt(dx);
     }
 
     //On touche pas ce qui est en dessous
@@ -548,10 +543,6 @@ public class Game extends JFrame implements KeyListener {
 
     public ArrayList<Item> getItems() {
         return items;
-    }
-
-    public String[] getMap() {
-        return map;
     }
 
     public void setX(int x) {
