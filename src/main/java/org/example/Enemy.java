@@ -3,19 +3,62 @@ package org.example;
 import java.awt.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Enemy {
-    int hp;
-    int atk;
-    int type;
-    int x;
-    int y;
+public class Enemy extends Entity{
     Color color;
+    int type;
 
-    public Enemy(int hp, int atk, int type) {
-        this.hp = hp;
-        this.atk = atk;
+    public Enemy(int type) {
         this.type = type;
-        this.color = new Color(ThreadLocalRandom.current().nextInt(0, 255), ThreadLocalRandom.current().nextInt(0, 255), ThreadLocalRandom.current().nextInt(0, 255));
+        switch (type) {
+            case 1:
+                this.name = "Goblin";
+                this.hp = 10;
+                this.hpMax = 10;
+                this.atk = 2;
+                this.def = 0;
+                this.magicDef = 0;
+                this.critChance = 10;
+                this.xp = 5;
+                this.coins = 5;
+                this.color = new Color(33, 133, 33);
+                break;
+            case 2:
+                this.name = "Skeleton";
+                this.hp = 20;
+                this.hpMax = 20;
+                this.atk = 5;
+                this.def = 0;
+                this.magicDef = 0;
+                this.critChance = 10;
+                this.xp = 10;
+                this.coins = 10;
+                this.color = new Color(255, 255, 255);
+                break;
+            case 3:
+                this.name = "Orc";
+                this.hp = 30;
+                this.hpMax = 30;
+                this.atk = 10;
+                this.def = 0;
+                this.magicDef = 0;
+                this.critChance = 10;
+                this.xp = 15;
+                this.coins = 15;
+                this.color = new Color(168, 21, 21);
+                break;
+            case 4:
+                this.name = "Dragon";
+                this.hp = 50;
+                this.hpMax = 50;
+                this.atk = 15;
+                this.def = 0;
+                this.magicDef = 0;
+                this.critChance = 10;
+                this.xp = 20;
+                this.coins = 20;
+                this.color = new Color(140, 108, 227);
+                break;
+        }
         boolean empty;
         do {
             empty = true;
@@ -37,18 +80,6 @@ public class Enemy {
                 empty = false;
             }
         } while (!empty);
-    }
-
-    public int getHp() {
-        return hp;
-    }
-
-    public int getAtk() {
-        return atk;
-    }
-
-    public int getType() {
-        return type;
     }
 
     public int getX() {

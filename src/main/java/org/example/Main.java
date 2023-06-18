@@ -11,8 +11,11 @@ public class Main {
             app.addItem(new AtkItem());
             app.addItem(new DefItem());
         }
-        for (int i = 0 ; i < 20 ; i++) {
-            app.addEnemy(new Enemy(100, 10, 1));
+        for (int i = 0 ; i < 5 ; i++) {
+            app.addEnemy(new Enemy(1));
+            app.addEnemy(new Enemy(2));
+            app.addEnemy(new Enemy(3));
+            app.addEnemy(new Enemy(4));
         }
         app.addItem(item3);
         app.addCoins(60);

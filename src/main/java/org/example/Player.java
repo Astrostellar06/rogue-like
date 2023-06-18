@@ -1,12 +1,10 @@
 package org.example;
 
 import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
 
-public class Player {
-    int x, y, level, xp, hp, hpMax, mana, manaMax, atk, def, manaRegen, magicDef, critChance, coins;
+public class Player extends Entity{
+    int mana, manaMax,manaRegen;
     ArrayList<Item> inv;
-    String name;
 
     public Player(String name) {
         this.name = name;
@@ -51,39 +49,7 @@ public class Player {
         return level;
     }
 
-    public int getHp() {
-        return hp;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public int getMana() {
-        return mana;
-    }
-
-    public ArrayList<Item> getInv() {
-        return inv;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public int getCoins() {
         return coins;
-    }
-
-    public int getAtk() {
-        return atk;
-    }
-
-    public int getDef() {
-        return def;
     }
 }
