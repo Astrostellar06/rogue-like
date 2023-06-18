@@ -3,7 +3,7 @@ package org.example;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class DefItem extends Item{
-    private int dfs;
+    private int def;
     boolean isEquipped;
 
     public DefItem() {
@@ -14,23 +14,23 @@ public class DefItem extends Item{
         switch (randomNum) {
             case 0:
                 this.name = "Shield";
-                this.dfs = 10;
+                this.def = 10;
                 break;
             case 1:
                 this.name = "Armor";
-                this.dfs = 15;
+                this.def = 15;
                 break;
             case 2:
                 this.name = "Helmet";
-                this.dfs = 20;
+                this.def = 20;
                 break;
             case 3:
                 this.name = "Gloves";
-                this.dfs = 5;
+                this.def = 5;
                 break;
             case 4:
                 this.name = "Boots";
-                this.dfs = 25;
+                this.def = 25;
                 break;
         }
     }
@@ -43,7 +43,7 @@ public class DefItem extends Item{
         this.isEquipped = isEquipped;
     }
 
-    public int getDfs() {
-        return dfs;
+    public int getDef() {
+        return def;
     }
 }

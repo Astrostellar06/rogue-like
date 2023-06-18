@@ -4,25 +4,24 @@ import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Player {
-    int level;
-    int hp;
-    int x;
-    int y;
-    int mana;
-    int atk;
-    int dfs;
-    int coins;
+    int x, y, level, xp, hp, hpMax, mana, manaMax, atk, def, manaRegen, magicDef, critChance, coins;
     ArrayList<Item> inv;
     String name;
 
     public Player(String name) {
         this.name = name;
-        this.level = 1;
+        this.level = 2;
         this.hp = 100;
         this.mana = 100;
         this.atk = 1;
-        this.dfs = 0;
+        this.def = 0;
         this.coins = 0;
+        this.xp = 15;
+        this.hpMax = 100;
+        this.manaMax = 100;
+        this.manaRegen = 10;
+        this.magicDef = 0;
+        this.critChance = 10;
         this.inv = new ArrayList<>();
         boolean empty;
         this.x = 10;
@@ -84,7 +83,7 @@ public class Player {
         return atk;
     }
 
-    public int getDfs() {
-        return dfs;
+    public int getDef() {
+        return def;
     }
 }

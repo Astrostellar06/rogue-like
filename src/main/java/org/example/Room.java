@@ -38,6 +38,10 @@ public class Room {
         this.room = room;
     }
 
+    public int getRoomtype() {
+        return roomtype;
+    }
+
     @Override
     public boolean equals(Object o) {
         Room room = (Room) o;

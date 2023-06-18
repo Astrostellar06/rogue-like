@@ -16,88 +16,255 @@ public class MapGenerator {
 
         generateMediumRooms(taken, rooms, ids);
 
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 8; j++) {
-                System.out.print(ids[i*8 + j]);
-            }
-            System.out.println();
-        }
-
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 8; j++) {
-
-            }
-            System.out.println();
-        }
-
         generateSmallRoomAndDoors(taken, rooms, ids);
         return rooms;
     }
 
     public static void generateSmallRoomAndDoors(boolean[] taken, List<Room> rooms, int[] ids) {
         HashMap<Room, List<Room>> liaisons = new HashMap<Room, List<Room>>();
+        Random ran = new Random();
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 5; y++) {
+                Room currentRoom = getRoomByXY(rooms, x, y);
                 if (taken[x + y*8]) {
                     if (y == 4) {
                         if (x != 7) {
-                            Room currentRoom = getRoomByXY(rooms, x, y);
                             if (taken[x + 8 * y + 1]) {
                                 Room rightRoom = getRoomByXY(rooms, x+1,y);
-                                if (!rightRoom.equals(currentRoom)) {
+                                if (rightRoom == null) continue;
+                                if (!rightRoom.equals(currentRoom) && (liaisons.get(currentRoom) == null || !liaisons.get(currentRoom).contains(rightRoom))
+                                        && !(currentRoom.getRoomtype() == 2 && currentRoom.getY() != y)
+                                        && !(currentRoom.getRoomtype() == 4 && currentRoom.getY() == y)
+                                        && !(rightRoom.getRoomtype() == 3 && rightRoom.getY() != y)
+                                        && !(rightRoom.getRoomtype() == 5 && rightRoom.getY() == y)) {
                                     addLiaisons(liaisons, currentRoom, rightRoom);
 
-                                    boolean verif = y == currentRoom.getY();
-                                    boolean doubleY = currentRoom.getSy() == 2;
+                                    updateRoomWithRightDoors(currentRoom,y);
 
-                                    String[] strs = Arrays.copyOfRange(currentRoom.getRoom(), y==currentRoom.getY() ? 0 : 17, y==currentRoom.getY() ? 17 : 34);
-
-
-                                    String[] others = new String[17];
-                                    if (doubleY) others = Arrays.copyOfRange(currentRoom.getRoom(), y==currentRoom.getY() ? 17 : 0, y==currentRoom.getY() ? 34 : 17);
-
-
-                                    strs = Doors.generateRightDoor(strs);
-
-                                    String[] def = new String[currentRoom.getRoom().length];
-                                    for (int i = 0; i < def.length; i++) {
-                                        if (doubleY) {
-                                            def[i] = verif ? (i < 17 ? strs[i] : others[i-17]) : (i < 17 ? others[i] : strs[i-17]);
-                                        } else {
-                                            def[i] = strs[i];
-                                        }
-                                    }
-                                    currentRoom.setRoom(def);
-
-
-                                    verif = y == rightRoom.getY();
-                                    doubleY = rightRoom.getSy() == 2;
-
-                                    strs = Arrays.copyOfRange(rightRoom.getRoom(), y==rightRoom.getY() ? 0 : 17, y==rightRoom.getY() ? 17 : 34);
-
-
-                                    others = new String[17];
-                                    if (doubleY) others = Arrays.copyOfRange(rightRoom.getRoom(), y==rightRoom.getY() ? 17 : 0, y==rightRoom.getY() ? 34 : 17);
-
-
-                                    strs = Doors.generateLeftDoor(strs);
-
-                                    def = new String[rightRoom.getRoom().length];
-                                    for (int i = 0; i < def.length; i++) {
-                                        if (doubleY) {
-                                            def[i] = verif ? (i < 17 ? strs[i] : others[i-17]) : (i < 17 ? others[i] : strs[i-17]);
-                                        } else {
-                                            def[i] = strs[i];
-                                        }
-                                    }
-                                    rightRoom.setRoom(def);
+                                    updateRoomWithLeftDoors(rightRoom,y);
                                 }
+                            }
+                        }
+                    }
+                    else if (x == 7) {
+                        if (y != 4) {
+                            if (taken[x + 8 * (y+1)]) {
+                                Room botRoom = getRoomByXY(rooms, x,y+1);
+                                if (botRoom == null) continue;
+                                if (!botRoom.equals(currentRoom) && (liaisons.get(currentRoom) == null || !liaisons.get(currentRoom).contains(botRoom))
+                                        && !(currentRoom.getRoomtype() == 2 && currentRoom.getX() != x)
+                                        && !(currentRoom.getRoomtype() == 3 && currentRoom.getX() == x)
+                                        && !(botRoom.getRoomtype() == 4 && botRoom.getX() != x)
+                                        && !(botRoom.getRoomtype() == 5 && botRoom.getX() == x)) {
+                                    addLiaisons(liaisons, currentRoom, botRoom);
+
+                                    updateRoomWithBotDoors(currentRoom,x);
+
+                                    updateRoomWithTopDoors(botRoom,x);
+                                }
+                            }
+                        }
+                    } else {
+                        Room rightRoom = getRoomByXY(rooms, x+1,y);
+                        if (rightRoom == null) {
+                            int choice = ran.nextInt(4);
+                            if (choice < 3) {
+                                if (!(currentRoom.getRoomtype() == 2 && currentRoom.getY() != y)
+                                        && !(currentRoom.getRoomtype() == 4 && currentRoom.getY() == y)) {
+                                    rightRoom = new Room(x+1, y, 1, 1, Rooms.room1x1, 7);
+                                    rooms.add(rightRoom);
+                                    ids[x + y * 8+1] = 7;
+                                    taken[x + y * 8+1] = true;
+                                    addLiaisons(liaisons, currentRoom, rightRoom);
+
+                                    updateRoomWithRightDoors(currentRoom,y);
+
+                                    updateRoomWithLeftDoors(rightRoom,y);
+                                }
+                            }
+                        }
+                        if (taken[x + 8 * y + 1]) {
+                            if (!rightRoom.equals(currentRoom) && (liaisons.get(currentRoom) == null || !liaisons.get(currentRoom).contains(rightRoom))
+                                    && !(currentRoom.getRoomtype() == 2 && currentRoom.getY() != y)
+                                    && !(currentRoom.getRoomtype() == 4 && currentRoom.getY() == y)
+                                    && !(rightRoom.getRoomtype() == 3 && rightRoom.getY() != y)
+                                    && !(rightRoom.getRoomtype() == 5 && rightRoom.getY() == y)) {
+                                addLiaisons(liaisons, currentRoom, rightRoom);
+
+                                updateRoomWithRightDoors(currentRoom,y);
+
+                                updateRoomWithLeftDoors(rightRoom,y);
+                            }
+                        }
+                        Room botRoom = getRoomByXY(rooms, x,y+1);
+                        if (botRoom == null) {
+                            int choice = ran.nextInt(4);
+                            if (choice < 3) {
+                                if (!(currentRoom.getRoomtype() == 2 && currentRoom.getX() != x)
+                                        && !(currentRoom.getRoomtype() == 3 && currentRoom.getX() == x)) {
+                                    botRoom = new Room(x, y+1, 1, 1, Rooms.room1x1, 7);
+                                    rooms.add(botRoom);
+                                    ids[x + (y+1) * 8] = 7;
+                                    taken[x + (y+1) * 8] = true;
+                                    addLiaisons(liaisons, currentRoom, botRoom);
+
+                                    updateRoomWithBotDoors(currentRoom,x);
+
+                                    updateRoomWithTopDoors(botRoom,x);
+                                }
+                            }
+                        }
+                        if (taken[x + 8 * (y+1)]) {
+                            if (!botRoom.equals(currentRoom) && (liaisons.get(currentRoom) == null || !liaisons.get(currentRoom).contains(botRoom))
+                                    && !(currentRoom.getRoomtype() == 2 && currentRoom.getX() != x)
+                                    && !(currentRoom.getRoomtype() == 3 && currentRoom.getX() == x)
+                                    && !(botRoom.getRoomtype() == 4 && botRoom.getX() != x)
+                                    && !(botRoom.getRoomtype() == 5 && botRoom.getX() == x)) {
+                                addLiaisons(liaisons, currentRoom, botRoom);
+
+                                updateRoomWithBotDoors(currentRoom,x);
+
+                                updateRoomWithTopDoors(botRoom,x);
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    public static void updateRoomWithRightDoors(Room room, int y) {
+        boolean verif = y == room.getY();
+        boolean doubleY = room.getSy() == 2;
+
+        String[] strs = Arrays.copyOfRange(room.getRoom(), verif ? 0 : 17, verif ? 17 : 34);
+
+
+        String[] others = new String[17];
+        if (doubleY) others = Arrays.copyOfRange(room.getRoom(), verif ? 17 : 0, verif ? 34 : 17);
+
+
+        strs = Doors.generateRightDoor(strs);
+
+        String[] def = new String[room.getRoom().length];
+        for (int i = 0; i < def.length; i++) {
+            if (doubleY) {
+                def[i] = verif ? (i < 17 ? strs[i] : others[i-17]) : (i < 17 ? others[i] : strs[i-17]);
+            } else {
+                def[i] = strs[i];
+            }
+        }
+        room.setRoom(def);
+    }
+
+    public static void updateRoomWithTopDoors(Room room, int x) {
+        boolean verif = x == room.getX();
+        boolean doubleX = room.getSx() == 2;
+        boolean doubleY = room.getSy() == 2;
+
+        String[] strs = Arrays.copyOfRange(room.getRoom(), 0, 17);
+
+
+        String[] others = new String[17];
+        if (doubleY) others = Arrays.copyOfRange(room.getRoom(), 17, 34);
+
+        String[] cutted = new String[17];
+        if (doubleX) {
+            for (int i = 0; i < 17; i++) {
+                cutted[i] = strs[i].substring(verif ? 0 : 17,verif ? 17 : 34);
+            }
+        } else {
+            cutted = strs;
+        }
+
+        cutted = Doors.generateTopDoor(cutted);
+
+        if (doubleX) {
+            for (int i = 0; i < 17; i++) {
+                strs[i] = verif ? cutted[i] + strs[i].substring(17, 34) : strs[i].substring(0,17) + cutted[i];
+            }
+        } else {
+            strs = cutted;
+        }
+
+        String[] def = new String[room.getRoom().length];
+        for (int i = 0; i < def.length; i++) {
+            if (i < 17) {
+                def[i] = strs[i];
+            } else {
+                if (doubleY) def[i] = others[i-17];
+            }
+        }
+        room.setRoom(def);
+    }
+
+    public static void updateRoomWithBotDoors(Room room, int x) {
+        boolean verif = x == room.getX();
+        boolean doubleX = room.getSx() == 2;
+        boolean doubleY = room.getSy() == 2;
+
+        String[] strs = Arrays.copyOfRange(room.getRoom(), doubleY ? 17 : 0, doubleY ? 34 : 17);
+
+
+        String[] others = new String[17];
+        if (doubleY) others = Arrays.copyOfRange(room.getRoom(), 0, 17);
+
+        String[] cutted = new String[17];
+        if (doubleX) {
+            for (int i = 0; i < 17; i++) {
+                cutted[i] = strs[i].substring(verif ? 0 : 17,verif ? 17 : 34);
+            }
+        } else {
+            cutted = strs;
+        }
+
+        cutted = Doors.generateBotDoor(cutted);
+
+        if (doubleX) {
+            for (int i = 0; i < 17; i++) {
+                strs[i] = verif ? cutted[i] + strs[i].substring(17, 34) : strs[i].substring(0,17) + cutted[i];
+            }
+        } else {
+            strs = cutted;
+        }
+
+        String[] def = new String[room.getRoom().length];
+        for (int i = 0; i < def.length; i++) {
+            if (doubleY) {
+                if (i > 16) {
+                    def[i] = strs[i-17];
+                } else {
+                    def[i] = others[i];
+                }
+            } else {
+                def[i] = strs[i];
+            }
+        }
+        room.setRoom(def);
+    }
+
+    public static void updateRoomWithLeftDoors(Room room, int y) {
+        boolean verif = y == room.getY();
+        boolean doubleY = room.getSy() == 2;
+
+        String[] strs = Arrays.copyOfRange(room.getRoom(), y==room.getY() ? 0 : 17, y==room.getY() ? 17 : 34);
+
+
+        String[] others = new String[17];
+        if (doubleY) others = Arrays.copyOfRange(room.getRoom(), y==room.getY() ? 17 : 0, y==room.getY() ? 34 : 17);
+
+
+        strs = Doors.generateLeftDoor(strs);
+
+        String[] def = new String[room.getRoom().length];
+        for (int i = 0; i < def.length; i++) {
+            if (doubleY) {
+                def[i] = verif ? (i < 17 ? strs[i] : others[i-17]) : (i < 17 ? others[i] : strs[i-17]);
+            } else {
+                def[i] = strs[i];
+            }
+        }
+        room.setRoom(def);
     }
 
     public static void addLiaisons(HashMap<Room, List<Room>> liaisons, Room a, Room b) {
@@ -180,7 +347,7 @@ public class MapGenerator {
     public static void generateBigRooms(boolean[] taken, List<Room> rooms, int[] ids) {
         Random ran = new Random();
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             int x = ran.nextInt(8);
             int y = ran.nextInt(5);
 

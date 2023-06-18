@@ -35,7 +35,7 @@ public class Game extends JFrame implements KeyListener {
         coins = new ArrayList<>();
         terminal = new AsciiPanel(170, 85, AsciiFont.TALRYTH_15_15); //Taille de la fenêtre + police
         addKeyListener(this); //Ajout de l'écouteur de touches
-        font = new Color(0, 255, 0);
+        font = new Color(17, 255, 0);
         background = new Color(0, 0, 0);
         playerColor = new Color(255, 255, 0);
         roomColor = new Color(0, 0, 0);
@@ -60,6 +60,10 @@ public class Game extends JFrame implements KeyListener {
                     terminal.write(Character.toString(192), room.getX() * 17 + cx, room.getY() * 17 + cy, font, background);
                 else if (line[cx] == '4')
                     terminal.write(Character.toString(217), room.getX() * 17 + cx, room.getY() * 17 + cy, font, background);
+                else if (line[cx] == '.')
+                    terminal.write(Character.toString(32), room.getX() * 17 + cx, room.getY() * 17 + cy, font, roomColor);
+                else if (line[cx] == '*')
+                    terminal.write(Character.toString(32), room.getX() * 17 + cx, room.getY() * 17 + cy, font, pathColor);
                 else
                     terminal.write(Character.toString(32), room.getX() * 17 + cx, room.getY() * 17 + cy, font, background);
             }
@@ -90,7 +94,7 @@ public class Game extends JFrame implements KeyListener {
 
         affCoins();
 
-        //Génération stats + déco
+        //déco
         for (int i = 1; i < 84; i++) {
             terminal.write(Character.toString(186), 137, i, font, background);
             terminal.write(Character.toString(179), 0, i, font, background);
@@ -122,9 +126,9 @@ public class Game extends JFrame implements KeyListener {
         affStats();
 
         for (int i = 0; i < 31; i++)
-            terminal.write(Character.toString(196), 138 + i, 21, font, background);
-        terminal.write(Character.toString(199), 137, 21, font, background);
-        terminal.write(Character.toString(180), 169, 21, font, background);
+            terminal.write(Character.toString(196), 138 + i, 31, font, background);
+        terminal.write(Character.toString(199), 137, 31, font, background);
+        terminal.write(Character.toString(180), 169, 31, font, background);
 
         add(terminal);
         pack();
@@ -138,14 +142,27 @@ public class Game extends JFrame implements KeyListener {
         terminal.write(player.getName(), 140, 2, font, background);
         for (int i = 0; i < player.getName().length(); i++)
             terminal.write(Character.toString(196), 140 + i, 3, font, background);
-        terminal.write("HP: " + player.getHp() + "  ", 140, 7, Color.red, background);
-        terminal.write("Mana: " + player.getMana() + "  ", 140, 9, new Color(100, 0, 255), background);
-        terminal.write("Attack: " + player.atk + "  ", 140, 11, new Color(255, 115, 0), background);
-        terminal.write("Defense: " + player.dfs + "  ", 140, 13, new Color(0, 128, 255), background);
-        terminal.write("Coins: " + player.getCoins() + "  ", 140, 15, new Color(255, 255, 0), background);
-        terminal.write("Level: " + player.getLevel() + "  ", 140, 19, font, background);
+        terminal.write("HP: " + player.getHp() + "/" + player.hpMax + "  ", 140, 7, Color.red, background);
+        terminal.write("Attack: " + player.atk + "  ", 140, 9, new Color(255, 115, 0), background);
+        terminal.write("Defense: " + player.def + "  ", 140, 11, new Color(0, 128, 255), background);
+        terminal.write("Mana: " + player.getMana() + "/" + player.manaMax + "  ", 140, 13, new Color(153, 0, 255), background);
+        terminal.write("Mana regen: " + player.manaRegen + "  ", 140, 15, new Color(153, 0, 255), background);
+        terminal.write("Magic defense: " + player.magicDef + "  ", 140, 17, new Color(94, 0, 255), background);
+        terminal.write("Crit chance: " + player.critChance + "  ", 140, 19, new Color(41, 168, 33), background);
+        terminal.write("Coins: " + player.getCoins() + "  ", 140, 21, new Color(255, 204, 0), background);
+        terminal.write("Level: " + player.getLevel() + "  ", 140, 25, font, background);
+        terminal.write(Character.toString(60), 140, 27, font, background);
+        terminal.write(Character.toString(62), 166, 27, font, background);
+        for (int i = 141 ; i < 166 ; i++)
+            terminal.write(Character.toString(196), i, 27, font, background);
+        for (int i = 141 ; i < 141 + 25*player.xp/getXpNeeded() ; i++)
+            terminal.write(Character.toString(219), i, 27, font, background);
         add(terminal);
         terminal.repaint();
+    }
+
+    public int getXpNeeded() {
+        return (int) (Math.pow(player.getLevel(), 2) * 10);
     }
 
     public void affInv() {
@@ -153,26 +170,26 @@ public class Game extends JFrame implements KeyListener {
             aff();
         else {
             clearSideAff();
-            terminal.write("Inventory: (0 /10)", 140, 25, font, background);
+            terminal.write("Inventory: (0 /10)", 140, 35, font, background);
             if (player.inv.size() != 10)
-                terminal.write(String.valueOf(player.inv.size()), 153, 25, font, background);
+                terminal.write(String.valueOf(player.inv.size()), 153, 35, font, background);
             else
-                terminal.write("10", 152, 25, font, background);
+                terminal.write("10", 152, 35, font, background);
 
-            terminal.write("[A] to drop an item", 140, 67, font, background);
-            terminal.write("[E] to equip an item", 140, 65, font, background);
+            terminal.write("[A] to drop an item", 140, 77, font, background);
+            terminal.write("[E] to equip an item", 140, 75, font, background);
 
             if (player.inv.size() != 0) {
                 for (int i = 0; i < player.inv.size(); i++) {
                     if (i == itemInv)
-                        terminal.write("> " + player.inv.get(i).getName(), 140, 28 + 2 * i, font, background);
+                        terminal.write("> " + player.inv.get(i).getName(), 140, 38 + 2 * i, font, background);
                     else
-                        terminal.write(player.inv.get(i).getName() + "  ", 140, 28 + 2 * i, font, background);
+                        terminal.write(player.inv.get(i).getName() + "  ", 140, 38 + 2 * i, font, background);
                     if (player.inv.get(i).getIsEquipped())
-                        terminal.write("Equipped", 160, 28 + 2 * i, font, background);
+                        terminal.write("Equipped", 160, 38 + 2 * i, font, background);
                 }
             } else {
-                terminal.write("Nothing seems to be here...", 140, 28, font, background);
+                terminal.write("Nothing seems to be here...", 140, 38, font, background);
             }
             add(terminal);
             terminal.repaint();
@@ -196,7 +213,7 @@ public class Game extends JFrame implements KeyListener {
                 coins.remove(i);
                 player.coins++;
                 clearSideAff();
-                terminal.write("+1 coin", 140, 25, font, background);
+                terminal.write("+1 coin", 140, 35, font, background);
                 add(terminal);
                 terminal.repaint();
                 affStats();
@@ -230,19 +247,19 @@ public class Game extends JFrame implements KeyListener {
                     }
                 }
                 for (int j = 140; j < 169; j++)
-                    terminal.write(Character.toString(32), j, 25, font, background);
+                    terminal.write(Character.toString(32), j, 35, font, background);
                 pickUp = true;
                 itemSelected = i;
                 clearSideAff();
-                affMsg("You found a " + items.get(i).name, 140, 25);
+                affMsg("You found a " + items.get(i).name, 140, 35);
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                affMsg("Do you want to pick it up ?", 140, 29);
-                affMsg("Press [E] to Pick-Up", 140, 31);
-                affMsg("Press [R] to Ignore", 140, 32);
+                affMsg("Do you want to pick it up ?", 140, 39);
+                affMsg("Press [E] to Pick-Up", 140, 41);
+                affMsg("Press [R] to Ignore", 140, 42);
                 //Laisse le jeu dans un état ou les seuls inputs possibles sont E ou R
             }
         }
@@ -254,7 +271,7 @@ public class Game extends JFrame implements KeyListener {
             int b = 0;
             terminal.write(Character.toString(32), enemy.x, enemy.y, enemy.color, roomColor);
             //test si le joueur est dans la même salle que l'ennemi + petit random pour que l'ennemi ne soit pas trop prévisible
-            if (ThreadLocalRandom.current().nextInt(0, 3) != 0 && MapGenerator.getRoomByXY(listRooms, (player.x)/17, (player.y)/17).getX() == MapGenerator.getRoomByXY(listRooms, (enemy.x)/17, (enemy.y)/17).getX() && MapGenerator.getRoomByXY(listRooms, (player.x)/17, (player.y)/17).getY() == MapGenerator.getRoomByXY(listRooms, (enemy.x)/17, (enemy.y)/17).getY()) {
+            if (ThreadLocalRandom.current().nextInt(0, 8) != 0 && MapGenerator.getRoomByXY(listRooms, (player.x)/17, (player.y)/17).getX() == MapGenerator.getRoomByXY(listRooms, (enemy.x)/17, (enemy.y)/17).getX() && MapGenerator.getRoomByXY(listRooms, (player.x)/17, (player.y)/17).getY() == MapGenerator.getRoomByXY(listRooms, (enemy.x)/17, (enemy.y)/17).getY()) {
                 //petit random pour que l'ennemi se rapproche soit en x soit en y du joueur
                 if (ThreadLocalRandom.current().nextInt(0, 2) == 0) {
                     if (enemy.x < player.x && charRoom(enemy.x+1, enemy.y) == '.')
@@ -307,7 +324,7 @@ public class Game extends JFrame implements KeyListener {
     }
 
     public void clearSideAff() {
-        for (int i = 25; i < 84; i++)
+        for (int i = 35; i < 84; i++)
             for (int j = 140; j < 169; j++)
                 terminal.write(Character.toString(32), j, i);
         terminal.write(Character.toString(218), 168, 83, font, background);
@@ -319,22 +336,22 @@ public class Game extends JFrame implements KeyListener {
         if (keyPressed == 'E') {
             if (player.inv.size() < 10) {
                 player.inv.add(items.get(i));
-                affMsg("You picked up the " + items.get(i).name, 140, 25);
+                affMsg("You picked up the " + items.get(i).name, 140, 35);
                 items.remove(i);
             } else {
-                affMsg("You can't carry more", 140, 25);
-                affMsg("than 10 items", 140, 26);
+                affMsg("You can't carry more", 140, 35);
+                affMsg("than 10 items", 140, 36);
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                affMsg("You decided to let", 140, 28);
-                affMsg("the " + items.get(i).name, 140, 29);
+                affMsg("You decided to let", 140, 38);
+                affMsg("the " + items.get(i).name, 140, 39);
             }
         } else {
-            affMsg("You decided to let", 140, 25);
-            affMsg("the " + items.get(i).name, 140, 26);
+            affMsg("You decided to let", 140, 35);
+            affMsg("the " + items.get(i).name, 140, 36);
         }
     }
 
@@ -457,7 +474,7 @@ public class Game extends JFrame implements KeyListener {
                     }
                 } else {//Si inv est open
                     if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_E || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
-                        terminal.write("                 ", 140, 61, Color.WHITE, Color.BLACK);
+                        terminal.write("                 ", 140, 71, Color.WHITE, Color.BLACK);
                         add(terminal);
                         terminal.repaint();
                     }
@@ -485,7 +502,7 @@ public class Game extends JFrame implements KeyListener {
                             if (player.inv.get(itemInv) instanceof AtkItem)
                                 player.atk = 1;
                             else if (player.inv.get(itemInv) instanceof DefItem)
-                                player.dfs = 0;
+                                player.def = 0;
                             affInv();
                             affStats();
                         } else if (!(player.inv.get(itemInv) instanceof ManaItem) && !player.inv.get(itemInv).getIsEquipped()) {
@@ -497,11 +514,11 @@ public class Game extends JFrame implements KeyListener {
                             if (player.inv.get(itemInv) instanceof AtkItem)
                                 player.atk = ((AtkItem) player.inv.get(itemInv)).getAtk();
                             else if (player.inv.get(itemInv) instanceof DefItem)
-                                player.dfs = ((DefItem) player.inv.get(itemInv)).getDfs();
+                                player.def = ((DefItem) player.inv.get(itemInv)).getDef();
                             affInv();
                             affStats();
                         } else if (player.inv.get(itemInv) instanceof ManaItem) {
-                            terminal.write("Cannot be equiped", 140, 61, font, background);
+                            terminal.write("Cannot be equiped", 140, 71, font, background);
                             add(terminal);
                         }
                     }

@@ -7,7 +7,7 @@ public class Main {
         Item item3 = new ManaItem();
 
 
-        for (int i = 0 ; i < 30; i++) {
+        for (int i = 0 ; i < 10; i++) {
             app.addItem(new AtkItem());
             app.addItem(new DefItem());
         }
@@ -15,6 +15,6 @@ public class Main {
             app.addEnemy(new Enemy(100, 10, 1));
         }
         app.addItem(item3);
-        app.addCoins(100);
+        app.addCoins(60);
     }
 }
