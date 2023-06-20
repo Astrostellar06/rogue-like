@@ -21,8 +21,8 @@ public class Game extends JFrame implements KeyListener {
     static ArrayList<Item> items;
     static ArrayList<Coin> coins;
     private Color font, background, playerColor, roomColor, pathColor;
-    private boolean invOpen = false, justPickedUp = false, pickUp = false, inAttack = false; //état de jeu
-    private int itemSelected = 0, itemInv = 0;
+    private boolean invOpen = false, justPickedUp = false, pickUp = false, inAttack = false, waitingForAttack = false, waitingForEnemy = false, waitingForReturn = false;; //état de jeu
+    private int itemSelected = 0, itemInv = 0, attackSelected = 1;
     private long tempsInactif = 0;
     static ArrayList<Room> listRooms = MapGenerator.generate();
     private String[] arrow = {" __   ",
@@ -31,6 +31,7 @@ public class Game extends JFrame implements KeyListener {
             "   > >",
             "  / / ",
             " /_/  "};
+    private Enemy enemyAttacked = null;
 
 
     public Game() { //Création du jeu
@@ -248,62 +249,63 @@ public class Game extends JFrame implements KeyListener {
         else if (charRoom(player.x+x, player.y+y) == '*')
             terminal.write(Character.toString(1), player.x + x, player.y + y, playerColor, pathColor);
 
-        for (int i = 0; i < coins.size(); i++) {
-            if (coins.get(i).x == player.x + x && coins.get(i).y == player.y + y) {
-                coins.remove(i);
-                player.coins++;
-                clearSideAff();
-                terminal.write("+1 coin", 140, 35, font, background);
-                add(terminal);
-                terminal.repaint();
-                affStats(player);
-            }
-        }
-
         add(terminal);
-        boolean isEnemy = false;
         for (int i = 0; i < enemies.size(); i++) {
             if (enemies.get(i).x == player.x + x && enemies.get(i).y == player.y + y) {
-                attack(enemies.get(i));
-                isEnemy = true;
+                enemyAttacked = enemies.get(i);
+                affAttack(enemyAttacked);
             }
         }
 
-        for (int i = 0; i < items.size(); i++) {
-            if (items.get(i).x == player.x + x && items.get(i).y == player.y + y) {
-                for (int j = 0; j < 6; j++) {
-                    terminal.write(Character.toString(2 - j % 2), player.x + x, player.y + y, playerColor, background);
+        if (!inAttack) {
+            for (int i = 0; i < coins.size(); i++) {
+                if (coins.get(i).x == player.x + x && coins.get(i).y == player.y + y) {
+                    coins.remove(i);
+                    player.coins++;
+                    clearSideAff();
+                    terminal.write("+1 coin", 140, 35, font, background);
                     add(terminal);
-                    terminal.paintImmediately(terminal.getBounds());
-                    try {
-                        Thread.sleep(250);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    terminal.repaint();
+                    affStats(player);
                 }
-                for (int j = 140; j < 169; j++)
-                    terminal.write(Character.toString(32), j, 35, font, background);
-                pickUp = true;
-                itemSelected = i;
-                clearSideAff();
-                affMsg("You found a " + items.get(i).name, 140, 35);
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                affMsg("Do you want to pick it up ?", 140, 39);
-                affMsg("Press [E] to Pick-Up", 140, 41);
-                affMsg("Press [R] to Ignore", 140, 42);
-                //Laisse le jeu dans un état ou les seuls inputs possibles sont E ou R
             }
-        }
 
-        if (!isEnemy) {
             moveEnemies();
             if (!inAttack) {
                 affAllItems();
                 affCoins();
+            }
+        }
+
+        if (!inAttack) { //Je refais le test, car moveEnemies() peut changer la valeur de inAttack
+            for (int i = 0; i < items.size(); i++) {
+                if (items.get(i).x == player.x + x && items.get(i).y == player.y + y) {
+                    for (int j = 0; j < 6; j++) {
+                        terminal.write(Character.toString(2 - j % 2), player.x + x, player.y + y, playerColor, background);
+                        add(terminal);
+                        terminal.paintImmediately(terminal.getBounds());
+                        try {
+                            Thread.sleep(250);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    for (int j = 140; j < 169; j++)
+                        terminal.write(Character.toString(32), j, 35, font, background);
+                    pickUp = true;
+                    itemSelected = i;
+                    clearSideAff();
+                    affMsg("You found a " + items.get(i).name, 140, 35);
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    affMsg("Do you want to pick it up ?", 140, 39);
+                    affMsg("Press [E] to Pick-Up", 140, 41);
+                    affMsg("Press [R] to Ignore", 140, 42);
+                    //Laisse le jeu dans un état ou les seuls inputs possibles sont E ou R
+                }
             }
         }
     }
@@ -355,25 +357,32 @@ public class Game extends JFrame implements KeyListener {
             }
             enemy.x += a;
             enemy.y += b;
-            if (enemy.x == player.x + x && enemy.y == player.y + y)
-                attack(enemy);
+            enemyAttacked = enemy;
+            if (enemy.x == player.x + x && enemy.y == player.y + y) {
+                affAttack(enemyAttacked);
+                break;
+            }
             if (!inAttack)
                 terminal.write(Character.toString(234), enemy.x, enemy.y, enemy.color, roomColor);
         }
-        add(terminal);
-        terminal.repaint();
+        if (!inAttack) {
+            add(terminal);
+            terminal.repaint();
+        }
     }
 
-    public void attack(Enemy enemy) {
+    public void affAttack(Enemy enemy) {
         inAttack = true;
+        waitingForAttack = true;
+        attackSelected = 1;
         clearSideAff();
         affMsg("You are attacked ", 140, 35);
         affMsg("by a " + enemy.name, 140, 36);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        affMsg("Press [Enter] to Attack", 140, 39);
+        tempsInactif = System.currentTimeMillis();
+    }
+    public void attack(Enemy enemy) {
+        waitingForAttack = false;
         for (int i = 1 ; i < 169 ; i++) {
             for (int j = 1 ; j < 84 ; j++) {
                 terminal.write(" ", i, j, font, background);
@@ -489,6 +498,70 @@ public class Game extends JFrame implements KeyListener {
         for (int i = 0 ; i < 8 ; i++)
             terminal.write(spell[i], 13, 73 + i, font, background);
         affStats(enemy);
+        tempsInactif = System.currentTimeMillis();
+    }
+
+    public void affSelection() {
+        int dx = 7;
+        int dy = 63;
+        if (attackSelected == 2)
+            dy = 73;
+        else if (attackSelected == 3)
+            dx = 62;
+        for (int i = 0 ; i < 6 ; i++) {
+            terminal.write("      ", 7, 63 + i, font, background);
+            terminal.write("      ", 62, 63 + i, font, background);
+            terminal.write("      ", 7, 73 + i, font, background);
+        }
+        for (int i = 0 ; i < 6 ; i++)
+            terminal.write(arrow[i], dx, dy + i, font, background);
+        add(terminal);
+        terminal.repaint();
+    }
+
+    public void attack2(Enemy enemy) {
+        clearBottomAff();
+        if (attackSelected == 1) {
+            String weapon = "fists";
+            for (Item item : player.inv) {
+                if (item instanceof AtkItem && ((AtkItem) item).isEquipped) {
+                    weapon = item.name;
+                    break;
+                }
+            }
+            enemy.hp -= player.atk - enemy.def;
+            if (enemy.hp <= 0)
+                enemy.hp = 0;
+            affStats(enemy);
+            affMsg("You attack the " + enemy.name + " with your " + weapon + ".", 7, 64);
+            waitingForEnemy = true;
+        }
+    }
+
+    public void attackEnemy(Enemy enemy) {
+        if (enemy.hp == 0)
+            winCombat(enemy);
+        else {
+            clearBottomAff();
+            player.hp -= enemy.atk - player.def;
+            affStats(enemy);
+            affMsg("The " + enemy.name + " attacks you.", 7, 64);
+            waitingForEnemy = false;
+            waitingForAttack = true;
+        }
+    }
+
+    public void winCombat(Enemy enemy) {
+        waitingForEnemy = false;
+        waitingForAttack = false;
+        inAttack = false;
+        clearBottomAff();
+        player.xp += enemy.xp;
+        player.coins += enemy.coins;
+        enemies.remove(enemy);
+        affMsg("You killed the " + enemy.name + "!", 7, 64);
+        affMsg("Reward: " + enemy.xp + " xp, " + enemy.coins + " coins.", 7, 66);
+        waitingForReturn = true;
     }
 
     public void clearSideAff() {
@@ -496,6 +569,14 @@ public class Game extends JFrame implements KeyListener {
             for (int j = 140; j < 169; j++)
                 terminal.write(Character.toString(32), j, i);
         terminal.write(Character.toString(218), 168, 83, font, background);
+    }
+
+    public void  clearBottomAff() {
+        for (int i = 61 ; i < 83 ; i ++)
+            for (int j = 1 ; j < 117 ; j++)
+                terminal.write(Character.toString(32), j, i);
+        add(terminal);
+        terminal.repaint();
     }
 
     public void pickedUp(char keyPressed, int i) { //Méthode pour ramasser un item, called seulement lors d'un input E ou R
@@ -616,94 +697,120 @@ public class Game extends JFrame implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) { //Méthode pour gérer les inputs
         if (System.currentTimeMillis() - tempsInactif > 20) {
-            if (!inAttack) {
-                if (!pickUp) {
-                    if (e.getKeyCode() == KeyEvent.VK_I) {
+            if (inAttack && !waitingForAttack && !waitingForEnemy) {
+                if (e.getKeyCode() == KeyEvent.VK_DOWN && attackSelected == 1)
+                    attackSelected = 2;
+                else if (e.getKeyCode() == KeyEvent.VK_UP && attackSelected == 2)
+                    attackSelected = 1;
+                else if (e.getKeyCode() == KeyEvent.VK_RIGHT && attackSelected == 1)
+                    attackSelected = 3;
+                else if (e.getKeyCode() == KeyEvent.VK_LEFT && attackSelected == 3)
+                    attackSelected = 1;
+                else if (e.getKeyCode() == KeyEvent.VK_ENTER)
+                    attack2(enemyAttacked);
+                if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT) {
+                    affSelection();
+                }
+            } else if (inAttack && !waitingForAttack && waitingForEnemy) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER)
+                    attackEnemy(enemyAttacked);
+            } else if (inAttack && waitingForAttack) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    attack(enemyAttacked);
+                }
+            } else if (waitingForReturn) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    aff();
+                    waitingForReturn = false;
+                }
+            } else if (pickUp) {//si on est sur un item
+                if (e.getKeyCode() == KeyEvent.VK_E) {
+                    pickUp = false;
+                    pickedUp('E', itemSelected);
+                }
+                if (e.getKeyCode() == KeyEvent.VK_R) {
+                    pickUp = false;
+                    pickedUp('R', itemSelected);
+                }
+            } else if (invOpen) {
+                if (e.getKeyCode() == KeyEvent.VK_I) {
+                    itemInv = 0;
+                    invOpen = !invOpen;
+                    affInv();
+                }
+                if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_E || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
+                    terminal.write("                 ", 140, 71, Color.WHITE, Color.BLACK);
+                    add(terminal);
+                    terminal.repaint();
+                }
+                if (e.getKeyCode() == KeyEvent.VK_UP) {
+                    itemInv--;
+                    if (itemInv == -1)
+                        itemInv = player.inv.size() - 1;
+                    affInv();
+                }
+                if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                    itemInv++;
+                    if (itemInv == player.inv.size())
                         itemInv = 0;
-                        invOpen = !invOpen;
+                    affInv();
+                }
+                if (e.getKeyCode() == KeyEvent.VK_A && player.inv.size() != 0) {
+                    player.inv.remove(itemInv);
+                    if (itemInv == player.inv.size())
+                        itemInv--;
+                    affInv();
+                }
+                if (e.getKeyCode() == KeyEvent.VK_E && player.inv.size() != 0) {
+                    if (!(player.inv.get(itemInv) instanceof ManaItem) && player.inv.get(itemInv).getIsEquipped()) {
+                        player.inv.get(itemInv).setIsEquipped(false);
+                        if (player.inv.get(itemInv) instanceof AtkItem)
+                            player.atk = 1;
+                        else if (player.inv.get(itemInv) instanceof DefItem)
+                            player.def = 0;
                         affInv();
-                    }
-                    if (!invOpen) { //Dans le jeu normal
-                        if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D)
-                            x = 1;
-                        else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_Q)
-                            x = -1;
-                        else if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_Z)
-                            y = -1;
-                        else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S)
-                            y = 1;
-                        if (x == 1 || x == -1 || y == 1 || y == -1) {
-                            player.move(x, y, this);
-                            x = 0;
-                            y = 0;
-                            if (justPickedUp) {
-                                justPickedUp = false;
-                                affAllItems();
-                            }
+                        affStats(player);
+                    } else if (!(player.inv.get(itemInv) instanceof ManaItem) && !player.inv.get(itemInv).getIsEquipped()) {
+                        for (int i = 0; i < player.inv.size(); i++) {
+                            if (player.inv.get(i).getIsEquipped() && player.inv.get(i).getClass() == player.inv.get(itemInv).getClass())
+                                player.inv.get(i).setIsEquipped(false);
                         }
-                    } else {//Si inv est open
-                        if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_E || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
-                            terminal.write("                 ", 140, 71, Color.WHITE, Color.BLACK);
-                            add(terminal);
-                            terminal.repaint();
-                        }
-                        if (e.getKeyCode() == KeyEvent.VK_UP) {
-                            itemInv--;
-                            if (itemInv == -1)
-                                itemInv = player.inv.size() - 1;
-                            affInv();
-                        }
-                        if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                            itemInv++;
-                            if (itemInv == player.inv.size())
-                                itemInv = 0;
-                            affInv();
-                        }
-                        if (e.getKeyCode() == KeyEvent.VK_A && player.inv.size() != 0) {
-                            player.inv.remove(itemInv);
-                            if (itemInv == player.inv.size())
-                                itemInv--;
-                            affInv();
-                        }
-                        if (e.getKeyCode() == KeyEvent.VK_E && player.inv.size() != 0) {
-                            if (!(player.inv.get(itemInv) instanceof ManaItem) && player.inv.get(itemInv).getIsEquipped()) {
-                                player.inv.get(itemInv).setIsEquipped(false);
-                                if (player.inv.get(itemInv) instanceof AtkItem)
-                                    player.atk = 1;
-                                else if (player.inv.get(itemInv) instanceof DefItem)
-                                    player.def = 0;
-                                affInv();
-                                affStats(player);
-                            } else if (!(player.inv.get(itemInv) instanceof ManaItem) && !player.inv.get(itemInv).getIsEquipped()) {
-                                for (int i = 0; i < player.inv.size(); i++) {
-                                    if (player.inv.get(i).getIsEquipped() && player.inv.get(i).getClass() == player.inv.get(itemInv).getClass())
-                                        player.inv.get(i).setIsEquipped(false);
-                                }
-                                player.inv.get(itemInv).setIsEquipped(true);
-                                if (player.inv.get(itemInv) instanceof AtkItem)
-                                    player.atk = ((AtkItem) player.inv.get(itemInv)).getAtk();
-                                else if (player.inv.get(itemInv) instanceof DefItem)
-                                    player.def = ((DefItem) player.inv.get(itemInv)).getDef();
-                                affInv();
-                                affStats(player);
-                            } else if (player.inv.get(itemInv) instanceof ManaItem) {
-                                terminal.write("Cannot be equiped", 140, 71, font, background);
-                                add(terminal);
-                            }
-                        }
-                    }
-                } else {//si on est sur un item
-                    if (e.getKeyCode() == KeyEvent.VK_E) {
-                        pickUp = false;
-                        pickedUp('E', itemSelected);
-                    }
-                    if (e.getKeyCode() == KeyEvent.VK_R) {
-                        pickUp = false;
-                        pickedUp('R', itemSelected);
+                        player.inv.get(itemInv).setIsEquipped(true);
+                        if (player.inv.get(itemInv) instanceof AtkItem)
+                            player.atk = ((AtkItem) player.inv.get(itemInv)).getAtk();
+                        else if (player.inv.get(itemInv) instanceof DefItem)
+                            player.def = ((DefItem) player.inv.get(itemInv)).getDef();
+                        affInv();
+                        affStats(player);
+                    } else if (player.inv.get(itemInv) instanceof ManaItem) {
+                        terminal.write("Cannot be equiped", 140, 71, font, background);
+                        add(terminal);
                     }
                 }
-            } else {//en attaque
-
+            } else {
+                if (e.getKeyCode() == KeyEvent.VK_I) {
+                    itemInv = 0;
+                    invOpen = !invOpen;
+                    affInv();
+                }
+                if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D)
+                    x = 1;
+                else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_Q)
+                    x = -1;
+                else if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_Z)
+                    y = -1;
+                else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S)
+                    y = 1;
+                if (x == 1 || x == -1 || y == 1 || y == -1) {
+                    player.move(x, y, this);
+                    x = 0;
+                    y = 0;
+                    if (justPickedUp) {
+                        justPickedUp = false;
+                        if (!inAttack)
+                            affAllItems();
+                    }
+                }
             }
         }
     }
