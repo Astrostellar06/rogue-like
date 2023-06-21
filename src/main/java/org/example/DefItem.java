@@ -13,7 +13,7 @@ public class DefItem extends Item{
         this.isEquipped = false;
         switch (randomNum) {
             case 0:
-                this.name = "Shield";
+                this.name = "FROMAGE";
                 this.def = 10;
                 break;
             case 1:
