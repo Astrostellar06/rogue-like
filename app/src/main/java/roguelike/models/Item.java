@@ -1,6 +1,10 @@
 package roguelike.models;
 
+import roguelike.game.Data;
+import roguelike.game.Game;
+
 import java.awt.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Item {
 
@@ -23,7 +27,26 @@ public abstract class Item {
     }
 
     public Item() {
-
+        boolean empty = true;
+        do {
+            empty = true;
+            this.x = ThreadLocalRandom.current().nextInt(0, 170);
+            this.y = ThreadLocalRandom.current().nextInt(0, 85);
+            if (Data.items != null) {
+                for (int i = 0; i < Data.items.size(); i++) {
+                    if (Data.items.get(i).getX() == this.x && Data.items.get(i).getY() == this.y)
+                        empty = false;
+                }
+            }
+            if (empty && Data.enemies != null) {
+                for (int i = 0; i < Data.enemies.size(); i++) {
+                    if (Data.enemies.get(i).getX() == this.x && Data.enemies.get(i).getY() == this.y)
+                        empty = false;
+                }
+            }
+            if (empty && Game.charRoom(this.x, this.y) != '.')
+                empty = false;
+        } while (!empty);
     }
 
     public int getX() {
