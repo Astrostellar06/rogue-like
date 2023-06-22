@@ -4,11 +4,12 @@ import java.awt.event.KeyEvent;
 
 import asciiPanel.AsciiPanel;
 import roguelike.game.Game;
+import roguelike.utils.Constants;
 
 public class GameScreen implements Screen {
 
   public void displayOutput(AsciiPanel terminal) {
-    Game game = new Game(terminal);
+    Constants.game = new Game(terminal);
   }
 
   public Screen respondToUserInput(KeyEvent key) {

@@ -5,6 +5,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Potion extends Item {
     private int manaCost;
+    String name;
+
+    Color colorItem;
 
     public Potion() {
         super();

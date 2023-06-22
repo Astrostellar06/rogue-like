@@ -1,46 +1,29 @@
 package roguelike.models;
-import java.awt.Color;
-import java.util.concurrent.ThreadLocalRandom;
 
-import roguelike.game.Data;
-import roguelike.game.Game;
+import java.awt.*;
 
 public abstract class Item {
+
+    int x, y;
+    boolean equipped;
     String name;
-    int x;
-    int y;
     Color colorItem;
-    boolean isEquipped;
+
+    public Item(int x, int y, String name) {
+        this.x = x;
+        this.y = y;
+        this.name = name;
+    }
+
+    public Item(int x, int y, String name, Color colorItem) {
+        this.x = x;
+        this.y = y;
+        this.name = name;
+        this.colorItem = colorItem;
+    }
 
     public Item() {
-        boolean empty = true;
-        do {
-            empty = true;
-            this.x = ThreadLocalRandom.current().nextInt(0, 170);
-            this.y = ThreadLocalRandom.current().nextInt(0, 85);
-            if (Data.items != null) {
-                for (int i = 0; i < Data.items.size(); i++) {
-                    if (Data.items.get(i).getX() == this.x && Data.items.get(i).getY() == this.y)
-                        empty = false;
-                }
-            }
-            if (empty && Data.enemies != null) {
-                for (int i = 0; i < Data.enemies.size(); i++) {
-                    if (Data.enemies.get(i).getX() == this.x && Data.enemies.get(i).getY() == this.y)
-                        empty = false;
-                }
-            }
-            if (empty && Game.charRoom(this.x, this.y) != '.')
-                empty = false;
-        } while (!empty);
-    }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public int getX() {
@@ -59,6 +42,14 @@ public abstract class Item {
         this.y = y;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Color getColorItem() {
         return colorItem;
     }
@@ -68,10 +59,10 @@ public abstract class Item {
     }
 
     public boolean isEquipped() {
-        return isEquipped;
+        return equipped;
     }
 
     public void setEquipped(boolean equipped) {
-        isEquipped = equipped;
+        this.equipped = equipped;
     }
 }

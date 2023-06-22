@@ -24,7 +24,7 @@ public class Player extends Entity {
         this.critChance = 10;
         this.inv = new ArrayList<>();
         boolean empty;
-        this.x = -7;
+        this.x = 10;
         this.y = 10;
         do {
             this.x += 17;

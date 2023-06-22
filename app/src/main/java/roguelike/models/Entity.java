@@ -5,6 +5,22 @@ public class Entity {
     String name;
 
     public Entity() {}
+
+    public Entity(int x, int y, int level, int xp, int hp, int hpMax, int atk, int def, int magicDef, int critChance, int coins, String name) {
+        this.x = x;
+        this.y = y;
+        this.level = level;
+        this.xp = xp;
+        this.hp = hp;
+        this.hpMax = hpMax;
+        this.atk = atk;
+        this.def = def;
+        this.magicDef = magicDef;
+        this.critChance = critChance;
+        this.coins = coins;
+        this.name = name;
+    }
+
     public int getX() {
         return x;
     }
@@ -100,6 +116,4 @@ public class Entity {
     public void setName(String name) {
         this.name = name;
     }
-
-
 }

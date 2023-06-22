@@ -1,18 +1,19 @@
 package roguelike.models;
 
-import java.awt.Color;
-import java.util.concurrent.ThreadLocalRandom;
-
+import roguelike.enums.Enemies;
 import roguelike.game.Data;
 import roguelike.game.Game;
 
+import java.awt.*;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
 public class Enemy extends Entity {
     Color color;
-    int type;
+    Enemies enemy;
 
     public Enemy(int type) {
         super();
-        this.type = type;
         switch (type) {
             case 1:
                 this.name = "Goblin";
@@ -85,13 +86,61 @@ public class Enemy extends Entity {
             }
         } while (!empty);
     }
+    public Enemy(int coins, String name, Color color, Enemies enemy) {
+        super();
+        this.color = color;
+        this.enemy = enemy;
 
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
+        switch (this.enemy) {
+            case GOBELIN:
+                this.name = "Goblin";
+                this.hp = 10;
+                this.hpMax = 10;
+                this.atk = 2;
+                this.def = 0;
+                this.magicDef = 0;
+                this.critChance = 10;
+                this.xp = 5;
+                this.coins = 5;
+                this.color = new Color(33, 133, 33);
+                break;
+            case SKELETON:
+                this.name = "Skeleton";
+                this.hp = 20;
+                this.hpMax = 20;
+                this.atk = 5;
+                this.def = 0;
+                this.magicDef = 0;
+                this.critChance = 10;
+                this.xp = 10;
+                this.coins = 10;
+                this.color = new Color(255, 255, 255);
+                break;
+            case ORC:
+                this.name = "Orc";
+                this.hp = 30;
+                this.hpMax = 30;
+                this.atk = 10;
+                this.def = 0;
+                this.magicDef = 0;
+                this.critChance = 10;
+                this.xp = 15;
+                this.coins = 15;
+                this.color = new Color(168, 21, 21);
+                break;
+            case DRAGON:
+                this.name = "Dragon";
+                this.hp = 50;
+                this.hpMax = 50;
+                this.atk = 15;
+                this.def = 0;
+                this.magicDef = 0;
+                this.critChance = 10;
+                this.xp = 20;
+                this.coins = 20;
+                this.color = new Color(140, 108, 227);
+                break;
+        }
     }
 
     public Color getColor() {
@@ -102,12 +151,11 @@ public class Enemy extends Entity {
         this.color = color;
     }
 
-    public int getType() {
-        return type;
+    public Enemies getEnemy() {
+        return enemy;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setEnemy(Enemies enemy) {
+        this.enemy = enemy;
     }
-
 }

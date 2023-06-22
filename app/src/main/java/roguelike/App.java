@@ -18,7 +18,7 @@ public class App extends JFrame implements KeyListener {
 
   public App(){
     super();
-    terminal = new AsciiPanel(170, 85, AsciiFont.CP437_8x8);
+    terminal = new AsciiPanel(170, 85, AsciiFont.DRAKE_10x10);
     add(terminal);
     pack();
     screen = new HomeScreen();

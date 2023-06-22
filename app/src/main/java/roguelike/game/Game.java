@@ -9,15 +9,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.swing.JFrame;
 
 import asciiPanel.AsciiPanel;
-import roguelike.models.AtkItem;
-import roguelike.models.Coin;
-import roguelike.models.DefItem;
-import roguelike.models.Enemy;
-import roguelike.models.Entity;
-import roguelike.models.Item;
-import roguelike.models.Player;
-import roguelike.models.Potion;
-import roguelike.models.Room;
+import roguelike.models.*;
+import roguelike.utils.Constants;
 import roguelike.utils.MapGenerator;
 
 public class Game extends JFrame implements KeyListener {
@@ -37,8 +30,8 @@ public class Game extends JFrame implements KeyListener {
         Data.pathColor = new Color(0, 0, 0);
 
         for (int i = 0 ; i < 10; i++) {
-            addItem(new AtkItem());
-            addItem(new DefItem());
+            addItem(new Weapon());
+            //addItem(new DefItem());
             addItem(new Potion());
         }
         for (int i = 0 ; i < 5 ; i++) {
@@ -49,6 +42,7 @@ public class Game extends JFrame implements KeyListener {
         }
 
         addCoins(60);
+
         aff();
     }
 
@@ -93,16 +87,32 @@ public class Game extends JFrame implements KeyListener {
         Data.terminal.write(Character.toString(1), Data.player.getX(), Data.player.getY(), Data.playerColor, Data.roomColor);
 
         for (Enemy enemy : Data.enemies) {
-            affEnemy(enemy);
+            Data.terminal.write(Character.toString(234), enemy.getX(), enemy.getY(), enemy.getColor(), Data.roomColor);
         }
 
         for (Item item : Data.items) {
-            affItem(item);
+            Data.terminal.write(Character.toString(235), item.getX(), item.getY(), item.getColorItem(), Data.roomColor);
         }
 
         affCoins();
 
-        //déco
+        deco();
+
+        affStats(Data.player);
+
+        for (int i = 0; i < 31; i++)
+            Data.terminal.write(Character.toString(196), 138 + i, 31, Data.font, Data.background);
+        Data.terminal.write(Character.toString(199), 137, 31, Data.font, Data.background);
+        Data.terminal.write(Character.toString(180), 169, 31, Data.font, Data.background);
+
+        pack();
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setAlwaysOnTop(true);
+        setVisible(true);
+        requestFocus();
+    }
+
+    public void deco() {
         for (int i = 1; i < 84; i++) {
             Data.terminal.write(Character.toString(186), 137, i, Data.font, Data.background);
             Data.terminal.write(Character.toString(179), 0, i, Data.font, Data.background);
@@ -130,22 +140,7 @@ public class Game extends JFrame implements KeyListener {
         Data.terminal.write(Character.toString(217), 168, 84, Data.font, Data.background);
         Data.terminal.write(Character.toString(217), 169, 83, Data.font, Data.background);
         Data.terminal.write(Character.toString(218), 168, 83, Data.font, Data.background);
-
-        affStats(Data.player);
-
-        for (int i = 0; i < 31; i++)
-            Data.terminal.write(Character.toString(196), 138 + i, 31, Data.font, Data.background);
-        Data.terminal.write(Character.toString(199), 137, 31, Data.font, Data.background);
-        Data.terminal.write(Character.toString(180), 169, 31, Data.font, Data.background);
-
-        add(Data.terminal);
-        pack();
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setAlwaysOnTop(true);
-        setVisible(true);
-        requestFocus();
     }
-
     public void affStats(Entity target) {
         int b = 1;
         Entity entity;
@@ -164,15 +159,11 @@ public class Game extends JFrame implements KeyListener {
                 dx = 145;
                 dy = 60;
             }
-            if (entity instanceof Player) {
-                Data.terminal.write(entity.getName(), dx, dy + 2, Data.font, Data.background);
+
+            Data.terminal.write(entity.getName(), dx, dy + 2, entity instanceof Player ? Data.font : ((Enemy) entity).getColor(), Data.background);
                 for (int i = 0; i < entity.getName().length(); i++)
-                    Data.terminal.write(Character.toString(196), dx + i, dy + 3, Data.font, Data.background);
-            } else {
-                Data.terminal.write(entity.getName(), dx, dy + 2, ((Enemy) entity).getColor(), Data.background);
-                for (int i = 0; i < entity.getName().length(); i++)
-                    Data.terminal.write(Character.toString(196), dx + i, dy + 3, ((Enemy) entity).getColor(), Data.background);
-            }
+                    Data.terminal.write(Character.toString(196), dx + i, dy + 3, entity instanceof Player ? Data.font : ((Enemy) entity).getColor(), Data.background);
+
             Data.terminal.write("HP: " + entity.getHp() + "/" + entity.getHpMax() + "  ", dx, dy+7, Color.red, Data.background);
             Data.terminal.write("Attack: " + entity.getAtk() + "  ", dx, dy+9, new Color(255, 115, 0), Data.background);
             Data.terminal.write("Defense: " + entity.getDef() + "  ", dx, dy+11, new Color(0, 128, 255), Data.background);
@@ -199,45 +190,11 @@ public class Game extends JFrame implements KeyListener {
             for (int i = 141; i < 141 + 25 * Data.player.getXp() / getXpNeeded(Data.player.getLevel()); i++)
                 Data.terminal.write(Character.toString(219), i, 27, Data.font, Data.background);
         }
-        add(Data.terminal);
-        Data.terminal.repaint();
     }
 
     public int getXpNeeded(int x) {
         return (int) (Math.pow(x, 2) * 10);
     }
-
-    public void affInv() {
-        if (!Data.invOpen)
-            aff();
-        else {
-            clearSideAff();
-            Data.terminal.write("Inventory: (0 /10)", 140, 35, Data.font, Data.background);
-            if (Data.player.getInv().size() != 10)
-                Data.terminal.write(String.valueOf(Data.player.getInv().size()), 153, 35, Data.font, Data.background);
-            else
-                Data.terminal.write("10", 152, 35, Data.font, Data.background);
-
-            Data.terminal.write("[A] to drop an item", 140, 77, Data.font, Data.background);
-            Data.terminal.write("[E] to equip an item", 140, 75, Data.font, Data.background);
-
-            if (Data.player.getInv().size() != 0) {
-                for (int i = 0; i < Data.player.getInv().size(); i++) {
-                    if (i == Data.itemInv)
-                        Data.terminal.write("> " + Data.player.getInv().get(i).getName(), 140, 38 + 2 * i, Data.font, Data.background);
-                    else
-                        Data.terminal.write(Data.player.getInv().get(i).getName() + "  ", 140, 38 + 2 * i, Data.font, Data.background);
-                    if (Data.player.getInv().get(i).isEquipped())
-                        Data.terminal.write("Equipped", 160, 38 + 2 * i, Data.font, Data.background);
-                }
-            } else {
-                Data.terminal.write("Nothing seems to be here...", 140, 38, Data.font, Data.background);
-            }
-            add(Data.terminal);
-            Data.terminal.repaint();
-        }
-    }
-
     //Méthode très importante
     public void updateAff() { //Mise à jour de l'affichage après un déplacement + test de la case sur laquelle le joueur se trouve
         if (charRoom(Data.player.getX(), Data.player.getY()) == '.')
@@ -271,7 +228,7 @@ public class Game extends JFrame implements KeyListener {
                 }
             }
 
-            moveEnemies();
+            Moves.moveEnemies();
             if (!Data.inAttack) {
                 affAllItems();
                 affCoins();
@@ -308,67 +265,6 @@ public class Game extends JFrame implements KeyListener {
                     //Laisse le jeu dans un état ou les seuls inputs possibles sont E ou R
                 }
             }
-        }
-    }
-
-    public void moveEnemies() {
-        for (Enemy enemy : Data.enemies) {
-            int a = 0;
-            int b = 0;
-            if (!Data.inAttack)
-                Data.terminal.write(Character.toString(32), enemy.getX(), enemy.getY(), enemy.getColor(), Data.roomColor);
-            //test si le joueur est dans la même salle que l'ennemi + petit random pour que l'ennemi ne soit pas trop prévisible
-            if (ThreadLocalRandom.current().nextInt(0, 8) != 0 && MapGenerator.getRoomByXY(Data.listRooms, (Data.player.getX())/17, (Data.player.getY())/17).getX() == MapGenerator.getRoomByXY(Data.listRooms, (enemy.getX())/17, (enemy.getY())/17).getX() && MapGenerator.getRoomByXY(Data.listRooms, (Data.player.getX())/17, (Data.player.getY())/17).getY() == MapGenerator.getRoomByXY(Data.listRooms, (enemy.getX())/17, (enemy.getY())/17).getY()) {
-                //petit random pour que l'ennemi se rapproche soit en x soit en y du joueur
-                if (ThreadLocalRandom.current().nextInt(0, 2) == 0) {
-                    if (enemy.getX() < Data.player.getX() && charRoom(enemy.getX()+1, enemy.getY()) == '.')
-                        a = 1;
-                    else if (enemy.getX() > Data.player.getX() && charRoom(enemy.getX()-1, enemy.getY()) == '.')
-                        a = -1;
-                    else if (enemy.getY() < Data.player.getY() && charRoom(enemy.getX(), enemy.getY()+1) == '.')
-                        b = 1;
-                    else if (enemy.getY() > Data.player.getY() && charRoom(enemy.getX(), enemy.getY()-1) == '.')
-                        b = -1;
-                } else {
-                    if (enemy.getY() < Data.player.getY() && charRoom(enemy.getX(), enemy.getY()+1) == '.')
-                        b = 1;
-                    else if (enemy.getY() > Data.player.getY() && charRoom(enemy.getX(), enemy.getY()-1) == '.')
-                        b = -1;
-                    else if (enemy.getX() < Data.player.getX() && charRoom(enemy.getX()+1, enemy.getY()) == '.')
-                        a = 1;
-                    else if (enemy.getX() > Data.player.getX() && charRoom(enemy.getX()-1, enemy.getY()) == '.')
-                        a = -1;
-                }
-            } else {
-                int j = ThreadLocalRandom.current().nextInt(1, 5);
-                if (j == 1 && charRoom(enemy.getX()+1, enemy.getY()) == '.')
-                    a = 1;
-                else if (j == 2 && charRoom(enemy.getX()-1, enemy.getY()) == '.')
-                    a = -1;
-                else if (j == 3 && charRoom(enemy.getX(), enemy.getY()+1) == '.')
-                    b = 1;
-                else if (j == 4 && charRoom(enemy.getX(), enemy.getY()-1) == '.')
-                    b = -1;
-            }
-            for (int j = 0; j < Data.enemies.size(); j++) {
-                if (enemy.getX() + a == Data.enemies.get(j).getX() && enemy.getY() + b == Data.enemies.get(j).getY() && enemy != Data.enemies.get(j)) {
-                    a = 0;
-                    b = 0;
-                }
-            }
-            enemy.setX(enemy.getX() + a);
-            enemy.setY(enemy.getY() + b);
-            Data.enemyAttacked = enemy;
-            if (enemy.getX() == Data.player.getX() + Data.x && enemy.getY() == Data.player.getY() + Data.y) {
-                affAttack(Data.enemyAttacked);
-                break;
-            }
-            if (!Data.inAttack)
-                Data.terminal.write(Character.toString(234), enemy.getX(), enemy.getY(), enemy.getColor(), Data.roomColor);
-        }
-        if (!Data.inAttack) {
-            add(Data.terminal);
-            Data.terminal.repaint();
         }
     }
 
@@ -525,7 +421,7 @@ public class Game extends JFrame implements KeyListener {
         if (Data.attackSelected == 1) {
             String weapon = "fists";
             for (Item item : Data.player.getInv()) {
-                if (item instanceof AtkItem && ((AtkItem) item).isEquipped()) {
+                if (item instanceof Weapon && ((Weapon) item).isEquipped()) {
                     weapon = item.getName();
                     break;
                 }
@@ -625,10 +521,6 @@ public class Game extends JFrame implements KeyListener {
 
     public void addEnemy(Enemy enemy) {
         Data.enemies.add(enemy);
-        affEnemy(enemy);
-    }
-
-    public void affEnemy(Enemy enemy) {
         Data.terminal.write(Character.toString(234), enemy.getX(), enemy.getY(), enemy.getColor(), Data.roomColor);
         add(Data.terminal);
         Data.terminal.repaint();
@@ -636,14 +528,11 @@ public class Game extends JFrame implements KeyListener {
 
     public void addItem(Item item) {
         Data.items.add(item);
-        affItem(item);
-    }
-
-    public void affItem(Item item) {
         Data.terminal.write(Character.toString(235), item.getX(), item.getY(), item.getColorItem(), Data.roomColor);
         add(Data.terminal);
         Data.terminal.repaint();
     }
+
 
     public void addCoins(int x) {
         for (int i = 0; i < x; i++)
@@ -652,14 +541,12 @@ public class Game extends JFrame implements KeyListener {
     }
 
     public void affCoins() {
-        for (Coin coin : Data.coins) {
-            boolean aff = true;
+        coins : for (Coin coin : Data.coins) {
             for (Enemy enemy : Data.enemies) {
                 if (coin.getX() == enemy.getX() && coin.getY() == enemy.getY())
-                    aff = false;
+                    continue coins;
             }
-            if (aff)
-                Data.terminal.write(Character.toString(7), coin.getX(), coin.getY(), new Color(255, 204, 0), Data.roomColor);
+            Data.terminal.write(Character.toString(7), coin.getX(), coin.getY(), new Color(255, 204, 0), Data.roomColor);
         }
         add(Data.terminal);
         Data.terminal.repaint();
@@ -673,7 +560,7 @@ public class Game extends JFrame implements KeyListener {
                     aff = false;
             }
             if (aff)
-                affItem(item);
+                Data.terminal.write(Character.toString(235), item.getX(), item.getY(), item.getColorItem(), Data.roomColor);
         }
     }
 
@@ -741,7 +628,7 @@ public class Game extends JFrame implements KeyListener {
                 if (e.getKeyCode() == KeyEvent.VK_I) {
                     Data.itemInv = 0;
                     Data.invOpen = !Data.invOpen;
-                    affInv();
+                    Inventory.affInv();
                 }
                 if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_E || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
                     Data.terminal.write("                 ", 140, 71, Color.WHITE, Color.BLACK);
@@ -752,28 +639,28 @@ public class Game extends JFrame implements KeyListener {
                     Data.itemInv--;
                     if (Data.itemInv == -1)
                         Data.itemInv = Data.player.getInv().size() - 1;
-                    affInv();
+                    Inventory.affInv();
                 }
                 if (e.getKeyCode() == KeyEvent.VK_DOWN) {
                     Data.itemInv++;
                     if (Data.itemInv == Data.player.getInv().size())
                         Data.itemInv = 0;
-                    affInv();
+                    Inventory.affInv();
                 }
                 if (e.getKeyCode() == KeyEvent.VK_A && Data.player.getInv().size() != 0) {
                     Data.player.getInv().remove(Data.itemInv);
                     if (Data.itemInv == Data.player.getInv().size())
                         Data.itemInv--;
-                    affInv();
+                    Inventory.affInv();
                 }
                 if (e.getKeyCode() == KeyEvent.VK_E && Data.player.getInv().size() != 0) {
                     if (!(Data.player.getInv().get(Data.itemInv) instanceof Potion) && Data.player.getInv().get(Data.itemInv).isEquipped()) {
                         Data.player.getInv().get(Data.itemInv).setEquipped(false);
-                        if (Data.player.getInv().get(Data.itemInv) instanceof AtkItem)
+                        if (Data.player.getInv().get(Data.itemInv) instanceof Weapon)
                             Data.player.setAtk(1);
-                        else if (Data.player.getInv().get(Data.itemInv) instanceof DefItem)
-                            Data.player.setDef(0);
-                        affInv();
+                        /*else if (Data.player.getInv().get(Data.itemInv) instanceof DefItem)
+                            Data.player.setDef(0);*/
+                        Inventory.affInv();
                         affStats(Data.player);
                     } else if (!(Data.player.getInv().get(Data.itemInv) instanceof Potion) && !Data.player.getInv().get(Data.itemInv).isEquipped()) {
                         for (Item i : Data.player.getInv()) {
@@ -783,11 +670,11 @@ public class Game extends JFrame implements KeyListener {
                         Data.player.getInv().get(Data.itemInv).setEquipped(true);
                         System.out.println(Data.player.getInv().get(Data.itemInv).isEquipped());
 
-                        if (Data.player.getInv().get(Data.itemInv) instanceof AtkItem)
-                            Data.player.setAtk(((AtkItem) Data.player.getInv().get(Data.itemInv)).getAtk());
-                        else if (Data.player.getInv().get(Data.itemInv) instanceof DefItem)
-                            Data.player.setDef(((DefItem) Data.player.getInv().get(Data.itemInv)).getDef());
-                        affInv();
+                        if (Data.player.getInv().get(Data.itemInv) instanceof Weapon)
+                            Data.player.setAtk(((Weapon) Data.player.getInv().get(Data.itemInv)).getAtk());
+                        /*else if (Data.player.getInv().get(Data.itemInv) instanceof DefItem)
+                            Data.player.setDef(((DefItem) Data.player.getInv().get(Data.itemInv)).getDef());*/
+                        Inventory.affInv();
                         affStats(Data.player);
                     } else if (Data.player.getInv().get(Data.itemInv) instanceof Potion) {
                         Data.terminal.write("Cannot be equiped", 140, 71, Data.font, Data.background);
@@ -798,7 +685,7 @@ public class Game extends JFrame implements KeyListener {
                 if (e.getKeyCode() == KeyEvent.VK_I) {
                     Data.itemInv = 0;
                     Data.invOpen = !Data.invOpen;
-                    affInv();
+                    Inventory.affInv();
                 }
                 if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D)
                     Data.x = 1;
@@ -809,7 +696,7 @@ public class Game extends JFrame implements KeyListener {
                 else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S)
                     Data.y = 1;
                 if (Data.x == 1 || Data.x == -1 || Data.y == 1 || Data.y == -1) {
-                    Data.player.move(Data.x, Data.y, this);
+                    Data.player.move(Data.x, Data.y, Constants.game);
                     Data.x = 0;
                     Data.y = 0;
                     if (Data.justPickedUp) {
