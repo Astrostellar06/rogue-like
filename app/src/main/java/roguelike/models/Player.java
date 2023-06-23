@@ -7,6 +7,7 @@ import roguelike.game.Game;
 public class Player extends Entity {
     int mana, manaMax,manaRegen;
     ArrayList<Item> inv;
+    ArrayList<Spell> spells;
 
     public Player(String name) {
         this.name = name;
@@ -23,6 +24,7 @@ public class Player extends Entity {
         this.magicDef = 0;
         this.critChance = 10;
         this.inv = new ArrayList<>();
+        this.spells = new ArrayList<>();
         boolean empty;
         this.x = 10;
         this.y = 10;
@@ -85,5 +87,13 @@ public class Player extends Entity {
 
     public void setInv(ArrayList<Item> inv) {
         this.inv = inv;
+    }
+
+    public ArrayList<Spell> getSpells() {
+        return spells;
+    }
+
+    public void setSpells(ArrayList<Spell> spells) {
+        this.spells = spells;
     }
 }

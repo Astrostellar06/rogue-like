@@ -4,11 +4,11 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.JFrame;
 
 import asciiPanel.AsciiPanel;
+import roguelike.Assets;
 import roguelike.models.*;
 import roguelike.utils.Constants;
 import roguelike.utils.MapGenerator;
@@ -21,6 +21,7 @@ public class Game extends JFrame implements KeyListener {
         Data.enemies = new ArrayList<>();
         Data.items = new ArrayList<>();
         Data.coins = new ArrayList<>();
+        Data.stats = new int[7];
         Data.terminal = terminal; //Taille de la fenêtre + police
         addKeyListener(this); //Ajout de l'écouteur de touches
         Data.font = new Color(17, 255, 0);
@@ -32,8 +33,10 @@ public class Game extends JFrame implements KeyListener {
         for (int i = 0 ; i < 10; i++) {
             addItem(new Weapon());
             addItem(new Shield());
-            //addItem(new Potion());
+            addItem(new Potion());
+            Data.player.getInv().add(new Potion());
         }
+
         for (int i = 0 ; i < 5 ; i++) {
             addEnemy(new Enemy(1));
             addEnemy(new Enemy(2));
@@ -41,36 +44,19 @@ public class Game extends JFrame implements KeyListener {
             addEnemy(new Enemy(4));
         }
 
-        addCoins(60);
+        Data.player.getSpells().add(new Spell(1));
+        Data.player.getSpells().add(new Spell(2));
+        Data.player.getSpells().add(new Spell(3));
+        Data.player.getSpells().add(new Spell(4));
+        Data.player.getSpells().add(new Spell(5));
+        Data.player.getSpells().add(new Spell(6));
+        Data.player.getSpells().add(new Spell(7));
 
+        addCoins(60);
         aff();
     }
 
-    public void affRooms(Room room) {
-        for (int cy = 0; cy < room.getRoom().length; cy++) {
-            char[] line = room.getRoom()[cy].toCharArray();
-            for (int cx = 0; cx < line.length; cx++) {
-                if (line[cx] == '|')
-                    Data.terminal.write(Character.toString(179), room.getX() * 17 + cx, room.getY() * 17 + cy, Data.font, Data.background);
-                else if (line[cx] == '-')
-                    Data.terminal.write(Character.toString(196), room.getX() * 17 + cx, room.getY() * 17 + cy, Data.font, Data.background);
-                else if (line[cx] == '1')
-                    Data.terminal.write(Character.toString(218), room.getX() * 17 + cx, room.getY() * 17 + cy, Data.font, Data.background);
-                else if (line[cx] == '2')
-                    Data.terminal.write(Character.toString(191), room.getX() * 17 + cx, room.getY() * 17 + cy, Data.font, Data.background);
-                else if (line[cx] == '3')
-                    Data.terminal.write(Character.toString(192), room.getX() * 17 + cx, room.getY() * 17 + cy, Data.font, Data.background);
-                else if (line[cx] == '4')
-                    Data.terminal.write(Character.toString(217), room.getX() * 17 + cx, room.getY() * 17 + cy, Data.font, Data.background);
-                else if (line[cx] == '.')
-                    Data.terminal.write(Character.toString(32), room.getX() * 17 + cx, room.getY() * 17 + cy, Data.font, Data.roomColor);
-                else if (line[cx] == '*')
-                    Data.terminal.write(Character.toString(32), room.getX() * 17 + cx, room.getY() * 17 + cy, Data.font, Data.pathColor);
-                else
-                    Data.terminal.write(Character.toString(32), room.getX() * 17 + cx, room.getY() * 17 + cy, Data.font, Data.background);
-            }
-        }
-    }
+
 
     public void aff() { //Affichage de la fenêtre
         for (int i = 0; i < 85; i++) {
@@ -79,25 +65,19 @@ public class Game extends JFrame implements KeyListener {
             }
         }
 
-
-        for (Room room : Data.listRooms) {
+        for (Room room : Data.listRooms)
             affRooms(room);
-        }
 
         Data.terminal.write(Character.toString(1), Data.player.getX(), Data.player.getY(), Data.playerColor, Data.roomColor);
 
-        for (Enemy enemy : Data.enemies) {
+        for (Enemy enemy : Data.enemies)
             Data.terminal.write(Character.toString(234), enemy.getX(), enemy.getY(), enemy.getColor(), Data.roomColor);
-        }
 
-        for (Item item : Data.items) {
+        for (Item item : Data.items)
             Data.terminal.write(Character.toString(235), item.getX(), item.getY(), item.getColorItem(), Data.roomColor);
-        }
 
         affCoins();
-
         deco();
-
         affStats(Data.player);
 
         for (int i = 0; i < 31; i++)
@@ -141,6 +121,33 @@ public class Game extends JFrame implements KeyListener {
         Data.terminal.write(Character.toString(217), 169, 83, Data.font, Data.background);
         Data.terminal.write(Character.toString(218), 168, 83, Data.font, Data.background);
     }
+
+    public void affRooms(Room room) {
+        for (int cy = 0; cy < room.getRoom().length; cy++) {
+            char[] line = room.getRoom()[cy].toCharArray();
+            for (int cx = 0; cx < line.length; cx++) {
+                if (line[cx] == '|')
+                    Data.terminal.write(Character.toString(179), room.getX() * 17 + cx, room.getY() * 17 + cy, Data.font, Data.background);
+                else if (line[cx] == '-')
+                    Data.terminal.write(Character.toString(196), room.getX() * 17 + cx, room.getY() * 17 + cy, Data.font, Data.background);
+                else if (line[cx] == '1')
+                    Data.terminal.write(Character.toString(218), room.getX() * 17 + cx, room.getY() * 17 + cy, Data.font, Data.background);
+                else if (line[cx] == '2')
+                    Data.terminal.write(Character.toString(191), room.getX() * 17 + cx, room.getY() * 17 + cy, Data.font, Data.background);
+                else if (line[cx] == '3')
+                    Data.terminal.write(Character.toString(192), room.getX() * 17 + cx, room.getY() * 17 + cy, Data.font, Data.background);
+                else if (line[cx] == '4')
+                    Data.terminal.write(Character.toString(217), room.getX() * 17 + cx, room.getY() * 17 + cy, Data.font, Data.background);
+                else if (line[cx] == '.')
+                    Data.terminal.write(Character.toString(32), room.getX() * 17 + cx, room.getY() * 17 + cy, Data.font, Data.roomColor);
+                else if (line[cx] == '*')
+                    Data.terminal.write(Character.toString(32), room.getX() * 17 + cx, room.getY() * 17 + cy, Data.font, Data.pathColor);
+                else
+                    Data.terminal.write(Character.toString(32), room.getX() * 17 + cx, room.getY() * 17 + cy, Data.font, Data.background);
+            }
+        }
+    }
+
     public void affStats(Entity target) {
         int b = 1;
         Entity entity;
@@ -161,8 +168,8 @@ public class Game extends JFrame implements KeyListener {
             }
 
             Data.terminal.write(entity.getName(), dx, dy + 2, entity instanceof Player ? Data.font : ((Enemy) entity).getColor(), Data.background);
-                for (int i = 0; i < entity.getName().length(); i++)
-                    Data.terminal.write(Character.toString(196), dx + i, dy + 3, entity instanceof Player ? Data.font : ((Enemy) entity).getColor(), Data.background);
+            for (int i = 0; i < entity.getName().length(); i++)
+                Data.terminal.write(Character.toString(196), dx + i, dy + 3, entity instanceof Player ? Data.font : ((Enemy) entity).getColor(), Data.background);
 
             Data.terminal.write("HP: " + entity.getHp() + "/" + entity.getHpMax() + "  ", dx, dy+7, Color.red, Data.background);
             Data.terminal.write("Attack: " + entity.getAtk() + "  ", dx, dy+9, new Color(255, 115, 0), Data.background);
@@ -179,20 +186,22 @@ public class Game extends JFrame implements KeyListener {
             Data.terminal.write("Coins: " + Data.player.getCoins() + "  ", 140, 21, new Color(255, 204, 0), Data.background);
             int x = 0;
             for (int i = 1; i <= Data.player.getLevel(); i++) {
-                x += getXpNeeded(i);
+                x += Game.getXpNeeded(i);
             }
-            Data.terminal.write("Level: " + Data.player.getLevel() + "  (" + (x - getXpNeeded(Data.player.getLevel()) + Data.player.getXp()) + "/" + x + ")  ", 140, 25, Data.font, Data.background);
+            Data.terminal.write("Level: " + Data.player.getLevel() + "  (" + (x - Game.getXpNeeded(Data.player.getLevel()) + Data.player.getXp()) + "/" + x + ")  ", 140, 25, Data.font, Data.background);
 
             Data.terminal.write(Character.toString(60), 140, 27, Data.font, Data.background);
             Data.terminal.write(Character.toString(62), 166, 27, Data.font, Data.background);
             for (int i = 141; i < 166; i++)
                 Data.terminal.write(Character.toString(196), i, 27, Data.font, Data.background);
-            for (int i = 141; i < 141 + 25 * Data.player.getXp() / getXpNeeded(Data.player.getLevel()); i++)
+            for (int i = 141; i < 141 + 25 * Data.player.getXp() / Game.getXpNeeded(Data.player.getLevel()); i++)
                 Data.terminal.write(Character.toString(219), i, 27, Data.font, Data.background);
         }
+        add(Data.terminal);
+        Data.terminal.repaint();
     }
 
-    public int getXpNeeded(int x) {
+    public static int getXpNeeded(int x) {
         return (int) (Math.pow(x, 2) * 10);
     }
     //Méthode très importante
@@ -271,7 +280,13 @@ public class Game extends JFrame implements KeyListener {
     public void affAttack(Enemy enemy) {
         Data.inAttack = true;
         Data.waitingForAttack = true;
-        Data.attackSelected = 1;
+        Data.stats[0] = Data.player.getHpMax();
+        Data.stats[1] = Data.player.getAtk();
+        Data.stats[2] = Data.player.getDef();
+        Data.stats[3] = Data.player.getMagicDef();
+        Data.stats[4] = Data.player.getCritChance();
+        Data.stats[5] = Data.player.getManaMax();
+        Data.stats[6] = Data.player.getManaRegen();
         clearSideAff();
         affMsg("You are attacked ", 140, 35);
         affMsg("by a " + enemy.getName(), 140, 36);
@@ -279,6 +294,7 @@ public class Game extends JFrame implements KeyListener {
         Data.tempsInactif = System.currentTimeMillis();
     }
     public void attack(Enemy enemy) {
+        Data.attackSelected = 1;
         Data.waitingForAttack = false;
         for (int i = 1 ; i < 169 ; i++) {
             for (int j = 1 ; j < 84 ; j++) {
@@ -306,94 +322,16 @@ public class Game extends JFrame implements KeyListener {
         Data.terminal.write(Character.toString(210), 117, 60, Data.font, Data.background);
         Data.terminal.write(Character.toString(193), 142, 84, Data.font, Data.background);
         Data.terminal.write(Character.toString(208), 117, 84, Data.font, Data.background);
-        String[] attack = {"          _   _             _    ",
-        "     /\\  | | | |           | |   ",
-        "    /  \\ | |_| |_ __ _  ___| | __",
-        "   / /\\ \\| __| __/ _` |/ __| |/ /",
-        "  / ____ \\ |_| || (_| | (__|   < ",
-        " /_/    \\_\\__|\\__\\__,_|\\___|_|\\_\\"};
-        String[] spell = {"   _____            _ _ ",
-                "  / ____|          | | |",
-                " | (___  _ __   ___| | |",
-                "  \\___ \\| '_ \\ / _ \\ | |",
-                "  ____) | |_) |  __/ | |",
-                " |_____/| .__/ \\___|_|_|",
-                "        | |             ",
-                "        |_|             "};
-        String[] item = {"  _____ _                     ",
-                " |_   _| |                    ",
-                "   | | | |_ ___ _ __ ___  ___ ",
-                "   | | | __/ _ \\ '_ ` _ \\/ __|",
-                "  _| |_| ||  __/ | | | | \\__ \\",
-                " |_____|\\__\\___|_| |_| |_|___/"};
-        String[] knight = {"                                .-'`-.",
-                "                               /  | | \\",
-                "                              /   | |  \\",
-                "                             |  __|_|___|",
-                "                             |' |||",
-                "                             |(   _L   ||",
-                "                             \\|`-'__`-'|'",
-                "                              |  `--'  |",
-                "                             _|        |-.",
-                "                         .-'| |  \\     /  `-.",
-                "                        /   | |\\     .'      `-.",
-                "                       /    | | `''''           \\",
-                "                      J     | |             _____|",
-                "                      |  |  J J         .-'   ___ `-.",
-                "                      |  \\   L L      .'  .-'  |  `-.`.",
-                "                      | \\|   | |     /  .'|    |    |\\ \\",
-                "                      |  |   J J   .' .'  |    |    | \\ \\",
-                "                      |  |    L L J  /    |    |    |  \\ L",
-                "                     /   |     \\ \\F J|    |    |    |   LJ",
-                "                     |   |      \\J F | () | () | () | ()| L",
-                "                    J  \\ |       FJ  |    |  / _`-. |   J |",
-                "                    |    |      J |  |    | //    \\ |   J |",
-                "                   J     |\\     | |  |    ||:(     ||   J |",
-                "                   |     | `----| |  |    ||::`._.:||   | F",
-                "                   |     /\\_    | |  |    ||:::::::F|   | F",
-                "                   |    |  /`---| |  |    | \\:::::/ |   FJ",
-                "                   F    |  / |  J |  |    |  `-:-'  |  J F",
-                "                  J_.--/  /  |  J J  | () | () | () |()FJ",
-                "                   |  |    /     L L |    |    |    | / F",
-                "                   |  |     |    \\ \\ |    |    |    |/ /",
-                "                 |`-. |    |     |\\ \\|    |    |    / /",
-                "                 J'\\ \\|    |     | `.`.   |    |  .'.'",
-                "                / .'> |    |     |  `-.`-.|____.-'.'",
-                "              .' /::'_|    |/    |    `-.______.-'",
-                "             / .::/   \\    |     |           |  |",
-                "           .' /::'     |--._     |           |--|",
-                "          / .::/       |    `-.__|     ____.-|//|",
-                "        .' /::'        |        F `--'      ||< |",
-                "       / .::/          |       J   |        FL\\\\|",
-                "     .' /::'           )       |   |        F| >|",
-                "    / .::/            (        \\   |        F|//|",
-                "  .' /::'              \\       /   |        F|--|",
-                " / .::/                 |` `' '(   (      ' J|  |",
-                "| /::'                  |  | ` \\   \\  `    / J  |",
-                "|_:/                    |  | | |    |`-  ''F J  J",
-                "                        |    ' F    |   \"\" |  `-'",
-                "                        |     J     |      |",
-                "                        |     /     |      |",
-                "                        |   .'      |      F",
-                "                       /---'(       J     J",
-                "                     .'     \\        L    |",
-                "                  .-'        )       L    F",
-                "                .'       .---'       \\__.-'",
-                "               (       .'             L   |",
-                "                `-----'               |   \\",
-                "                                      J    \\",
-                "                                       L    L",
-                "                                       |    F",
-                "                                       `-.-'"};
+
         for (int i = 0 ; i < 6 ; i++) {
-            Data.terminal.write(attack[i], 13, 63 + i, Data.font, Data.background);
-            Data.terminal.write(item[i], 68, 63 + i, Data.font, Data.background);
-            Data.terminal.write(Data.arrow[i], 7, 63 + i, Data.font, Data.background);
+            Data.terminal.write(Assets.attack[i], 13, 63 + i, Data.font, Data.background);
+            Data.terminal.write(Assets.item[i], 68, 63 + i, Data.font, Data.background);
+            Data.terminal.write(Assets.arrow[i], 7, 63 + i, Data.font, Data.background);
         }
         for (int i = 0 ; i < 59 ; i++)
-            Data.terminal.write(knight[i], 2, 1+i, Data.font, Data.background);
+            Data.terminal.write(Assets.knight[i], 2, 1+i, Data.font, Data.background);
         for (int i = 0 ; i < 8 ; i++)
-            Data.terminal.write(spell[i], 13, 73 + i, Data.font, Data.background);
+            Data.terminal.write(Assets.spell[i], 13, 73 + i, Data.font, Data.background);
         affStats(enemy);
         Data.tempsInactif = System.currentTimeMillis();
     }
@@ -411,41 +349,297 @@ public class Game extends JFrame implements KeyListener {
             Data.terminal.write("      ", 7, 73 + i, Data.font, Data.background);
         }
         for (int i = 0 ; i < 6 ; i++)
-            Data.terminal.write(Data.arrow[i], dx, dy + i, Data.font, Data.background);
+            Data.terminal.write(Assets.arrow[i], dx, dy + i, Data.font, Data.background);
         add(Data.terminal);
         Data.terminal.repaint();
     }
 
     public void attack2(Enemy enemy) {
+        if (Data.attackSelected == 1) {
+            attackPlayer(enemy);
+        } else {
+            Data.spellSelected = 0;
+            Data.waitingForChoice = true;
+            affSpellSelected();
+        }
+    }
+
+    public void attackPlayer(Enemy enemy) {
         clearBottomAff();
         if (Data.attackSelected == 1) {
             String weapon = "fists";
             for (Item item : Data.player.getInv()) {
-                if (item instanceof Weapon && ((Weapon) item).isEquipped()) {
+                if (item instanceof Weapon && item.isEquipped()) {
                     weapon = item.getName();
                     break;
                 }
             }
-            enemy.setHp(enemy.getHp() - (Data.player.getAtk() - enemy.getDef() < 0 ? 0 : Data.player.getAtk() - enemy.getDef()));
+            enemy.setHp(enemy.getHp() - (Math.max(Data.player.getAtk() - enemy.getDef(), 0)));
             if (enemy.getHp() <= 0)
                 enemy.setHp(0);
             affStats(enemy);
             affMsg("You attack the " + enemy.getName() + " with your " + weapon + ".", 7, 64);
             Data.waitingForEnemy = true;
+        } else if (Data.attackSelected == 2) {
+            if (Data.player.getSpells().get(Data.spellSelected).getManaCost() > Data.player.getMana()) {
+                clearBottomAff();
+                affMsg("You don't have enough mana to cast this spell.", 7, 64);
+                Data.waitingForChoice = false;
+                Data.waitingForAttack = true;
+            } else {
+                Data.player.setMana(Data.player.getMana() - Data.player.getSpells().get(Data.spellSelected).getManaCost());
+                Data.player.setHp(Data.player.getHp() + Data.player.getSpells().get(Data.spellSelected).getHpPlayer());
+                Data.player.setHpMax(Data.player.getHpMax() + Data.player.getSpells().get(Data.spellSelected).getHpMaxPlayer());
+                if (Data.player.getHp() > Data.player.getHpMax())
+                    Data.player.setHp(Data.player.getHpMax());
+                if (Data.player.getHp() < 0)
+                    Data.player.setHp(0);
+                Data.player.setAtk(Data.player.getAtk() + Data.player.getSpells().get(Data.spellSelected).getAtkPlayer());
+                if (Data.player.getAtk() < 1)
+                    Data.player.setAtk(1);
+                Data.player.setDef(Data.player.getDef() + Data.player.getSpells().get(Data.spellSelected).getDefPlayer());
+                if (Data.player.getDef() < 0)
+                    Data.player.setDef(0);
+                Data.player.setMagicDef(Data.player.getMagicDef() + Data.player.getSpells().get(Data.spellSelected).getMagicDefPlayer());
+                if (Data.player.getMagicDef() < 0)
+                    Data.player.setMagicDef(0);
+                Data.player.setCritChance(Data.player.getCritChance() + Data.player.getSpells().get(Data.spellSelected).getCritChancePlayer());
+                if (Data.player.getCritChance() < 0)
+                    Data.player.setCritChance(0);
+                Data.player.setManaMax(Data.player.getManaMax() + Data.player.getSpells().get(Data.spellSelected).getManaMaxPlayer());
+                if (Data.player.getManaMax() < 0)
+                    Data.player.setManaMax(0);
+                Data.player.setMana(Data.player.getMana() + Data.player.getSpells().get(Data.spellSelected).getManaPlayer());
+                if (Data.player.getMana() > Data.player.getManaMax())
+                    Data.player.setMana(Data.player.getManaMax());
+                if (Data.player.getMana() < 0)
+                    Data.player.setMana(0);
+                Data.player.setManaRegen(Data.player.getManaRegen() + Data.player.getSpells().get(Data.spellSelected).getManaRegenPlayer());
+                if (Data.player.getManaRegen() < 0)
+                    Data.player.setManaRegen(0);
+
+                enemy.setHp(enemy.getHp() - Data.player.getSpells().get(Data.spellSelected).getHpEnemy());
+                if (enemy.getHp() <= 0)
+                    enemy.setHp(0);
+                if (enemy.getHp() > enemy.getHpMax())
+                    enemy.setHp(enemy.getHpMax());
+                enemy.setAtk(enemy.getAtk() + Data.player.getSpells().get(Data.spellSelected).getAtkEnemy());
+                if (enemy.getAtk() < 1)
+                    enemy.setAtk(1);
+                enemy.setDef(enemy.getDef() + Data.player.getSpells().get(Data.spellSelected).getDefEnemy());
+                if (enemy.getDef() < 0)
+                    enemy.setDef(0);
+                enemy.setMagicDef(enemy.getMagicDef() + Data.player.getSpells().get(Data.spellSelected).getMagicDefEnemy());
+                if (enemy.getMagicDef() < 0)
+                    enemy.setMagicDef(0);
+                enemy.setCritChance(enemy.getCritChance() + Data.player.getSpells().get(Data.spellSelected).getCritChanceEnemy());
+                if (enemy.getCritChance() < 0)
+                    enemy.setCritChance(0);
+
+                affStats(enemy);
+                affMsg("You decided to cast " + Data.player.getSpells().get(Data.spellSelected).getName() + ".", 7, 64);
+
+                Data.waitingForChoice = false;
+                Data.waitingForEnemy = true;
+            }
+
+        } else if (Data.attackSelected == 3) {
+            Potion potionUsed = null;
+            int j = -1;
+            for (int i = 0 ; i < Data.player.getInv().size() ; i++) {
+                if (Data.player.getInv().get(i) instanceof Potion) {
+                    j++;
+                    System.out.println(j);
+                    System.out.println(Data.spellSelected);
+                    if (Data.spellSelected == j) {
+                        potionUsed = (Potion) Data.player.getInv().get(i);
+                        Data.player.getInv().remove(i);
+                        break;
+                    }
+                }
+            }
+            Data.player.setHpMax(Data.player.getHpMax() + potionUsed.getHpMaxPlayer());
+            Data.player.setHp(Data.player.getHp() + potionUsed.getHpPlayer());
+            if (Data.player.getHp() > Data.player.getHpMax())
+                Data.player.setHp(Data.player.getHpMax());
+            if (Data.player.getHp() < 0)
+                Data.player.setHp(0);
+            Data.player.setAtk(Data.player.getAtk() + potionUsed.getAtkPlayer());
+            if (Data.player.getAtk() < 1)
+                Data.player.setAtk(1);
+            Data.player.setDef(Data.player.getDef() + potionUsed.getDefPlayer());
+            if (Data.player.getDef() < 0)
+                Data.player.setDef(0);
+            Data.player.setMagicDef(Data.player.getMagicDef() + potionUsed.getMagicDefPlayer());
+            if (Data.player.getMagicDef() < 0)
+                Data.player.setMagicDef(0);
+            Data.player.setCritChance(Data.player.getCritChance() + potionUsed.getCritChancePlayer());
+            if (Data.player.getCritChance() < 0)
+                Data.player.setCritChance(0);
+            Data.player.setManaMax(Data.player.getManaMax() + potionUsed.getManaMaxPlayer());
+            if (Data.player.getManaMax() < 0)
+                Data.player.setManaMax(0);
+            Data.player.setMana(Data.player.getMana() + potionUsed.getManaPlayer());
+            if (Data.player.getMana() > Data.player.getManaMax())
+                Data.player.setMana(Data.player.getManaMax());
+            if (Data.player.getMana() < 0)
+                Data.player.setMana(0);
+            Data.player.setManaRegen(Data.player.getManaRegen() + potionUsed.getManaRegenPlayer());
+            if (Data.player.getManaRegen() < 0)
+                Data.player.setManaRegen(0);
+
+            enemy.setHp(enemy.getHp() - potionUsed.getHpEnemy());
+            if (enemy.getHp() <= 0)
+                enemy.setHp(0);
+            if (enemy.getHp() > enemy.getHpMax())
+                enemy.setHp(enemy.getHpMax());
+            enemy.setAtk(enemy.getAtk() + potionUsed.getAtkEnemy());
+            if (enemy.getAtk() < 1)
+                enemy.setAtk(1);
+            enemy.setDef(enemy.getDef() + potionUsed.getDefEnemy());
+            if (enemy.getDef() < 0)
+                enemy.setDef(0);
+            enemy.setMagicDef(enemy.getMagicDef() + potionUsed.getMagicDefEnemy());
+            if (enemy.getMagicDef() < 0)
+                enemy.setMagicDef(0);
+            enemy.setCritChance(enemy.getCritChance() + potionUsed.getCritChanceEnemy());
+            if (enemy.getCritChance() < 0)
+                enemy.setCritChance(0);
+
+            affStats(enemy);
+            affMsg("You decided to use your " + potionUsed.getName() + ".", 7, 64);
+
+            Data.waitingForChoice = false;
+            Data.waitingForEnemy = true;
         }
+    }
+
+    public void affSpellSelected() {
+        clearBottomAff();
+        int dx = 4;
+        int dy = 63;
+        if (Data.attackSelected == 3) {
+            Data.numberPotions = 0;
+            for (int i = 0; i < Data.player.getInv().size(); i++) {
+                if (Data.player.getInv().get(i) instanceof Potion) {
+                    Data.numberPotions++;
+                    if (Data.spellSelected == i) {
+                        Data.terminal.write("> " + Data.player.getInv().get(i).getName() + "  ", dx, dy, Data.font, Data.background);
+                        String[] potionDesc = new String[6];
+                        potionDesc[0] = ("(" + ((Potion) Data.player.getInv().get(i)).getHpPlayer() + "," + ((Potion) Data.player.getInv().get(i)).getHpMaxPlayer() + ",");
+                        potionDesc[1] = (((Potion) Data.player.getInv().get(i)).getAtkPlayer() + ",");
+                        potionDesc[2] = (((Potion) Data.player.getInv().get(i)).getDefPlayer() + ",");
+                        potionDesc[3] = (((Potion) Data.player.getInv().get(i)).getManaPlayer() + "," + ((Potion) Data.player.getInv().get(i)).getManaMaxPlayer() + "," + ((Potion) Data.player.getInv().get(i)).getManaRegenPlayer() + ",");
+                        potionDesc[4] = (((Potion) Data.player.getInv().get(i)).getMagicDefPlayer() + ",");
+                        potionDesc[5] = (((Potion) Data.player.getInv().get(i)).getCritChancePlayer() + ")");
+
+                        String[] potionDesc2 = new String[5];
+                        potionDesc2[0] = ("(" + ((Potion) Data.player.getInv().get(i)).getHpEnemy() + ",");
+                        potionDesc2[1] = (((Potion) Data.player.getInv().get(i)).getAtkEnemy() + ",");
+                        potionDesc2[2] = (((Potion) Data.player.getInv().get(i)).getDefEnemy() + ",");
+                        potionDesc2[3] = (((Potion) Data.player.getInv().get(i)).getMagicDefEnemy() + ",");
+                        potionDesc2[4] = (((Potion) Data.player.getInv().get(i)).getCritChanceEnemy() + ")");
+
+                        affDesc(dx, dy, potionDesc, potionDesc2);
+                    } else
+                        Data.terminal.write(Data.player.getInv().get(i).getName() + "  ", dx, dy, Data.font, Data.background);
+
+                    dx += 38;
+                    if (dx > 80) {
+                        dx = 4;
+                        dy += 3;
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < Data.player.getSpells().size(); i++) {
+                if (Data.spellSelected == i) {
+                    Data.terminal.write("> " + Data.player.getSpells().get(i).getName() + " (" + Data.player.getSpells().get(i).getManaCost() + " mana)  ", dx, dy, Data.font, Data.background);
+                    String[] potionDesc = new String[6];
+                    potionDesc[0] = ("(" + (Data.player.getSpells().get(i)).getHpPlayer() + "," + ( Data.player.getSpells().get(i)).getHpMaxPlayer() + ",");
+                    potionDesc[1] = (( Data.player.getSpells().get(i)).getAtkPlayer() + ",");
+                    potionDesc[2] = (( Data.player.getSpells().get(i)).getDefPlayer() + ",");
+                    potionDesc[3] = (( Data.player.getSpells().get(i)).getManaPlayer() + "," + ( Data.player.getSpells().get(i)).getManaMaxPlayer() + "," + ( Data.player.getSpells().get(i)).getManaRegenPlayer() + ",");
+                    potionDesc[4] = (( Data.player.getSpells().get(i)).getMagicDefPlayer() + ",");
+                    potionDesc[5] = (( Data.player.getSpells().get(i)).getCritChancePlayer() + ")");
+
+                    String[] potionDesc2 = new String[5];
+                    potionDesc2[0] = ("(" + ( Data.player.getSpells().get(i)).getHpEnemy() + ",");
+                    potionDesc2[1] = (( Data.player.getSpells().get(i)).getAtkEnemy() + ",");
+                    potionDesc2[2] = (( Data.player.getSpells().get(i)).getDefEnemy() + ",");
+                    potionDesc2[3] = (( Data.player.getSpells().get(i)).getMagicDefEnemy() + ",");
+                    potionDesc2[4] = (( Data.player.getSpells().get(i)).getCritChanceEnemy() + ")");
+
+                    affDesc(dx, dy, potionDesc, potionDesc2);
+                } else
+                    Data.terminal.write(Data.player.getSpells().get(i).getName() + " (" + Data.player.getSpells().get(i).getManaCost() + " mana)  ", dx, dy, Data.font, Data.background);
+                dx += 38;
+                if (dx > 80) {
+                    dx = 4;
+                    dy += 3;
+                }
+            }
+        }
+        Data.terminal.write("[Esc] to go back", 4, 81, Data.font, Data.background);
+        add(Data.terminal);
+        Data.terminal.repaint();
+    }
+
+    public void affDesc(int dx, int dy, String[] potionDesc, String[] potionDesc2) {
+        Data.terminal.write(potionDesc[0], dx, dy + 1, Color.red, Data.background);
+        Data.terminal.write(potionDesc[1], dx + potionDesc[0].length(), dy + 1, new Color(255, 115, 0), Data.background);
+        Data.terminal.write(potionDesc[2], dx + potionDesc[0].length() + potionDesc[1].length(), dy + 1, new Color(0, 128, 255), Data.background);
+        Data.terminal.write(potionDesc[3], dx + potionDesc[0].length() + potionDesc[1].length() + potionDesc[2].length(), dy + 1, new Color(153, 0, 255), Data.background);
+        Data.terminal.write(potionDesc[4], dx + potionDesc[0].length() + potionDesc[1].length() + potionDesc[2].length() + potionDesc[3].length(), dy + 1, new Color(94, 0, 255), Data.background);
+        Data.terminal.write(potionDesc[5], dx + potionDesc[0].length() + potionDesc[1].length() + potionDesc[2].length() + potionDesc[3].length() + potionDesc[4].length(), dy + 1, new Color(41, 168, 33), Data.background);
+        Data.terminal.write(potionDesc2[0], dx, dy + 2, Color.red, Data.background);
+        Data.terminal.write(potionDesc2[1], dx + potionDesc2[0].length(), dy + 2, new Color(255, 115, 0), Data.background);
+        Data.terminal.write(potionDesc2[2], dx + potionDesc2[0].length() + potionDesc2[1].length(), dy + 2, new Color(0, 128, 255), Data.background);
+        Data.terminal.write(potionDesc2[3], dx + potionDesc2[0].length() + potionDesc2[1].length() + potionDesc2[2].length(), dy + 2, new Color(94, 0, 255), Data.background);
+        Data.terminal.write(potionDesc2[4], dx + potionDesc2[0].length() + potionDesc2[1].length() + potionDesc2[2].length() + potionDesc2[3].length(), dy + 2, new Color(41, 168, 33), Data.background);
     }
 
     public void attackEnemy(Enemy enemy) {
         if (enemy.getHp() == 0)
             winCombat(enemy);
+        else if (Data.player.getHp() <= 0)
+            gameOver();
         else {
             clearBottomAff();
-            Data.player.setHp(Data.player.getHp() - (enemy.getAtk() - Data.player.getDef() < 0 ? 0 : enemy.getAtk() - Data.player.getDef()));
+            Data.player.setHp(Data.player.getHp() - (Math.max(enemy.getAtk() - Data.player.getDef(), 0)));
+            if (Data.player.getHp() <= 0)
+                Data.player.setHp(0);
             affStats(enemy);
             affMsg("The " + enemy.getName() + " attacks you.", 7, 64);
             Data.waitingForEnemy = false;
             Data.waitingForAttack = true;
+            Data.player.setMana(Data.player.getMana() + Data.player.getManaRegen());
+            if (Data.player.getMana() > Data.player.getManaMax())
+                Data.player.setMana(Data.player.getManaMax());
         }
+    }
+
+    public void gameOver() {
+        for (int i = 1; i < 84; i++) {
+            for (int j = 1; j < 169; j++) {
+                Data.terminal.write(Character.toString(32), j, i, Data.font, Data.background);
+            }
+        }
+        Data.terminal.write(Character.toString(217), 1, 1, Data.font, Data.background);
+        Data.terminal.write(Character.toString(192), 168, 1, Data.font, Data.background);
+        Data.terminal.write(Character.toString(191), 1, 83, Data.font, Data.background);
+        Data.terminal.write(Character.toString(218), 168, 83, Data.font, Data.background);
+        Data.terminal.write(Character.toString(179), 0, 60, Data.font, Data.background);
+        Data.terminal.write(Character.toString(179), 169, 60, Data.font, Data.background);
+        Data.terminal.write(Character.toString(196), 142, 84, Data.font, Data.background);
+        Data.terminal.write(Character.toString(196), 117, 84, Data.font, Data.background);
+
+        for (int i = 30 ; i < 44 ; i++) {
+            Data.terminal.write(Assets.gameOver[i-30], 19, i, Data.font, Data.background);
+        }
+        Data.over = true;
+        add(Data.terminal);
+        Data.terminal.repaint();
     }
 
     public void winCombat(Enemy enemy) {
@@ -453,6 +647,14 @@ public class Game extends JFrame implements KeyListener {
         Data.waitingForAttack = false;
         Data.inAttack = false;
         clearBottomAff();
+        Data.player.setHpMax(Data.stats[0]);
+        Data.player.setAtk(Data.stats[1]);
+        Data.player.setDef(Data.stats[2]);
+        Data.player.setMagicDef(Data.stats[3]);
+        Data.player.setCritChance(Data.stats[4]);
+        Data.player.setManaMax(Data.stats[5]);
+        Data.player.setManaRegen(Data.stats[6]);
+        Data.player.setMana(Data.player.getManaMax());
         Data.player.setXp(Data.player.getXp() + enemy.getXp());
         if (Data.player.getXp() > getXpNeeded(Data.player.getLevel())) {
             Data.player.setXp(Data.player.getXp() - getXpNeeded(Data.player.getLevel()));
@@ -506,6 +708,23 @@ public class Game extends JFrame implements KeyListener {
     }
 
     public void affMsg(String msg, int x, int y) { //Méthode pour afficher un message avec un effet de défilement
+        if (msg.length() > 28 && x == 140) {
+            String[] msgSplit = msg.split(" ");
+            String msg1 = "";
+            String msg2 = "";
+            int m = 1;
+            for (int i = 0; i < msgSplit.length; i++) {
+                if (msg1.length() + msgSplit[i].length() < 28 && m == 1) {
+                    msg1 += msgSplit[i] + " ";
+                } else {
+                    msg2 += msgSplit[i] + " ";
+                    m = 2;
+                }
+            }
+            affMsg(msg1, x, y);
+            affMsg(msg2, x, y + 1);
+            return;
+        }
         for (int i = 0; i < msg.length(); i++) {
             Data.terminal.write(msg.charAt(i), x + i, y, Data.font, Data.background);
             add(Data.terminal);
@@ -533,7 +752,6 @@ public class Game extends JFrame implements KeyListener {
         Data.terminal.repaint();
     }
 
-
     public void addCoins(int x) {
         for (int i = 0; i < x; i++)
             Data.coins.add(new Coin());
@@ -556,8 +774,10 @@ public class Game extends JFrame implements KeyListener {
         for (Item item : Data.items) {
             boolean aff = true;
             for (Enemy enemy : Data.enemies) {
-                if (item.getX() == enemy.getX() && item.getY() == enemy.getY())
+                if (item.getX() == enemy.getX() && item.getY() == enemy.getY()) {
                     aff = false;
+                    break;
+                }
             }
             if (aff)
                 Data.terminal.write(Character.toString(235), item.getX(), item.getY(), item.getColorItem(), Data.roomColor);
@@ -570,7 +790,6 @@ public class Game extends JFrame implements KeyListener {
 
         Room room = MapGenerator.getRoomByXY(Data.listRooms, X, Y);
 
-
         if (room == null)
             return (' ');
         int dx = x - (room.getX())*17;
@@ -581,15 +800,13 @@ public class Game extends JFrame implements KeyListener {
     //On touche pas ce qui est en dessous
 
     @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
+    public void keyTyped(KeyEvent e) {}
 
     //Méthode très importante
     @Override
     public void keyPressed(KeyEvent e) { //Méthode pour gérer les inputs
         if (System.currentTimeMillis() - Data.tempsInactif > 20) {
-            if (Data.inAttack && !Data.waitingForAttack && !Data.waitingForEnemy) {
+            if (Data.inAttack && !Data.waitingForAttack && !Data.waitingForEnemy && !Data.waitingForChoice) {
                 if (e.getKeyCode() == KeyEvent.VK_DOWN && Data.attackSelected == 1)
                     Data.attackSelected = 2;
                 else if (e.getKeyCode() == KeyEvent.VK_UP && Data.attackSelected == 2)
@@ -603,12 +820,35 @@ public class Game extends JFrame implements KeyListener {
                 if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT) {
                     affSelection();
                 }
-            } else if (Data.inAttack && !Data.waitingForAttack && Data.waitingForEnemy) {
+            } else if (Data.inAttack && !Data.waitingForAttack && !Data.waitingForEnemy) {
+                if (e.getKeyCode() == KeyEvent.VK_DOWN && ((Data.attackSelected == 2 && Data.player.getSpells().size() > Data.spellSelected + 3) || (Data.attackSelected == 3 && Data.numberPotions > Data.spellSelected + 3)))
+                    Data.spellSelected += 3;
+                else if (e.getKeyCode() == KeyEvent.VK_UP && Data.spellSelected > 2)
+                    Data.spellSelected -= 3;
+                else if (e.getKeyCode() == KeyEvent.VK_RIGHT && ((Data.attackSelected == 2 && Data.player.getSpells().size() > Data.spellSelected + 1) || (Data.attackSelected == 3 && Data.numberPotions > Data.spellSelected + 1)))
+                    Data.spellSelected += 1;
+                else if (e.getKeyCode() == KeyEvent.VK_LEFT && Data.spellSelected > 0)
+                    Data.spellSelected -= 1;
+                else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    Data.waitingForChoice = false;
+                    attack(Data.enemyAttacked);
+                } else if (e.getKeyCode() == KeyEvent.VK_ENTER && ((Data.numberPotions > 0 && Data.attackSelected == 3) || (Data.player.getSpells().size() != 0 && Data.attackSelected == 2)))
+                    attackPlayer(Data.enemyAttacked);
+                if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT) {
+                    affSpellSelected();
+                }
+            } else if (Data.inAttack && !Data.waitingForAttack) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER)
                     attackEnemy(Data.enemyAttacked);
-            } else if (Data.inAttack && Data.waitingForAttack) {
+            } else if (Data.inAttack) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    attack(Data.enemyAttacked);
+                    if (Data.over) {
+                        setVisible(false);
+                        dispose();
+                    } else if (Data.player.getHp() == 0)
+                        gameOver();
+                    else
+                        attack(Data.enemyAttacked);
                 }
             } else if (Data.waitingForReturn) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -648,9 +888,14 @@ public class Game extends JFrame implements KeyListener {
                     Inventory.affInv();
                 }
                 if (e.getKeyCode() == KeyEvent.VK_A && Data.player.getInv().size() != 0) {
+                    if (Data.player.getInv().get(Data.itemInv) instanceof Weapon && Data.player.getInv().get(Data.itemInv).isEquipped())
+                        Data.player.setAtk(1);
+                    if (Data.player.getInv().get(Data.itemInv) instanceof Shield && Data.player.getInv().get(Data.itemInv).isEquipped())
+                        Data.player.setDef(0);
                     Data.player.getInv().remove(Data.itemInv);
                     if (Data.itemInv == Data.player.getInv().size())
                         Data.itemInv--;
+                    affStats(Data.player);
                     Inventory.affInv();
                 }
                 if (e.getKeyCode() == KeyEvent.VK_E && Data.player.getInv().size() != 0) {
@@ -658,8 +903,8 @@ public class Game extends JFrame implements KeyListener {
                         Data.player.getInv().get(Data.itemInv).setEquipped(false);
                         if (Data.player.getInv().get(Data.itemInv) instanceof Weapon)
                             Data.player.setAtk(1);
-                        /*else if (Data.player.getInv().get(Data.itemInv) instanceof DefItem)
-                            Data.player.setDef(0);*/
+                        else if (Data.player.getInv().get(Data.itemInv) instanceof Shield)
+                            Data.player.setDef(0);
                         Inventory.affInv();
                         affStats(Data.player);
                     } else if (!(Data.player.getInv().get(Data.itemInv) instanceof Potion) && !Data.player.getInv().get(Data.itemInv).isEquipped()) {
@@ -672,8 +917,8 @@ public class Game extends JFrame implements KeyListener {
 
                         if (Data.player.getInv().get(Data.itemInv) instanceof Weapon)
                             Data.player.setAtk(((Weapon) Data.player.getInv().get(Data.itemInv)).getAtk());
-                        /*else if (Data.player.getInv().get(Data.itemInv) instanceof DefItem)
-                            Data.player.setDef(((DefItem) Data.player.getInv().get(Data.itemInv)).getDef());*/
+                        else if (Data.player.getInv().get(Data.itemInv) instanceof Shield)
+                            Data.player.setDef(((Shield) Data.player.getInv().get(Data.itemInv)).getDef());
                         Inventory.affInv();
                         affStats(Data.player);
                     } else if (Data.player.getInv().get(Data.itemInv) instanceof Potion) {

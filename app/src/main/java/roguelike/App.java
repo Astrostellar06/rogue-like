@@ -18,13 +18,13 @@ public class App extends JFrame implements KeyListener {
 
   public App(){
     super();
-    terminal = new AsciiPanel(170, 85, AsciiFont.DRAKE_10x10);
+    terminal = new AsciiPanel(170, 85, AsciiFont.TALRYTH_15_15);
     add(terminal);
     pack();
     screen = new HomeScreen();
     addKeyListener(this);
     repaint();
-  };
+  }
   
   public void repaint(){
     terminal.clear();
@@ -44,6 +44,8 @@ public class App extends JFrame implements KeyListener {
   public static void main(String[] args) {
     App app = new App();
     app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    app.setAlwaysOnTop(true);
     app.setVisible(true);
+    app.requestFocus();
   }
 }

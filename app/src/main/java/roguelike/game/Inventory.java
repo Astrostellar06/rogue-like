@@ -2,7 +2,9 @@ package roguelike.game;
 
 import roguelike.utils.Constants;
 
-public class Inventory {
+import javax.swing.*;
+
+public class Inventory extends JFrame {
 
     public static void affInv() {
         if (!Data.invOpen)
@@ -30,7 +32,7 @@ public class Inventory {
             } else {
                 Data.terminal.write("Nothing seems to be here...", 140, 38, Data.font, Data.background);
             }
+            Data.terminal.repaint();
         }
     }
-
 }

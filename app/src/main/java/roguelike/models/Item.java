@@ -28,7 +28,7 @@ public abstract class Item {
     }
 
     public Item() {
-        boolean empty = true;
+        boolean empty;
         Random ran = new Random();
         do {
             empty = true;
