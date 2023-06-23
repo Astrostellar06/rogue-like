@@ -9,6 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.swing.JFrame;
 
 import asciiPanel.AsciiPanel;
+import roguelike.Assets;
 import roguelike.models.*;
 import roguelike.utils.Constants;
 import roguelike.utils.MapGenerator;
@@ -22,12 +23,8 @@ public class Game extends JFrame implements KeyListener {
         Data.items = new ArrayList<>();
         Data.coins = new ArrayList<>();
         Data.terminal = terminal; //Taille de la fenêtre + police
+        Data.getTheme();
         addKeyListener(this); //Ajout de l'écouteur de touches
-        Data.font = new Color(17, 255, 0);
-        Data.background = new Color(0, 0, 0);
-        Data.playerColor = new Color(66, 248, 242);
-        Data.roomColor = new Color(0, 0, 0);
-        Data.pathColor = new Color(0, 0, 0);
 
         for (int i = 0 ; i < 10; i++) {
             addItem(new Weapon());
@@ -306,94 +303,15 @@ public class Game extends JFrame implements KeyListener {
         Data.terminal.write(Character.toString(210), 117, 60, Data.font, Data.background);
         Data.terminal.write(Character.toString(193), 142, 84, Data.font, Data.background);
         Data.terminal.write(Character.toString(208), 117, 84, Data.font, Data.background);
-        String[] attack = {"          _   _             _    ",
-        "     /\\  | | | |           | |   ",
-        "    /  \\ | |_| |_ __ _  ___| | __",
-        "   / /\\ \\| __| __/ _` |/ __| |/ /",
-        "  / ____ \\ |_| || (_| | (__|   < ",
-        " /_/    \\_\\__|\\__\\__,_|\\___|_|\\_\\"};
-        String[] spell = {"   _____            _ _ ",
-                "  / ____|          | | |",
-                " | (___  _ __   ___| | |",
-                "  \\___ \\| '_ \\ / _ \\ | |",
-                "  ____) | |_) |  __/ | |",
-                " |_____/| .__/ \\___|_|_|",
-                "        | |             ",
-                "        |_|             "};
-        String[] item = {"  _____ _                     ",
-                " |_   _| |                    ",
-                "   | | | |_ ___ _ __ ___  ___ ",
-                "   | | | __/ _ \\ '_ ` _ \\/ __|",
-                "  _| |_| ||  __/ | | | | \\__ \\",
-                " |_____|\\__\\___|_| |_| |_|___/"};
-        String[] knight = {"                                .-'`-.",
-                "                               /  | | \\",
-                "                              /   | |  \\",
-                "                             |  __|_|___|",
-                "                             |' |||",
-                "                             |(   _L   ||",
-                "                             \\|`-'__`-'|'",
-                "                              |  `--'  |",
-                "                             _|        |-.",
-                "                         .-'| |  \\     /  `-.",
-                "                        /   | |\\     .'      `-.",
-                "                       /    | | `''''           \\",
-                "                      J     | |             _____|",
-                "                      |  |  J J         .-'   ___ `-.",
-                "                      |  \\   L L      .'  .-'  |  `-.`.",
-                "                      | \\|   | |     /  .'|    |    |\\ \\",
-                "                      |  |   J J   .' .'  |    |    | \\ \\",
-                "                      |  |    L L J  /    |    |    |  \\ L",
-                "                     /   |     \\ \\F J|    |    |    |   LJ",
-                "                     |   |      \\J F | () | () | () | ()| L",
-                "                    J  \\ |       FJ  |    |  / _`-. |   J |",
-                "                    |    |      J |  |    | //    \\ |   J |",
-                "                   J     |\\     | |  |    ||:(     ||   J |",
-                "                   |     | `----| |  |    ||::`._.:||   | F",
-                "                   |     /\\_    | |  |    ||:::::::F|   | F",
-                "                   |    |  /`---| |  |    | \\:::::/ |   FJ",
-                "                   F    |  / |  J |  |    |  `-:-'  |  J F",
-                "                  J_.--/  /  |  J J  | () | () | () |()FJ",
-                "                   |  |    /     L L |    |    |    | / F",
-                "                   |  |     |    \\ \\ |    |    |    |/ /",
-                "                 |`-. |    |     |\\ \\|    |    |    / /",
-                "                 J'\\ \\|    |     | `.`.   |    |  .'.'",
-                "                / .'> |    |     |  `-.`-.|____.-'.'",
-                "              .' /::'_|    |/    |    `-.______.-'",
-                "             / .::/   \\    |     |           |  |",
-                "           .' /::'     |--._     |           |--|",
-                "          / .::/       |    `-.__|     ____.-|//|",
-                "        .' /::'        |        F `--'      ||< |",
-                "       / .::/          |       J   |        FL\\\\|",
-                "     .' /::'           )       |   |        F| >|",
-                "    / .::/            (        \\   |        F|//|",
-                "  .' /::'              \\       /   |        F|--|",
-                " / .::/                 |` `' '(   (      ' J|  |",
-                "| /::'                  |  | ` \\   \\  `    / J  |",
-                "|_:/                    |  | | |    |`-  ''F J  J",
-                "                        |    ' F    |   \"\" |  `-'",
-                "                        |     J     |      |",
-                "                        |     /     |      |",
-                "                        |   .'      |      F",
-                "                       /---'(       J     J",
-                "                     .'     \\        L    |",
-                "                  .-'        )       L    F",
-                "                .'       .---'       \\__.-'",
-                "               (       .'             L   |",
-                "                `-----'               |   \\",
-                "                                      J    \\",
-                "                                       L    L",
-                "                                       |    F",
-                "                                       `-.-'"};
         for (int i = 0 ; i < 6 ; i++) {
-            Data.terminal.write(attack[i], 13, 63 + i, Data.font, Data.background);
-            Data.terminal.write(item[i], 68, 63 + i, Data.font, Data.background);
-            Data.terminal.write(Data.arrow[i], 7, 63 + i, Data.font, Data.background);
+            Data.terminal.write(Assets.attack[i], 13, 63 + i, Data.font, Data.background);
+            Data.terminal.write(Assets.item[i], 68, 63 + i, Data.font, Data.background);
+            Data.terminal.write(Assets.selected[i], 7, 63 + i, Data.font, Data.background);
         }
         for (int i = 0 ; i < 59 ; i++)
-            Data.terminal.write(knight[i], 2, 1+i, Data.font, Data.background);
+            Data.terminal.write(Assets.knight[i], 2, 1+i, Data.font, Data.background);
         for (int i = 0 ; i < 8 ; i++)
-            Data.terminal.write(spell[i], 13, 73 + i, Data.font, Data.background);
+            Data.terminal.write(Assets.spell[i], 13, 73 + i, Data.font, Data.background);
         affStats(enemy);
         Data.tempsInactif = System.currentTimeMillis();
     }
@@ -411,7 +329,7 @@ public class Game extends JFrame implements KeyListener {
             Data.terminal.write("      ", 7, 73 + i, Data.font, Data.background);
         }
         for (int i = 0 ; i < 6 ; i++)
-            Data.terminal.write(Data.arrow[i], dx, dy + i, Data.font, Data.background);
+            Data.terminal.write(Assets.selected[i], dx, dy + i, Data.font, Data.background);
         add(Data.terminal);
         Data.terminal.repaint();
     }
