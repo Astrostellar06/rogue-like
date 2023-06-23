@@ -302,7 +302,7 @@ public class MapGenerator {
     public static void generateMediumRooms(boolean[] taken, List<Room> rooms, int[] ids) {
         Random ran = new Random();
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 6; i++) {
             int x = ran.nextInt(8);
             int y = ran.nextInt(5);
 

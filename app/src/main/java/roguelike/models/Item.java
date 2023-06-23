@@ -4,6 +4,7 @@ import roguelike.game.Data;
 import roguelike.game.Game;
 
 import java.awt.*;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Item {
@@ -28,10 +29,11 @@ public abstract class Item {
 
     public Item() {
         boolean empty = true;
+        Random ran = new Random();
         do {
             empty = true;
-            this.x = ThreadLocalRandom.current().nextInt(0, 170);
-            this.y = ThreadLocalRandom.current().nextInt(0, 85);
+            this.x = ran.nextInt(0, 170);
+            this.y = ran.nextInt(0, 85);
             if (Data.items != null) {
                 for (int i = 0; i < Data.items.size(); i++) {
                     if (Data.items.get(i).getX() == this.x && Data.items.get(i).getY() == this.y)
