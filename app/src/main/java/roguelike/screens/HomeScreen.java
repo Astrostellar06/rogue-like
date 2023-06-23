@@ -39,6 +39,9 @@ public class HomeScreen implements Screen {
       if(selected == 0){
         return new GameScreen();
       }
+      if(selected == 2){
+        return new SettingsScreen();
+      }
     }
     return this;
   }

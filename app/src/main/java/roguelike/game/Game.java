@@ -23,12 +23,8 @@ public class Game extends JFrame implements KeyListener {
         Data.coins = new ArrayList<>();
         Data.stats = new int[7];
         Data.terminal = terminal; //Taille de la fenêtre + police
+        Data.getTheme();
         addKeyListener(this); //Ajout de l'écouteur de touches
-        Data.font = new Color(17, 255, 0);
-        Data.background = new Color(0, 0, 0);
-        Data.playerColor = new Color(66, 248, 242);
-        Data.roomColor = new Color(0, 0, 0);
-        Data.pathColor = new Color(0, 0, 0);
 
         for (int i = 0 ; i < 10; i++) {
             addItem(new Weapon());
@@ -326,8 +322,9 @@ public class Game extends JFrame implements KeyListener {
         for (int i = 0 ; i < 6 ; i++) {
             Data.terminal.write(Assets.attack[i], 13, 63 + i, Data.font, Data.background);
             Data.terminal.write(Assets.item[i], 68, 63 + i, Data.font, Data.background);
-            Data.terminal.write(Assets.arrow[i], 7, 63 + i, Data.font, Data.background);
+            Data.terminal.write(Assets.selected[i], 7, 63 + i, Data.font, Data.background);
         }
+
         for (int i = 0 ; i < 59 ; i++)
             Data.terminal.write(Assets.knight[i], 2, 1+i, Data.font, Data.background);
         for (int i = 0 ; i < 8 ; i++)
@@ -349,7 +346,7 @@ public class Game extends JFrame implements KeyListener {
             Data.terminal.write("      ", 7, 73 + i, Data.font, Data.background);
         }
         for (int i = 0 ; i < 6 ; i++)
-            Data.terminal.write(Assets.arrow[i], dx, dy + i, Data.font, Data.background);
+            Data.terminal.write(Assets.selected[i], dx, dy + i, Data.font, Data.background);
         add(Data.terminal);
         Data.terminal.repaint();
     }
@@ -449,8 +446,6 @@ public class Game extends JFrame implements KeyListener {
             for (int i = 0 ; i < Data.player.getInv().size() ; i++) {
                 if (Data.player.getInv().get(i) instanceof Potion) {
                     j++;
-                    System.out.println(j);
-                    System.out.println(Data.spellSelected);
                     if (Data.spellSelected == j) {
                         potionUsed = (Potion) Data.player.getInv().get(i);
                         Data.player.getInv().remove(i);
