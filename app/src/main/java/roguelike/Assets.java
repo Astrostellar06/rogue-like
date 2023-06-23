@@ -9,6 +9,7 @@ public class Assets {
   public static Color green = new Color(0, 255, 0);
   public static Color gray = new Color(150, 150, 150);
   public static Color white = new Color(255, 255, 255);
+  public static Color blue = new Color(	0, 0, 139);
 
   public static void display(AsciiPanel terminal, String[] obj, int x, int y, Color color){
     for(int i=1; i<obj.length+1; i++){
