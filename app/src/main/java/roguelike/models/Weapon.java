@@ -108,7 +108,6 @@ public class Weapon extends Item {
                 break;
             case LEGENDARY:
                 this.colorItem = new Color(255, 201, 0);
-                this.name = "Spear";
                 this.atk = 25;
                 switch (this.classe) {
                     case CHEVALIER:

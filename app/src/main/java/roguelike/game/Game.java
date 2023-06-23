@@ -31,8 +31,8 @@ public class Game extends JFrame implements KeyListener {
 
         for (int i = 0 ; i < 10; i++) {
             addItem(new Weapon());
-            //addItem(new DefItem());
-            addItem(new Potion());
+            addItem(new Shield());
+            //addItem(new Potion());
         }
         for (int i = 0 ; i < 5 ; i++) {
             addEnemy(new Enemy(1));
