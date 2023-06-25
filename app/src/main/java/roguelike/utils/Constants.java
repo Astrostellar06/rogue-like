@@ -41,7 +41,7 @@ public class Constants {
 
     public static void getPlayer(){
         String username = prefs.get("username", "Undefined");
-        String type = prefs.get("class", "Warrior");
+        String type = prefs.get("class", "KNIGHT");
         data.player = new Player(username, type);
     }
 

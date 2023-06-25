@@ -10,6 +10,7 @@ import javax.swing.*;
 
 import asciiPanel.AsciiPanel;
 import roguelike.Assets;
+import roguelike.enums.Classe;
 import roguelike.models.*;
 import roguelike.utils.Constants;
 import roguelike.utils.FileConfiguration;
@@ -972,19 +973,31 @@ public class Game extends JFrame implements KeyListener {
                         Inventory.affInv();
                         affStats(Constants.data.player);
                     } else if (!(Constants.data.player.getInv().get(Constants.data.itemInv) instanceof Potion) && !Constants.data.player.getInv().get(Constants.data.itemInv).isEquipped()) {
-                        for (Item i : Constants.data.player.getInv()) {
-                            if (i.isEquipped() && i.getClass() == Constants.data.player.getInv().get(Constants.data.itemInv).getClass())
-                                i.setEquipped(false);
+                        boolean canEquip = true;
+                        if (Constants.data.player.getInv().get(Constants.data.itemInv) instanceof Weapon) {
+                            if (((Weapon) Constants.data.player.getInv().get(Constants.data.itemInv)).getClasse() != Constants.data.player.getType())
+                                canEquip = false;
                         }
-                        Constants.data.player.getInv().get(Constants.data.itemInv).setEquipped(true);
-                        System.out.println(Constants.data.player.getInv().get(Constants.data.itemInv).isEquipped());
+                        if (canEquip) {
+                            for (Item i : Constants.data.player.getInv()) {
+                                if (i.isEquipped() && i.getClass() == Constants.data.player.getInv().get(Constants.data.itemInv).getClass())
+                                    i.setEquipped(false);
+                            }
+                            Constants.data.player.getInv().get(Constants.data.itemInv).setEquipped(true);
+                            System.out.println(Constants.data.player.getInv().get(Constants.data.itemInv).isEquipped());
 
-                        if (Constants.data.player.getInv().get(Constants.data.itemInv) instanceof Weapon)
-                            Constants.data.player.setAtk(((Weapon) Constants.data.player.getInv().get(Constants.data.itemInv)).getAtk());
-                        else if (Constants.data.player.getInv().get(Constants.data.itemInv) instanceof Shield)
-                            Constants.data.player.setDef(((Shield) Constants.data.player.getInv().get(Constants.data.itemInv)).getDef());
-                        Inventory.affInv();
-                        affStats(Constants.data.player);
+                            if (Constants.data.player.getInv().get(Constants.data.itemInv) instanceof Weapon)
+                                Constants.data.player.setAtk(((Weapon) Constants.data.player.getInv().get(Constants.data.itemInv)).getAtk());
+                            else if (Constants.data.player.getInv().get(Constants.data.itemInv) instanceof Shield)
+                                Constants.data.player.setDef(((Shield) Constants.data.player.getInv().get(Constants.data.itemInv)).getDef());
+                            Inventory.affInv();
+                            affStats(Constants.data.player);
+                        } else {
+                            Constants.terminal.write("You do not belong to", 140, 71, Constants.data.font, Constants.data.background);
+                            Constants.terminal.write("the right class to equip", 140, 72, Constants.data.font, Constants.data.background);
+                            Constants.terminal.write("this item", 140, 73, Constants.data.font, Constants.data.background);
+                            add(Constants.terminal);
+                        }
                     } else if (Constants.data.player.getInv().get(Constants.data.itemInv) instanceof Potion) {
                         Constants.terminal.write("Cannot be equiped", 140, 71, Constants.data.font, Constants.data.background);
                         add(Constants.terminal);

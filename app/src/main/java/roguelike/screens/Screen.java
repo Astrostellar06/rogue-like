@@ -4,6 +4,8 @@ import java.awt.event.KeyEvent;
 
 import asciiPanel.AsciiPanel;
 
+import javax.swing.*;
+
 public interface Screen {
     public void displayOutput(AsciiPanel terminal);
 

@@ -34,7 +34,7 @@ public class Weapon extends Item implements Serializable {
         int classeChoice = ran.nextInt(3);
         switch (classeChoice) {
             case 0:
-                this.classe = Classe.CHEVALIER;
+                this.classe = Classe.KNIGHT;
                 break;
             case 1:
                 this.classe = Classe.ARCHER;
@@ -51,7 +51,7 @@ public class Weapon extends Item implements Serializable {
                 this.colorItem = new Color(58, 238, 34);
                 this.atk = 5;
                 switch (this.classe) {
-                    case CHEVALIER:
+                    case KNIGHT:
                         this.name = "Dagger";
                         break;
                     case ARCHER:
@@ -66,7 +66,7 @@ public class Weapon extends Item implements Serializable {
                 this.colorItem = new Color(37, 100, 16);
                 this.atk = 10;
                 switch (this.classe) {
-                    case CHEVALIER:
+                    case KNIGHT:
                         this.name = "Sword";
                         break;
                     case ARCHER:
@@ -81,7 +81,7 @@ public class Weapon extends Item implements Serializable {
                 this.colorItem = new Color(9, 71, 157);
                 this.atk = 15;
                 switch (this.classe) {
-                    case CHEVALIER:
+                    case KNIGHT:
                         this.name = "Axe";
                         break;
                     case ARCHER:
@@ -96,7 +96,7 @@ public class Weapon extends Item implements Serializable {
                 this.colorItem = new Color(85, 50, 134);
                 this.atk = 20;
                 switch (this.classe) {
-                    case CHEVALIER:
+                    case KNIGHT:
                         this.name = "Mace";
                         break;
                     case ARCHER:
@@ -111,7 +111,7 @@ public class Weapon extends Item implements Serializable {
                 this.colorItem = new Color(255, 201, 0);
                 this.atk = 25;
                 switch (this.classe) {
-                    case CHEVALIER:
+                    case KNIGHT:
                         this.name = "Master Sword";
                         break;
                     case ARCHER:

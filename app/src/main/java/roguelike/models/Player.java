@@ -3,17 +3,28 @@ package roguelike.models;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import roguelike.enums.Classe;
 import roguelike.game.Game;
 
 public class Player extends Entity implements Serializable {
     int mana, manaMax,manaRegen;
     ArrayList<Item> inv;
     ArrayList<Spell> spells;
-    String type;
+    Classe type;
 
     public Player(String name, String type) {
         this.name = name;
-        this.type = type;
+        switch (type) {
+            case "KNIGHT":
+                this.type = Classe.KNIGHT;
+                break;
+            case "ARCHER":
+                this.type = Classe.ARCHER;
+                break;
+            case "MAGE":
+                this.type = Classe.MAGE;
+                break;
+        }
         this.level = 1;
         this.hp = 100;
         this.mana = 100;
@@ -98,5 +109,13 @@ public class Player extends Entity implements Serializable {
 
     public void setSpells(ArrayList<Spell> spells) {
         this.spells = spells;
+    }
+
+    public Classe getType() {
+        return type;
+    }
+
+    public void setType(Classe type) {
+        this.type = type;
     }
 }

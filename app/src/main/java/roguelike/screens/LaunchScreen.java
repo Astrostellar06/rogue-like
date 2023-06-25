@@ -1,17 +1,14 @@
 package roguelike.screens;
 
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.prefs.Preferences;
-
 import asciiPanel.AsciiPanel;
 import roguelike.App;
 import roguelike.Assets;
 import roguelike.Player;
 
 public class LaunchScreen implements Screen {
-  Preferences prefs = Preferences.userNodeForPackage(App.class);
+  public Preferences prefs = Preferences.userNodeForPackage(App.class);
 
   String[][] alphabet = Assets.alphabet;
   String username = "";
@@ -94,7 +91,7 @@ public class LaunchScreen implements Screen {
       } else {
         System.out.println(username);
         prefs.put("username", username);
-        prefs.put("class", selected == 0 ? "warrior" : selected == 1 ? "archer" : "mage");
+        prefs.put("class", selected == 0 ? "KNIGHT" : selected == 1 ? "ARCHER" : "MAGE");
         App.player.stop();
         App.player.playMusic("music.wav");
         return new GameScreen(true);
