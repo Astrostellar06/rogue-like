@@ -20,23 +20,24 @@ public class SettingsScreen implements Screen {
   private boolean needRestart = false;
 
   public void displayOutput(AsciiPanel terminal) {
-    Assets.display(terminal, Assets.settings, 15, 5, Assets.white);
+    Assets.display(terminal, Assets.settings, 15, 5, Assets.primary());
 
-    terminal.write("Change font size :", 10, 25, Assets.white);
-    terminal.write("little", 15, 28, font.equals("little") ? Assets.green : Assets.white);
-    terminal.write("medium", 28, 28, font.equals("medium") ? Assets.green : Assets.white);
-    terminal.write("big", 41, 28, font.equals("big") ? Assets.green : Assets.white);
-    terminal.write("giant", 54, 28, font.equals("giant") ? Assets.green : Assets.white);
+    terminal.write("Change font size :", 10, 25, Assets.primary());
+    terminal.write("little", 15, 28, font.equals("little") ? Assets.primarySelected() : Assets.primary());
+    terminal.write("medium", 28, 28, font.equals("medium") ? Assets.primarySelected() : Assets.primary());
+    terminal.write("big", 41, 28, font.equals("big") ? Assets.primarySelected() : Assets.primary());
+    terminal.write("giant", 54, 28, font.equals("giant") ? Assets.primarySelected() : Assets.primary());
 
-    terminal.write("Change theme :", 10, 35, Assets.white);
-    terminal.write("dark", 15, 38, theme.equals("dark") ? Assets.green : Assets.white);
+    terminal.write("Change theme :", 10, 35, Assets.primary());
+    terminal.write("dark", 15, 38, theme.equals("dark") ? Assets.primarySelected() : Assets.primary());
+    terminal.write("funky", 28, 38, theme.equals("funky") ? Assets.primarySelected() : Assets.primary());
 
-    terminal.write(">", !inSetting ? selectedX : selectedX*(selectedSetting+1), !inSetting ? selectedY+(10*selected) : selectedY, Assets.green);
+    terminal.write(">", !inSetting ? selectedX : selectedX*(selectedSetting+1), !inSetting ? selectedY+(10*selected) : selectedY, Assets.primarySelected());
 
     if(needRestart){
-      terminal.write("Restart the game for changes to be effective", 10, 20, Assets.white);
+      terminal.write("Restart the game for changes to be effective", 10, 20, Assets.primary());
     }
-    terminal.write("Press [ESC] to go back", 10, 80, Assets.white);
+    terminal.write("Press [ESC] to go back", 10, 80, Assets.primary());
   }
 
   public void leaveSetting(){
@@ -56,8 +57,8 @@ public class SettingsScreen implements Screen {
 
     if (key.getKeyCode() == KeyEvent.VK_RIGHT && inSetting) {
       int maxSetting = 0;
-      if(selected == 0) maxSetting = 3;
-      if(selected == 1) maxSetting = 0;
+      if(selected == 0) maxSetting = 3; // font size
+      if(selected == 1) maxSetting = 1; // theme
       if(selectedSetting < maxSetting){
         selectedSetting += 1;
       } else {
@@ -66,8 +67,8 @@ public class SettingsScreen implements Screen {
     }
     if (key.getKeyCode() == KeyEvent.VK_LEFT && inSetting) {
       int maxSetting = 0;
-      if(selected == 0) maxSetting = 3;
-      if(selected == 1) maxSetting = 0;
+      if(selected == 0) maxSetting = 3; // font size
+      if(selected == 1) maxSetting = 1; // theme
       if(selectedSetting > 0){
         selectedSetting -= 1;
       } else {
@@ -117,6 +118,10 @@ public class SettingsScreen implements Screen {
           if(selectedSetting == 0){
             prefs.put("theme", "dark");
             theme = "dark";
+          }
+          if(selectedSetting == 1){
+            prefs.put("theme", "funky");
+            theme = "light";
           }
           leaveSetting();
         }

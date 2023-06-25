@@ -1,17 +1,69 @@
 package roguelike;
 
 import java.awt.Color;
+import java.util.prefs.Preferences;
 
 import asciiPanel.AsciiPanel;
 
 public class Assets {
+  static Preferences prefs = Preferences.userNodeForPackage(App.class);
+
+  public static Color background(){
+    String theme = prefs.get("theme", "dark");
+    if(theme.equals("dark")){
+      return black;
+    }
+    if(theme.equals("funky")){
+      return black;
+    } else {
+      return black;
+    }
+  }
+
+  public static Color primary(){
+    String theme = prefs.get("theme", "dark");
+    if(theme.equals("dark")){
+      return white;
+    }
+    if(theme.equals("funky")){
+      return darkPink;
+    } else {
+      return white;
+    }
+  }
+
+  public static Color primarySelected(){
+    String theme = prefs.get("theme", "dark");
+    if(theme.equals("dark")){
+      return green;
+    }
+    if(theme.equals("funky")){
+      return lightBlue;
+    } else {
+      return green;
+    }
+  }
+
+  public static Color secondary(){
+    String theme = prefs.get("theme", "dark");
+    if(theme.equals("dark")){
+      return gray;
+    }
+    if(theme.equals("light")){
+      return grey;
+    } else {
+      return gray;
+    }
+  }
 
   public static Color black = new Color(0, 0, 0);
   public static Color white = new Color(255, 255, 255);
   public static Color gray = new Color(150, 150, 150);
+  public static Color grey = new Color(128, 128, 128);
   public static Color green = new Color(0, 255, 0);
+  public static Color darkPink = new Color(231,84,128);
   public static Color blue = new Color(	0, 0, 139);
-  public static Color lightBlue = new Color(66, 248, 242);
+  public static Color lightBlue = new Color(84,202,231);
 
   public static void display(AsciiPanel terminal, String[] obj, int x, int y, Color color){
     for(int i=1; i<obj.length+1; i++){

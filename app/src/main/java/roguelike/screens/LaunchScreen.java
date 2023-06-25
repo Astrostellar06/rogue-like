@@ -22,27 +22,27 @@ public class LaunchScreen implements Screen {
   int selected = 0;
 
   public void displayOutput(AsciiPanel terminal) {
-    terminal.writeCenter("Type your name", 2, Assets.white);
-    Assets.displayCenter(terminal, name, 3, Assets.white);
+    terminal.writeCenter("Type your name", 2, Assets.primary());
+    Assets.displayCenter(terminal, name, 3, Assets.primary());
 
     if(maxLengthWarning){
-      terminal.writeCenter("name can only contains 12 characters", 13, Assets.white);
+      terminal.writeCenter("name can only contains 12 characters", 13, Assets.primary());
     }
     if(noNameWarning){
-      terminal.writeCenter("you need a name", 13, Assets.white);
+      terminal.writeCenter("you need a name", 13, Assets.primary());
     }
 
-    Assets.display(terminal, Assets.warriorBg, 35, 25, selected == 0 ? Assets.blue : Assets.white);
-    Assets.display(terminal, Assets.warriorIcon, 30, 35, selected == 0 ? Assets.green : Assets.gray);
-    Assets.display(terminal, Assets.warrior, 21, 60, selected == 0 ? Assets.green : Assets.gray);
-    Assets.display(terminal, Assets.archerBg, 80, 25, selected == 1 ? Assets.blue : Assets.white);
-    Assets.display(terminal, Assets.archerIcon, 75, 35, selected == 1 ? Assets.green : Assets.gray);
-    Assets.display(terminal, Assets.archer, 69, 60, selected == 1 ? Assets.green : Assets.gray);
-    Assets.display(terminal, Assets.mageBg, 124, 25, selected == 2 ? Assets.blue : Assets.white);
-    Assets.display(terminal, Assets.mageIcon, 120, 35, selected == 2 ? Assets.green : Assets.gray);
-    Assets.display(terminal, Assets.mage, 117,60, selected == 2 ? Assets.green : Assets.gray);
+    Assets.display(terminal, Assets.warriorBg, 35, 25, selected == 0 ? Assets.blue : Assets.primary());
+    Assets.display(terminal, Assets.warriorIcon, 30, 35, selected == 0 ? Assets.primarySelected() : Assets.secondary());
+    Assets.display(terminal, Assets.warrior, 21, 60, selected == 0 ? Assets.primarySelected() : Assets.secondary());
+    Assets.display(terminal, Assets.archerBg, 80, 25, selected == 1 ? Assets.blue : Assets.primary());
+    Assets.display(terminal, Assets.archerIcon, 75, 35, selected == 1 ? Assets.primarySelected() : Assets.secondary());
+    Assets.display(terminal, Assets.archer, 69, 60, selected == 1 ? Assets.primarySelected() : Assets.secondary());
+    Assets.display(terminal, Assets.mageBg, 124, 25, selected == 2 ? Assets.blue : Assets.primary());
+    Assets.display(terminal, Assets.mageIcon, 120, 35, selected == 2 ? Assets.primarySelected() : Assets.secondary());
+    Assets.display(terminal, Assets.mage, 117,60, selected == 2 ? Assets.primarySelected() : Assets.secondary());
 
-    terminal.write("Press [Enter] to launch the game", 10, 80, Assets.white);
+    terminal.write("Press [Enter] to launch the game", 10, 80, Assets.primary());
   }
 
   public void addLetter(int i){
