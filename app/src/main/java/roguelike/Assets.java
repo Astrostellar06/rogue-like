@@ -13,7 +13,10 @@ public class Assets {
     if(theme.equals("dark")){
       return black;
     }
-    if(theme.equals("funky")){
+    if(theme.equals("lollipop")){
+      return black;
+    }
+    if(theme.equals("cyber")){
       return black;
     } else {
       return black;
@@ -25,8 +28,11 @@ public class Assets {
     if(theme.equals("dark")){
       return white;
     }
-    if(theme.equals("funky")){
+    if(theme.equals("lollipop")){
       return darkPink;
+    }
+    if(theme.equals("cyber")){
+      return green;
     } else {
       return white;
     }
@@ -37,7 +43,10 @@ public class Assets {
     if(theme.equals("dark")){
       return green;
     }
-    if(theme.equals("funky")){
+    if(theme.equals("lollipop")){
+      return lightBlue;
+    }
+    if(theme.equals("cyber")){
       return lightBlue;
     } else {
       return green;
@@ -51,6 +60,9 @@ public class Assets {
     }
     if(theme.equals("light")){
       return grey;
+    }
+    if(theme.equals("cyber")){
+      return gray;
     } else {
       return gray;
     }
