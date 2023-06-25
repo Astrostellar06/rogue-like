@@ -30,7 +30,8 @@ public class SettingsScreen implements Screen {
 
     terminal.write("Change theme :", 10, 35, Assets.primary());
     terminal.write("dark", 15, 38, theme.equals("dark") ? Assets.primarySelected() : Assets.primary());
-    terminal.write("funky", 28, 38, theme.equals("funky") ? Assets.primarySelected() : Assets.primary());
+    terminal.write("lollipop", 28, 38, theme.equals("lollipop") ? Assets.primarySelected() : Assets.primary());
+    terminal.write("cyber", 41, 38, theme.equals("cyber") ? Assets.primarySelected() : Assets.primary());
 
     terminal.write(">", !inSetting ? selectedX : selectedX*(selectedSetting+1), !inSetting ? selectedY+(10*selected) : selectedY, Assets.primarySelected());
 
@@ -58,7 +59,7 @@ public class SettingsScreen implements Screen {
     if (key.getKeyCode() == KeyEvent.VK_RIGHT && inSetting) {
       int maxSetting = 0;
       if(selected == 0) maxSetting = 3; // font size
-      if(selected == 1) maxSetting = 1; // theme
+      if(selected == 1) maxSetting = 2; // theme
       if(selectedSetting < maxSetting){
         selectedSetting += 1;
       } else {
@@ -68,7 +69,7 @@ public class SettingsScreen implements Screen {
     if (key.getKeyCode() == KeyEvent.VK_LEFT && inSetting) {
       int maxSetting = 0;
       if(selected == 0) maxSetting = 3; // font size
-      if(selected == 1) maxSetting = 1; // theme
+      if(selected == 1) maxSetting = 2; // theme
       if(selectedSetting > 0){
         selectedSetting -= 1;
       } else {
@@ -120,8 +121,12 @@ public class SettingsScreen implements Screen {
             theme = "dark";
           }
           if(selectedSetting == 1){
-            prefs.put("theme", "funky");
-            theme = "light";
+            prefs.put("theme", "lollipop");
+            theme = "lollipop";
+          }
+          if(selectedSetting == 2){
+            prefs.put("theme", "cyber");
+            theme = "cyber";
           }
           leaveSetting();
         }

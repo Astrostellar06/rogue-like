@@ -34,7 +34,14 @@ public class Data implements Serializable {
 
     public static void getTheme(){
         String theme = prefs.get("theme", "dark");
-        if(theme.equals("dark")){
+        if(theme.equals("lollipop")){
+            font = Assets.primary();
+            background = Assets.black;
+            playerColor = Assets.primarySelected();
+            roomColor = Assets.black;
+            pathColor = Assets.black;
+        }
+        if(theme.equals("cyber")){
             font = Assets.green;
             background = Assets.black;
             playerColor = Assets.lightBlue;
