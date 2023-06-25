@@ -37,7 +37,8 @@ public class HomeScreen implements Screen {
     }
     if (key.getKeyCode() == KeyEvent.VK_ENTER){
       if(selected == 0){
-        return new GameScreen();
+        return new LaunchScreen();
+        //return new GameScreen();
       }
       if(selected == 2){
         return new SettingsScreen();
