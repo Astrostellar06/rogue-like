@@ -6,19 +6,24 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Random;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 
 import asciiPanel.AsciiPanel;
 import roguelike.Assets;
 import roguelike.models.*;
 import roguelike.utils.Constants;
+import roguelike.utils.FileConfiguration;
 import roguelike.utils.MapGenerator;
 
 public class Game extends JFrame implements KeyListener {
 
-    public Game(AsciiPanel terminal) { //Création du jeu
+    public Game(AsciiPanel terminal, boolean newGame) { //Création du jeu
         super(); //Utilisation de JFrame et de AsciiPanel
-        Constants.data = new Data();
+        if (newGame) {
+            Constants.data = new Data();
+        } else {
+            FileConfiguration.load();
+        }
         Constants.data.enemies = new ArrayList<>();
         Constants.data.items = new ArrayList<>();
         Constants.data.coins = new ArrayList<>();
@@ -27,6 +32,13 @@ public class Game extends JFrame implements KeyListener {
         Constants.data.getPlayer();
         Constants.data.terminal = terminal;
         addKeyListener(this); //Ajout de l'écouteur de touches
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                FileConfiguration.save();
+                System.exit(0);
+            }
+        });
 
         for (int i = 0 ; i < 10; i++) {
             addItem(new Weapon());
