@@ -29,10 +29,8 @@ public class Data implements Serializable {
     public ArrayList<Coin> coins;
     public int[] stats;
     public Color font, background, playerColor, roomColor, pathColor;
-    public boolean invOpen = false, justPickedUp = false, pickUp = false, inAttack = false, waitingForAttack = false, waitingForEnemy = false, waitingForReturn = false, over = false, waitingForChoice = false; //état de jeu
-    public long tempsInactif = 0;
+   public long tempsInactif = 0;
     public ArrayList<Room> listRooms = MapGenerator.generate();
-    public Enemy enemyAttacked = null;
 
 
 }

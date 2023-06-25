@@ -166,7 +166,7 @@ public class Game extends JFrame implements KeyListener {
         Entity entity;
         int dx = 140;
         int dy = 0;
-        if (Constants.data.inAttack) {
+        if (Constants.inAttack) {
             b = 2;
             dy = 60;
             dx = 120;
@@ -195,7 +195,7 @@ public class Game extends JFrame implements KeyListener {
             Constants.terminal.write("Magic defense: " + entity.getMagicDef() + "  ", dx, dy+17, new Color(94, 0, 255), Constants.data.background);
             Constants.terminal.write("Crit chance: " + entity.getCritChance() + "  ", dx, dy+19, new Color(41, 168, 33), Constants.data.background);
         }
-        if (!Constants.data.inAttack) {
+        if (!Constants.inAttack) {
             Constants.terminal.write("Coins: " + Constants.data.player.getCoins() + "  ", 140, 21, new Color(255, 204, 0), Constants.data.background);
             int x = 0;
             for (int i = 1; i <= Constants.data.player.getLevel(); i++) {
@@ -232,12 +232,12 @@ public class Game extends JFrame implements KeyListener {
         add(Constants.terminal);
         for (int i = 0; i < Constants.data.enemies.size(); i++) {
             if (Constants.data.enemies.get(i).getX() == Constants.data.player.getX() + Constants.data.x && Constants.data.enemies.get(i).getY() == Constants.data.player.getY() + Constants.data.y) {
-                Constants.data.enemyAttacked = Constants.data.enemies.get(i);
-                affAttack(Constants.data.enemyAttacked);
+                Constants.enemyAttacked = Constants.data.enemies.get(i);
+                affAttack(Constants.enemyAttacked);
             }
         }
 
-        if (!Constants.data.inAttack) {
+        if (!Constants.inAttack) {
             for (int i = 0; i < Constants.data.coins.size(); i++) {
                 if (Constants.data.coins.get(i).getX() == Constants.data.player.getX() + Constants.data.x && Constants.data.coins.get(i).getY() == Constants.data.player.getY() + Constants.data.y) {
                     Constants.data.coins.remove(i);
@@ -251,13 +251,13 @@ public class Game extends JFrame implements KeyListener {
             }
 
             Moves.moveEnemies();
-            if (!Constants.data.inAttack) {
+            if (!Constants.inAttack) {
                 affAllItems();
                 affCoins();
             }
         }
 
-        if (!Constants.data.inAttack) { //Je refais le test, car moveEnemies() peut changer la valeur de Constants.data.inAttack
+        if (!Constants.inAttack) { //Je refais le test, car moveEnemies() peut changer la valeur de Constants.data.inAttack
             for (int i = 0; i < Constants.data.items.size(); i++) {
                 if (Constants.data.items.get(i).getX() == Constants.data.player.getX() + Constants.data.x && Constants.data.items.get(i).getY() == Constants.data.player.getY() + Constants.data.y) {
                     for (int j = 0; j < 6; j++) {
@@ -272,7 +272,7 @@ public class Game extends JFrame implements KeyListener {
                     }
                     for (int j = 140; j < 169; j++)
                         Constants.terminal.write(Character.toString(32), j, 35, Constants.data.font, Constants.data.background);
-                    Constants.data.pickUp = true;
+                    Constants.pickUp = true;
                     Constants.data.itemSelected = i;
                     clearSideAff();
                     affMsg("You found a " + Constants.data.items.get(i).getName(), 140, 35);
@@ -291,8 +291,8 @@ public class Game extends JFrame implements KeyListener {
     }
 
     public void affAttack(Enemy enemy) {
-        Constants.data.inAttack = true;
-        Constants.data.waitingForAttack = true;
+        Constants.inAttack = true;
+        Constants.waitingForAttack = true;
         Constants.data.stats[0] = Constants.data.player.getHpMax();
         Constants.data.stats[1] = Constants.data.player.getAtk();
         Constants.data.stats[2] = Constants.data.player.getDef();
@@ -308,7 +308,7 @@ public class Game extends JFrame implements KeyListener {
     }
     public void attack(Enemy enemy) {
         Constants.data.attackSelected = 1;
-        Constants.data.waitingForAttack = false;
+        Constants.waitingForAttack = false;
         for (int i = 1 ; i < 169 ; i++) {
             for (int j = 1 ; j < 84 ; j++) {
                 Constants.terminal.write(" ", i, j, Constants.data.font, Constants.data.background);
@@ -392,7 +392,7 @@ public class Game extends JFrame implements KeyListener {
             attackPlayer(enemy);
         } else {
             Constants.data.spellSelected = 0;
-            Constants.data.waitingForChoice = true;
+            Constants.waitingForChoice = true;
             affSpellSelected();
         }
     }
@@ -424,13 +424,13 @@ public class Game extends JFrame implements KeyListener {
                 }
                 affMsg("Critical Hit!", 7, 66);
             }
-            Constants.data.waitingForEnemy = true;
+            Constants.waitingForEnemy = true;
         } else if (Constants.data.attackSelected == 2) {
             if (Constants.data.player.getSpells().get(Constants.data.spellSelected).getManaCost() > Constants.data.player.getMana()) {
                 clearBottomAff();
                 affMsg("You don't have enough mana to cast this spell.", 7, 64);
-                Constants.data.waitingForChoice = false;
-                Constants.data.waitingForAttack = true;
+                Constants.waitingForChoice = false;
+                Constants.waitingForAttack = true;
             } else {
                 Constants.data.player.setMana(Constants.data.player.getMana() - Constants.data.player.getSpells().get(Constants.data.spellSelected).getManaCost());
                 Constants.data.player.setHp(Constants.data.player.getHp() + Constants.data.player.getSpells().get(Constants.data.spellSelected).getHpPlayer());
@@ -488,8 +488,8 @@ public class Game extends JFrame implements KeyListener {
                 affStats(enemy);
                 affMsg("You decided to cast " + Constants.data.player.getSpells().get(Constants.data.spellSelected).getName() + ".", 7, 64);
 
-                Constants.data.waitingForChoice = false;
-                Constants.data.waitingForEnemy = true;
+                Constants.waitingForChoice = false;
+                Constants.waitingForEnemy = true;
             }
 
         } else if (Constants.data.attackSelected == 3) {
@@ -560,8 +560,8 @@ public class Game extends JFrame implements KeyListener {
             affStats(enemy);
             affMsg("You decided to use your " + potionUsed.getName() + ".", 7, 64);
 
-            Constants.data.waitingForChoice = false;
-            Constants.data.waitingForEnemy = true;
+            Constants.waitingForChoice = false;
+            Constants.waitingForEnemy = true;
         }
     }
 
@@ -675,8 +675,8 @@ public class Game extends JFrame implements KeyListener {
                 }
                 affMsg("Critical Hit!", 7, 66);
             }
-            Constants.data.waitingForEnemy = false;
-            Constants.data.waitingForAttack = true;
+            Constants.waitingForEnemy = false;
+            Constants.waitingForAttack = true;
             Constants.data.player.setMana(Constants.data.player.getMana() + Constants.data.player.getManaRegen());
             if (Constants.data.player.getMana() > Constants.data.player.getManaMax())
                 Constants.data.player.setMana(Constants.data.player.getManaMax());
@@ -701,15 +701,15 @@ public class Game extends JFrame implements KeyListener {
         for (int i = 30 ; i < 44 ; i++) {
             Constants.terminal.write(Assets.gameOver[i-30], 19, i, Constants.data.font, Constants.data.background);
         }
-        Constants.data.over = true;
+        Constants.over = true;
         add(Constants.terminal);
         Constants.terminal.repaint();
     }
 
     public void winCombat(Enemy enemy) {
-        Constants.data.waitingForEnemy = false;
-        Constants.data.waitingForAttack = false;
-        Constants.data.inAttack = false;
+        Constants.waitingForEnemy = false;
+        Constants.waitingForAttack = false;
+        Constants.inAttack = false;
         clearBottomAff();
         Constants.data.player.setHpMax(Constants.data.stats[0]);
         Constants.data.player.setAtk(Constants.data.stats[1]);
@@ -728,7 +728,7 @@ public class Game extends JFrame implements KeyListener {
         Constants.data.enemies.remove(enemy);
         affMsg("You killed the " + enemy.getName() + "!", 7, 64);
         affMsg("Reward: " + enemy.getXp() + " xp, " + enemy.getCoins() + " coins.", 7, 66);
-        Constants.data.waitingForReturn = true;
+        Constants.waitingForReturn = true;
     }
 
     public void clearSideAff() {
@@ -748,7 +748,7 @@ public class Game extends JFrame implements KeyListener {
 
     public void pickedUp(char keyPressed, int i) { //Méthode pour ramasser un item, called seulement lors d'un input E ou R
         clearSideAff();
-        Constants.data.justPickedUp = true;
+        Constants.justPickedUp = true;
         if (keyPressed == 'E') {
             if (Constants.data.player.getInv().size() < 10) {
                 Constants.data.player.getInv().add(Constants.data.items.get(i));
@@ -870,7 +870,7 @@ public class Game extends JFrame implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) { //Méthode pour gérer les inputs
         if (System.currentTimeMillis() - Constants.data.tempsInactif > 20) {
-            if (Constants.data.inAttack && !Constants.data.waitingForAttack && !Constants.data.waitingForEnemy && !Constants.data.waitingForChoice) {
+            if (Constants.inAttack && !Constants.waitingForAttack && !Constants.waitingForEnemy && !Constants.waitingForChoice) {
                 if (e.getKeyCode() == KeyEvent.VK_DOWN && Constants.data.attackSelected == 1)
                     Constants.data.attackSelected = 2;
                 else if (e.getKeyCode() == KeyEvent.VK_UP && Constants.data.attackSelected == 2)
@@ -880,11 +880,11 @@ public class Game extends JFrame implements KeyListener {
                 else if (e.getKeyCode() == KeyEvent.VK_LEFT && Constants.data.attackSelected == 3)
                     Constants.data.attackSelected = 1;
                 else if (e.getKeyCode() == KeyEvent.VK_ENTER)
-                    attack2(Constants.data.enemyAttacked);
+                    attack2(Constants.enemyAttacked);
                 if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT) {
                     affSelection();
                 }
-            } else if (Constants.data.inAttack && !Constants.data.waitingForAttack && !Constants.data.waitingForEnemy) {
+            } else if (Constants.inAttack && !Constants.waitingForAttack && !Constants.waitingForEnemy) {
                 if (e.getKeyCode() == KeyEvent.VK_DOWN && ((Constants.data.attackSelected == 2 && Constants.data.player.getSpells().size() > Constants.data.spellSelected + 3) || (Constants.data.attackSelected == 3 && Constants.data.numberPotions > Constants.data.spellSelected + 3)))
                     Constants.data.spellSelected += 3;
                 else if (e.getKeyCode() == KeyEvent.VK_UP && Constants.data.spellSelected > 2)
@@ -894,44 +894,44 @@ public class Game extends JFrame implements KeyListener {
                 else if (e.getKeyCode() == KeyEvent.VK_LEFT && Constants.data.spellSelected > 0)
                     Constants.data.spellSelected -= 1;
                 else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    Constants.data.waitingForChoice = false;
-                    attack(Constants.data.enemyAttacked);
+                    Constants.waitingForChoice = false;
+                    attack(Constants.enemyAttacked);
                 } else if (e.getKeyCode() == KeyEvent.VK_ENTER && ((Constants.data.numberPotions > 0 && Constants.data.attackSelected == 3) || (Constants.data.player.getSpells().size() != 0 && Constants.data.attackSelected == 2)))
-                    attackPlayer(Constants.data.enemyAttacked);
+                    attackPlayer(Constants.enemyAttacked);
                 if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT) {
                     affSpellSelected();
                 }
-            } else if (Constants.data.inAttack && !Constants.data.waitingForAttack) {
+            } else if (Constants.inAttack && !Constants.waitingForAttack) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER)
-                    attackEnemy(Constants.data.enemyAttacked);
-            } else if (Constants.data.inAttack) {
+                    attackEnemy(Constants.enemyAttacked);
+            } else if (Constants.inAttack) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    if (Constants.data.over) {
+                    if (Constants.over) {
                         setVisible(false);
                         dispose();
                     } else if (Constants.data.player.getHp() == 0)
                         gameOver();
                     else
-                        attack(Constants.data.enemyAttacked);
+                        attack(Constants.enemyAttacked);
                 }
-            } else if (Constants.data.waitingForReturn) {
+            } else if (Constants.waitingForReturn) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     aff();
-                    Constants.data.waitingForReturn = false;
+                    Constants.waitingForReturn = false;
                 }
-            } else if (Constants.data.pickUp) {//si on est sur un item
+            } else if (Constants.pickUp) {//si on est sur un item
                 if (e.getKeyCode() == KeyEvent.VK_E) {
-                    Constants.data.pickUp = false;
+                    Constants.pickUp = false;
                     pickedUp('E', Constants.data.itemSelected);
                 }
                 if (e.getKeyCode() == KeyEvent.VK_R) {
-                    Constants.data.pickUp = false;
+                    Constants.pickUp = false;
                     pickedUp('R', Constants.data.itemSelected);
                 }
-            } else if (Constants.data.invOpen) {
+            } else if (Constants.invOpen) {
                 if (e.getKeyCode() == KeyEvent.VK_I) {
                     Constants.data.itemInv = 0;
-                    Constants.data.invOpen = !Constants.data.invOpen;
+                    Constants.invOpen = !Constants.invOpen;
                     Inventory.affInv();
                 }
                 if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_E || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
@@ -993,7 +993,7 @@ public class Game extends JFrame implements KeyListener {
             } else {
                 if (e.getKeyCode() == KeyEvent.VK_I) {
                     Constants.data.itemInv = 0;
-                    Constants.data.invOpen = !Constants.data.invOpen;
+                    Constants.invOpen = !Constants.invOpen;
                     Inventory.affInv();
                 }
                 if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D)
@@ -1008,9 +1008,9 @@ public class Game extends JFrame implements KeyListener {
                     Constants.data.player.move(Constants.data.x, Constants.data.y, Constants.game);
                     Constants.data.x = 0;
                     Constants.data.y = 0;
-                    if (Constants.data.justPickedUp) {
-                        Constants.data.justPickedUp = false;
-                        if (!Constants.data.inAttack)
+                    if (Constants.justPickedUp) {
+                        Constants.justPickedUp = false;
+                        if (!Constants.inAttack)
                             affAllItems();
                     }
                 }

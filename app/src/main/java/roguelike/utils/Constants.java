@@ -5,6 +5,7 @@ import roguelike.App;
 import roguelike.Assets;
 import roguelike.game.Data;
 import roguelike.game.Game;
+import roguelike.models.Enemy;
 import roguelike.models.Player;
 
 import java.util.prefs.Preferences;
@@ -16,6 +17,9 @@ public class Constants {
 
     static Preferences prefs = Preferences.userNodeForPackage(App.class);
     static public AsciiPanel terminal;
+    public static Enemy enemyAttacked = null;
+    public static boolean invOpen = false, justPickedUp = false, pickUp = false, inAttack = false, waitingForAttack = false, waitingForEnemy = false, waitingForReturn = false, over = false, waitingForChoice = false; //état de jeu
+
 
     public static void getTheme(){
         String theme = prefs.get("theme", "dark");

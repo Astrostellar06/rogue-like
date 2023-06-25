@@ -7,7 +7,7 @@ import javax.swing.*;
 public class Inventory extends JFrame {
 
     public static void affInv() {
-        if (!Constants.data.invOpen)
+        if (!Constants.invOpen)
             Constants.game.aff();
         else {
             Constants.game.clearSideAff();

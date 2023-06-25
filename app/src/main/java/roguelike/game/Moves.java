@@ -21,12 +21,12 @@ public class Moves {
 
         for (int i = 0; i < Constants.data.enemies.size(); i++) {
             if (Constants.data.enemies.get(i).getX() == Constants.data.player.getX() + Constants.data.x && Constants.data.enemies.get(i).getY() == Constants.data.player.getY() + Constants.data.y) {
-                Constants.data.enemyAttacked = Constants.data.enemies.get(i);
-                Constants.game.affAttack(Constants.data.enemyAttacked);
+                Constants.enemyAttacked = Constants.data.enemies.get(i);
+                Constants.game.affAttack(Constants.enemyAttacked);
             }
         }
 
-        if (!Constants.data.inAttack) {
+        if (!Constants.inAttack) {
             for (int i = 0; i < Constants.data.coins.size(); i++) {
                 if (Constants.data.coins.get(i).getX() == Constants.data.player.getX() + Constants.data.x && Constants.data.coins.get(i).getY() == Constants.data.player.getY() + Constants.data.y) {
                     Constants.data.coins.remove(i);
@@ -38,13 +38,13 @@ public class Moves {
             }
 
             moveEnemies();
-            if (!Constants.data.inAttack) {
+            if (!Constants.inAttack) {
                 Constants.game.affAllItems();
                 Constants.game.affCoins();
             }
         }
 
-        if (!Constants.data.inAttack) { //Je refais le test, car moveEnemies() peut changer la valeur de Constants.data.inAttack
+        if (!Constants.inAttack) { //Je refais le test, car moveEnemies() peut changer la valeur de Constants.data.inAttack
             for (int i = 0; i < Constants.data.items.size(); i++) {
                 if (Constants.data.items.get(i).getX() == Constants.data.player.getX() + Constants.data.x && Constants.data.items.get(i).getY() == Constants.data.player.getY() + Constants.data.y) {
                     for (int j = 0; j < 6; j++) {
@@ -58,7 +58,7 @@ public class Moves {
                     }
                     for (int j = 140; j < 169; j++)
                         Constants.terminal.write(Character.toString(32), j, 35, Constants.data.font, Constants.data.background);
-                    Constants.data.pickUp = true;
+                    Constants.pickUp = true;
                     Constants.data.itemSelected = i;
                     Constants.game.clearSideAff();
                     Constants.game.affMsg("You found a " + Constants.data.items.get(i).getName(), 140, 35);
@@ -80,7 +80,7 @@ public class Moves {
         for (Enemy enemy : Constants.data.enemies) {
             int a = 0;
             int b = 0;
-            if (!Constants.data.inAttack)
+            if (!Constants.inAttack)
                 Constants.terminal.write(Character.toString(32), enemy.getX(), enemy.getY(), enemy.getColor(), Constants.data.roomColor);
             //test si le joueur est dans la même salle que l'ennemi + petit random pour que l'ennemi ne soit pas trop prévisible
             if (ThreadLocalRandom.current().nextInt(0, 8) != 0 && MapGenerator.getRoomByXY(Constants.data.listRooms, (Constants.data.player.getX())/17, (Constants.data.player.getY())/17).getX() == MapGenerator.getRoomByXY(Constants.data.listRooms, (enemy.getX())/17, (enemy.getY())/17).getX() && MapGenerator.getRoomByXY(Constants.data.listRooms, (Constants.data.player.getX())/17, (Constants.data.player.getY())/17).getY() == MapGenerator.getRoomByXY(Constants.data.listRooms, (enemy.getX())/17, (enemy.getY())/17).getY()) {
@@ -123,15 +123,15 @@ public class Moves {
             }
             enemy.setX(enemy.getX() + a);
             enemy.setY(enemy.getY() + b);
-            Constants.data.enemyAttacked = enemy;
+            Constants.enemyAttacked = enemy;
             if (enemy.getX() == Constants.data.player.getX() + Constants.data.x && enemy.getY() == Constants.data.player.getY() + Constants.data.y) {
-                Constants.game.affAttack(Constants.data.enemyAttacked);
+                Constants.game.affAttack(Constants.enemyAttacked);
                 break;
             }
-            if (!Constants.data.inAttack)
+            if (!Constants.inAttack)
                 Constants.terminal.write(Character.toString(234), enemy.getX(), enemy.getY(), enemy.getColor(), Constants.data.roomColor);
         }
-        if (!Constants.data.inAttack) {
+        if (!Constants.inAttack) {
             Constants.game.add(Constants.terminal);
             Constants.terminal.repaint();
         }
