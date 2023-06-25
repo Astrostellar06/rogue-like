@@ -17,13 +17,13 @@ public class Game extends JFrame implements KeyListener {
 
     public Game(AsciiPanel terminal) { //Création du jeu
         super(); //Utilisation de JFrame et de AsciiPanel
-        Data.player = new Player("Astrostellar");
         Data.enemies = new ArrayList<>();
         Data.items = new ArrayList<>();
         Data.coins = new ArrayList<>();
         Data.stats = new int[7];
-        Data.terminal = terminal; //Taille de la fenêtre + police
         Data.getTheme();
+        Data.getPlayer();
+        Data.terminal = terminal;
         addKeyListener(this); //Ajout de l'écouteur de touches
 
         for (int i = 0 ; i < 10; i++) {

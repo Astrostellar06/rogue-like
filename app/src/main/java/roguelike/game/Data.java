@@ -42,4 +42,10 @@ public class Data implements Serializable {
             pathColor = Assets.black;
         }
     }
+
+    public static void getPlayer(){
+        String username = prefs.get("username", "Undefined");
+        String type = prefs.get("class", "Warrior");
+        player = new Player(username, type);
+    }
 }

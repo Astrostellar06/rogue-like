@@ -36,7 +36,7 @@ public class SettingsScreen implements Screen {
     if(needRestart){
       terminal.write("Restart the game for changes to be effective", 10, 20, Assets.white);
     }
-    terminal.write("Press ESC to go back", 10, 80, Assets.white);
+    terminal.write("Press [ESC] to go back", 10, 80, Assets.white);
   }
 
   public void leaveSetting(){

@@ -8,9 +8,11 @@ public class Player extends Entity {
     int mana, manaMax,manaRegen;
     ArrayList<Item> inv;
     ArrayList<Spell> spells;
+    String type;
 
-    public Player(String name) {
+    public Player(String name, String type) {
         this.name = name;
+        this.type = type;
         this.level = 2;
         this.hp = 100;
         this.mana = 100;
