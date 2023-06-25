@@ -8,9 +8,14 @@ import roguelike.Assets;
 public class HomeScreen implements Screen {
 
   private int selected = 0;
+  int homeSprite =(int) Math.round(Math.random()*3);
 
   public void displayOutput(AsciiPanel terminal) {
-    Assets.display(terminal, Assets.skeleton, 100, 30, Assets.secondary());
+    if(homeSprite < 2){
+      Assets.display(terminal, homeSprite == 0 ? Assets.skeleton : Assets.reaper, 100, 30, Assets.secondary());
+    } else {
+      Assets.display(terminal, homeSprite == 2 ? Assets.knight : Assets.dragon, 90, 25, Assets.secondary());
+    }
     Assets.displayCenter(terminal, Assets.title, 5, Assets.primarySelected());
     Assets.display(terminal, Assets.selected, 10, 35+10*selected, Assets.primary());
     Assets.display(terminal, Assets.newgame, 20, 35, Assets.primary());
@@ -37,7 +42,9 @@ public class HomeScreen implements Screen {
     if (key.getKeyCode() == KeyEvent.VK_ENTER){
       if(selected == 0){
         return new LaunchScreen();
-        //return new GameScreen();
+      }
+      if(selected == 1){
+        return new GameScreen(false);
       }
       if(selected == 2){
         return new SettingsScreen();

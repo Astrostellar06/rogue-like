@@ -94,7 +94,7 @@ public class LaunchScreen implements Screen {
         System.out.println(username);
         prefs.put("username", username);
         prefs.put("class", selected == 0 ? "warrior" : selected == 1 ? "archer" : "mage");
-        return new GameScreen();
+        return new GameScreen(true);
       }
     }
     return this;
