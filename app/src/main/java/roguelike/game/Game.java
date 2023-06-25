@@ -21,16 +21,40 @@ public class Game extends JFrame implements KeyListener {
         super(); //Utilisation de JFrame et de AsciiPanel
         if (newGame) {
             Constants.data = new Data();
+            Constants.data.enemies = new ArrayList<>();
+            Constants.data.items = new ArrayList<>();
+            Constants.data.coins = new ArrayList<>();
+            Constants.data.stats = new int[7];
+            Constants.data.getTheme();
+            Constants.data.getPlayer();
+            Constants.data.terminal = terminal;
+
+            for (int i = 0 ; i < 10; i++) {
+                addItem(new Weapon());
+                addItem(new Shield());
+                addItem(new Potion());
+            }
+
+            for (int i = 0 ; i < 5 ; i++) {
+                addEnemy(new Enemy(1));
+                addEnemy(new Enemy(2));
+                addEnemy(new Enemy(3));
+                addEnemy(new Enemy(4));
+            }
+
+            Constants.data.player.getSpells().add(new Spell(1));
+            Constants.data.player.getSpells().add(new Spell(2));
+            Constants.data.player.getSpells().add(new Spell(3));
+            Constants.data.player.getSpells().add(new Spell(4));
+            Constants.data.player.getSpells().add(new Spell(5));
+            Constants.data.player.getSpells().add(new Spell(6));
+            Constants.data.player.getSpells().add(new Spell(7));
+
+            addCoins(60);
         } else {
             FileConfiguration.load();
         }
-        Constants.data.enemies = new ArrayList<>();
-        Constants.data.items = new ArrayList<>();
-        Constants.data.coins = new ArrayList<>();
-        Constants.data.stats = new int[7];
-        Constants.data.getTheme();
-        Constants.data.getPlayer();
-        Constants.data.terminal = terminal;
+
         addKeyListener(this); //Ajout de l'écouteur de touches
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -40,28 +64,7 @@ public class Game extends JFrame implements KeyListener {
             }
         });
 
-        for (int i = 0 ; i < 10; i++) {
-            addItem(new Weapon());
-            addItem(new Shield());
-            addItem(new Potion());
-        }
 
-        for (int i = 0 ; i < 5 ; i++) {
-            addEnemy(new Enemy(1));
-            addEnemy(new Enemy(2));
-            addEnemy(new Enemy(3));
-            addEnemy(new Enemy(4));
-        }
-
-        Constants.data.player.getSpells().add(new Spell(1));
-        Constants.data.player.getSpells().add(new Spell(2));
-        Constants.data.player.getSpells().add(new Spell(3));
-        Constants.data.player.getSpells().add(new Spell(4));
-        Constants.data.player.getSpells().add(new Spell(5));
-        Constants.data.player.getSpells().add(new Spell(6));
-        Constants.data.player.getSpells().add(new Spell(7));
-
-        addCoins(60);
         aff();
     }
 
