@@ -13,13 +13,13 @@ public class Player extends Entity {
     public Player(String name, String type) {
         this.name = name;
         this.type = type;
-        this.level = 2;
+        this.level = 1;
         this.hp = 100;
         this.mana = 100;
         this.atk = 1;
         this.def = 0;
         this.coins = 0;
-        this.xp = 15;
+        this.xp = 0;
         this.hpMax = 100;
         this.manaMax = 100;
         this.manaRegen = 10;

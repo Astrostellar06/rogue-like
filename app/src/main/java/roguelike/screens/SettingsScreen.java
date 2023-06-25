@@ -54,32 +54,17 @@ public class SettingsScreen implements Screen {
 
   public Screen respondToUserInput(KeyEvent key) {
 
-    if (key.getKeyCode() == KeyEvent.VK_DOWN){
-      if(!inSetting){
-        if(selected < 1){
-          selected += 1;
-        } else {
-          selected = 0;
-        }
+    if (key.getKeyCode() == KeyEvent.VK_RIGHT && inSetting) {
+      int maxSetting = 0;
+      if(selected == 0) maxSetting = 3;
+      if(selected == 1) maxSetting = 0;
+      if(selectedSetting < maxSetting){
+        selectedSetting += 1;
       } else {
-        int maxSetting = 0;
-        if(selected == 0) maxSetting = 3;
-        if(selected == 1) maxSetting = 0;
-        if(selectedSetting < maxSetting){
-          selectedSetting += 1;
-        } else {
-          selectedSetting = 0;
-        }
+        selectedSetting = 0;
       }
     }
-    if (key.getKeyCode() == KeyEvent.VK_UP){
-      if(!inSetting){
-        if(selected > 0){
-          selected -= 1;
-        } else {
-          selected = 1;
-        }
-      }
+    if (key.getKeyCode() == KeyEvent.VK_LEFT && inSetting) {
       int maxSetting = 0;
       if(selected == 0) maxSetting = 3;
       if(selected == 1) maxSetting = 0;
@@ -87,6 +72,20 @@ public class SettingsScreen implements Screen {
         selectedSetting -= 1;
       } else {
         selectedSetting = maxSetting;
+      }
+    }
+    if (key.getKeyCode() == KeyEvent.VK_UP && !inSetting) {
+      if(selected < 1){
+        selected += 1;
+      } else {
+        selected = 0;
+      }
+    }
+    if (key.getKeyCode() == KeyEvent.VK_DOWN && !inSetting) {
+      if(selected > 0){
+        selected -= 1;
+      } else {
+        selected = 1;
       }
     }
     if (key.getKeyCode() == KeyEvent.VK_ENTER){

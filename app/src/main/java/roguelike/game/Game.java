@@ -30,7 +30,6 @@ public class Game extends JFrame implements KeyListener {
             addItem(new Weapon());
             addItem(new Shield());
             addItem(new Potion());
-            Data.player.getInv().add(new Potion());
         }
 
         for (int i = 0 ; i < 5 ; i++) {
@@ -327,6 +326,25 @@ public class Game extends JFrame implements KeyListener {
 
         for (int i = 0 ; i < 59 ; i++)
             Data.terminal.write(Assets.knight[i], 2, 1+i, Data.font, Data.background);
+        switch (enemy.getName()) {
+            case "Goblin":
+                for (int i = 0 ; i < 21 ; i++)
+                    Data.terminal.write(Assets.goblin[i], 100, 20+i, Data.font, Data.background);
+                break;
+            case "Skeleton":
+                for (int i = 0 ; i < 38 ; i++)
+                    Data.terminal.write(Assets.skeleton[i], 100, 10+i, Data.font, Data.background);
+                break;
+            case "Reaper":
+                for (int i = 0 ; i < 39 ; i++)
+                    Data.terminal.write(Assets.reaper[i], 100, 10+i, Data.font, Data.background);
+                break;
+            case "Dragon":
+                for (int i = 0 ; i < 52 ; i++)
+                    Data.terminal.write(Assets.dragon[i], 85, 5+i, Data.font, Data.background);
+                break;
+
+        }
         for (int i = 0 ; i < 8 ; i++)
             Data.terminal.write(Assets.spell[i], 13, 73 + i, Data.font, Data.background);
         affStats(enemy);

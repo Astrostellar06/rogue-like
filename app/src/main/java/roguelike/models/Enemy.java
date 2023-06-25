@@ -40,7 +40,7 @@ public class Enemy extends Entity {
                 this.color = new Color(255, 255, 255);
                 break;
             case 3:
-                this.name = "Orc";
+                this.name = "Reaper";
                 this.hp = 30;
                 this.hpMax = 30;
                 this.atk = 10;

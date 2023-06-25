@@ -49,7 +49,7 @@ public class LaunchScreen implements Screen {
     String[] letter = alphabet[i];
     for(int j=0; j<name.length; j++){
       if(name[j].length()>0){
-        name[j] = name[j].substring(0, name[j].length()-1)+letter[j];
+        name[j] = name[j].substring(0, name[j].length())+letter[j];
       } else {
         name[j] = name[j]+letter[j];
       }
