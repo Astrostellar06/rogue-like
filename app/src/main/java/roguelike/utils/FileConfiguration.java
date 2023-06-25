@@ -13,6 +13,8 @@ public class FileConfiguration {
     public static void save() {
         try {
             String fileName = "datas\\save.data";
+            File f1 = new File("datas\\save.data");
+            if (!f1.exists()) f1.createNewFile();
             FileOutputStream fos = new FileOutputStream(fileName);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(Constants.data);
