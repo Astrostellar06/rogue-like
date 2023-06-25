@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.JFrame;
 
@@ -390,11 +391,23 @@ public class Game extends JFrame implements KeyListener {
                     break;
                 }
             }
-            enemy.setHp(enemy.getHp() - (Math.max(Constants.data.player.getAtk() - enemy.getDef(), 0)));
-            if (enemy.getHp() <= 0)
+            Random rand = new Random();
+            int crit = rand.nextInt(1, 101);
+            if (crit <= Constants.data.player.getCritChance())
+                enemy.setHp(enemy.getHp() - (Math.max(Constants.data.player.getAtk()*2 - enemy.getDef(), 0)));
+            else
+                enemy.setHp(enemy.getHp() - (Math.max(Constants.data.player.getAtk() - enemy.getDef(), 0)));            if (enemy.getHp() <= 0)
                 enemy.setHp(0);
             affStats(enemy);
-            affMsg("You attack the " + enemy.getName() + " with your " + weapon + ".", 7, 64);
+            affMsg("You attack the " + enemy.getName() + " with your " + weapon + " and deal " + (crit <= Constants.data.player.getCritChance() ? Constants.data.player.getAtk()*2 : Constants.data.player.getAtk()) + " damage.", 7, 64);
+            if (crit <= Constants.data.player.getCritChance()) {
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                affMsg("Critical Hit!", 7, 66);
+            }
             Constants.data.waitingForEnemy = true;
         } else if (Constants.data.attackSelected == 2) {
             if (Constants.data.player.getSpells().get(Constants.data.spellSelected).getManaCost() > Constants.data.player.getMana()) {
@@ -422,6 +435,8 @@ public class Game extends JFrame implements KeyListener {
                 Constants.data.player.setCritChance(Constants.data.player.getCritChance() + Constants.data.player.getSpells().get(Constants.data.spellSelected).getCritChancePlayer());
                 if (Constants.data.player.getCritChance() < 0)
                     Constants.data.player.setCritChance(0);
+                if (Constants.data.player.getCritChance() > 100)
+                    Constants.data.player.setCritChance(100);
                 Constants.data.player.setManaMax(Constants.data.player.getManaMax() + Constants.data.player.getSpells().get(Constants.data.spellSelected).getManaMaxPlayer());
                 if (Constants.data.player.getManaMax() < 0)
                     Constants.data.player.setManaMax(0);
@@ -451,6 +466,8 @@ public class Game extends JFrame implements KeyListener {
                 enemy.setCritChance(enemy.getCritChance() + Constants.data.player.getSpells().get(Constants.data.spellSelected).getCritChanceEnemy());
                 if (enemy.getCritChance() < 0)
                     enemy.setCritChance(0);
+                if (enemy.getCritChance() > 100)
+                    enemy.setCritChance(100);
 
                 affStats(enemy);
                 affMsg("You decided to cast " + Constants.data.player.getSpells().get(Constants.data.spellSelected).getName() + ".", 7, 64);
@@ -490,6 +507,8 @@ public class Game extends JFrame implements KeyListener {
             Constants.data.player.setCritChance(Constants.data.player.getCritChance() + potionUsed.getCritChancePlayer());
             if (Constants.data.player.getCritChance() < 0)
                 Constants.data.player.setCritChance(0);
+            if (Constants.data.player.getCritChance() > 100)
+                Constants.data.player.setCritChance(100);
             Constants.data.player.setManaMax(Constants.data.player.getManaMax() + potionUsed.getManaMaxPlayer());
             if (Constants.data.player.getManaMax() < 0)
                 Constants.data.player.setManaMax(0);
@@ -519,6 +538,8 @@ public class Game extends JFrame implements KeyListener {
             enemy.setCritChance(enemy.getCritChance() + potionUsed.getCritChanceEnemy());
             if (enemy.getCritChance() < 0)
                 enemy.setCritChance(0);
+            if (enemy.getCritChance() > 100)
+                enemy.setCritChance(100);
 
             affStats(enemy);
             affMsg("You decided to use your " + potionUsed.getName() + ".", 7, 64);
@@ -620,11 +641,24 @@ public class Game extends JFrame implements KeyListener {
             gameOver();
         else {
             clearBottomAff();
-            Constants.data.player.setHp(Constants.data.player.getHp() - (Math.max(enemy.getAtk() - Constants.data.player.getDef(), 0)));
+            Random rand = new Random();
+            int crit = rand.nextInt(1, 101);
+            if (crit <= enemy.getCritChance())
+                Constants.data.player.setHp(Constants.data.player.getHp() - (Math.max(enemy.getAtk()*2 - Constants.data.player.getDef(), 0)));
+            else
+                Constants.data.player.setHp(Constants.data.player.getHp() - (Math.max(enemy.getAtk() - Constants.data.player.getDef(), 0)));
             if (Constants.data.player.getHp() <= 0)
                 Constants.data.player.setHp(0);
             affStats(enemy);
-            affMsg("The " + enemy.getName() + " attacks you.", 7, 64);
+            affMsg("The " + enemy.getName() + " attacks you and deals " + (crit <= enemy.getCritChance() ? enemy.getAtk() * 2 : enemy.getAtk()) + " damage.", 7, 64);
+            if (crit <= enemy.getCritChance()) {
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                affMsg("Critical Hit!", 7, 66);
+            }
             Constants.data.waitingForEnemy = false;
             Constants.data.waitingForAttack = true;
             Constants.data.player.setMana(Constants.data.player.getMana() + Constants.data.player.getManaRegen());
