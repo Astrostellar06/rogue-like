@@ -3,6 +3,7 @@ package roguelike.models;
 import roguelike.enums.Enemies;
 import roguelike.game.Data;
 import roguelike.game.Game;
+import roguelike.utils.Constants;
 
 import java.awt.*;
 import java.util.Random;
@@ -69,15 +70,15 @@ public class Enemy extends Entity {
             empty = true;
             this.x = ThreadLocalRandom.current().nextInt(0, 170);
             this.y = ThreadLocalRandom.current().nextInt(0, 85);
-            if (Data.items != null) {
-                for (int i = 0; i < Data.items.size(); i++) {
-                    if (Data.items.get(i).getX() == this.x && Data.items.get(i).getY() == this.y)
+            if (Constants.data.items != null) {
+                for (int i = 0; i < Constants.data.items.size(); i++) {
+                    if (Constants.data.items.get(i).getX() == this.x && Constants.data.items.get(i).getY() == this.y)
                         empty = false;
                 }
             }
-            if (Data.coins != null) {
-                for (int i = 0; i < Data.coins.size(); i++) {
-                    if (Data.coins.get(i).getX() == this.x && Data.coins.get(i).getY() == this.y)
+            if (Constants.data.coins != null) {
+                for (int i = 0; i < Constants.data.coins.size(); i++) {
+                    if (Constants.data.coins.get(i).getX() == this.x && Constants.data.coins.get(i).getY() == this.y)
                         empty = false;
                 }
             }

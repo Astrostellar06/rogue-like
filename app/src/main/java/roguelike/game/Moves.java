@@ -9,47 +9,47 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Moves {
 
     public static void updateAff() { //Mise à jour de l'affichage après un déplacement + test de la case sur laquelle le joueur se trouve
-        if (Constants.game.charRoom(Data.player.getX(), Data.player.getY()) == '.')
-            Data.terminal.write(Character.toString(32), Data.player.getX(), Data.player.getY(), Data.font, Data.roomColor);
-        else if (Constants.game.charRoom(Data.player.getX(), Data.player.getY()) == '*')
-            Data.terminal.write(Character.toString(32), Data.player.getX(), Data.player.getY(), Data.font, Data.pathColor);
+        if (Constants.game.charRoom(Constants.data.player.getX(), Constants.data.player.getY()) == '.')
+            Constants.data.terminal.write(Character.toString(32), Constants.data.player.getX(), Constants.data.player.getY(), Constants.data.font, Constants.data.roomColor);
+        else if (Constants.game.charRoom(Constants.data.player.getX(), Constants.data.player.getY()) == '*')
+            Constants.data.terminal.write(Character.toString(32), Constants.data.player.getX(), Constants.data.player.getY(), Constants.data.font, Constants.data.pathColor);
 
-        if (Constants.game.charRoom(Data.player.getX()+Data.x, Data.player.getY()+Data.y) == '.')
-            Data.terminal.write(Character.toString(1), Data.player.getX() + Data.x, Data.player.getY() + Data.y, Data.playerColor, Data.roomColor);
-        else if (Constants.game.charRoom(Data.player.getX()+Data.x, Data.player.getY()+Data.y) == '*')
-            Data.terminal.write(Character.toString(1), Data.player.getX() + Data.x, Data.player.getY() + Data.y, Data.playerColor, Data.pathColor);
+        if (Constants.game.charRoom(Constants.data.player.getX()+Constants.data.x, Constants.data.player.getY()+Constants.data.y) == '.')
+            Constants.data.terminal.write(Character.toString(1), Constants.data.player.getX() + Constants.data.x, Constants.data.player.getY() + Constants.data.y, Constants.data.playerColor, Constants.data.roomColor);
+        else if (Constants.game.charRoom(Constants.data.player.getX()+Constants.data.x, Constants.data.player.getY()+Constants.data.y) == '*')
+            Constants.data.terminal.write(Character.toString(1), Constants.data.player.getX() + Constants.data.x, Constants.data.player.getY() + Constants.data.y, Constants.data.playerColor, Constants.data.pathColor);
 
-        for (int i = 0; i < Data.enemies.size(); i++) {
-            if (Data.enemies.get(i).getX() == Data.player.getX() + Data.x && Data.enemies.get(i).getY() == Data.player.getY() + Data.y) {
-                Data.enemyAttacked = Data.enemies.get(i);
-                Constants.game.affAttack(Data.enemyAttacked);
+        for (int i = 0; i < Constants.data.enemies.size(); i++) {
+            if (Constants.data.enemies.get(i).getX() == Constants.data.player.getX() + Constants.data.x && Constants.data.enemies.get(i).getY() == Constants.data.player.getY() + Constants.data.y) {
+                Constants.data.enemyAttacked = Constants.data.enemies.get(i);
+                Constants.game.affAttack(Constants.data.enemyAttacked);
             }
         }
 
-        if (!Data.inAttack) {
-            for (int i = 0; i < Data.coins.size(); i++) {
-                if (Data.coins.get(i).getX() == Data.player.getX() + Data.x && Data.coins.get(i).getY() == Data.player.getY() + Data.y) {
-                    Data.coins.remove(i);
-                    Data.player.setCoins(Data.player.getCoins()+1);
+        if (!Constants.data.inAttack) {
+            for (int i = 0; i < Constants.data.coins.size(); i++) {
+                if (Constants.data.coins.get(i).getX() == Constants.data.player.getX() + Constants.data.x && Constants.data.coins.get(i).getY() == Constants.data.player.getY() + Constants.data.y) {
+                    Constants.data.coins.remove(i);
+                    Constants.data.player.setCoins(Constants.data.player.getCoins()+1);
                     Constants.game.clearSideAff();
-                    Data.terminal.write("+1 coin", 140, 35, Data.font, Data.background);
-                    Constants.game.affStats(Data.player);
+                    Constants.data.terminal.write("+1 coin", 140, 35, Constants.data.font, Constants.data.background);
+                    Constants.game.affStats(Constants.data.player);
                 }
             }
 
             moveEnemies();
-            if (!Data.inAttack) {
+            if (!Constants.data.inAttack) {
                 Constants.game.affAllItems();
                 Constants.game.affCoins();
             }
         }
 
-        if (!Data.inAttack) { //Je refais le test, car moveEnemies() peut changer la valeur de Data.inAttack
-            for (int i = 0; i < Data.items.size(); i++) {
-                if (Data.items.get(i).getX() == Data.player.getX() + Data.x && Data.items.get(i).getY() == Data.player.getY() + Data.y) {
+        if (!Constants.data.inAttack) { //Je refais le test, car moveEnemies() peut changer la valeur de Constants.data.inAttack
+            for (int i = 0; i < Constants.data.items.size(); i++) {
+                if (Constants.data.items.get(i).getX() == Constants.data.player.getX() + Constants.data.x && Constants.data.items.get(i).getY() == Constants.data.player.getY() + Constants.data.y) {
                     for (int j = 0; j < 6; j++) {
-                        Data.terminal.write(Character.toString(2 - j % 2), Data.player.getX() + Data.x, Data.player.getY() + Data.y, Data.playerColor, Data.background);
-                        Data.terminal.paintImmediately(Data.terminal.getBounds());
+                        Constants.data.terminal.write(Character.toString(2 - j % 2), Constants.data.player.getX() + Constants.data.x, Constants.data.player.getY() + Constants.data.y, Constants.data.playerColor, Constants.data.background);
+                        Constants.data.terminal.paintImmediately(Constants.data.terminal.getBounds());
                         try {
                             Thread.sleep(250);
                         } catch (InterruptedException e) {
@@ -57,11 +57,11 @@ public class Moves {
                         }
                     }
                     for (int j = 140; j < 169; j++)
-                        Data.terminal.write(Character.toString(32), j, 35, Data.font, Data.background);
-                    Data.pickUp = true;
-                    Data.itemSelected = i;
+                        Constants.data.terminal.write(Character.toString(32), j, 35, Constants.data.font, Constants.data.background);
+                    Constants.data.pickUp = true;
+                    Constants.data.itemSelected = i;
                     Constants.game.clearSideAff();
-                    Constants.game.affMsg("You found a " + Data.items.get(i).getName(), 140, 35);
+                    Constants.game.affMsg("You found a " + Constants.data.items.get(i).getName(), 140, 35);
                     try {
                         Thread.sleep(200);
                     } catch (InterruptedException e) {
@@ -77,31 +77,31 @@ public class Moves {
     }
 
     public static void moveEnemies() {
-        for (Enemy enemy : Data.enemies) {
+        for (Enemy enemy : Constants.data.enemies) {
             int a = 0;
             int b = 0;
-            if (!Data.inAttack)
-                Data.terminal.write(Character.toString(32), enemy.getX(), enemy.getY(), enemy.getColor(), Data.roomColor);
+            if (!Constants.data.inAttack)
+                Constants.data.terminal.write(Character.toString(32), enemy.getX(), enemy.getY(), enemy.getColor(), Constants.data.roomColor);
             //test si le joueur est dans la même salle que l'ennemi + petit random pour que l'ennemi ne soit pas trop prévisible
-            if (ThreadLocalRandom.current().nextInt(0, 8) != 0 && MapGenerator.getRoomByXY(Data.listRooms, (Data.player.getX())/17, (Data.player.getY())/17).getX() == MapGenerator.getRoomByXY(Data.listRooms, (enemy.getX())/17, (enemy.getY())/17).getX() && MapGenerator.getRoomByXY(Data.listRooms, (Data.player.getX())/17, (Data.player.getY())/17).getY() == MapGenerator.getRoomByXY(Data.listRooms, (enemy.getX())/17, (enemy.getY())/17).getY()) {
+            if (ThreadLocalRandom.current().nextInt(0, 8) != 0 && MapGenerator.getRoomByXY(Constants.data.listRooms, (Constants.data.player.getX())/17, (Constants.data.player.getY())/17).getX() == MapGenerator.getRoomByXY(Constants.data.listRooms, (enemy.getX())/17, (enemy.getY())/17).getX() && MapGenerator.getRoomByXY(Constants.data.listRooms, (Constants.data.player.getX())/17, (Constants.data.player.getY())/17).getY() == MapGenerator.getRoomByXY(Constants.data.listRooms, (enemy.getX())/17, (enemy.getY())/17).getY()) {
                 //petit random pour que l'ennemi se rapproche soit en x soit en y du joueur
                 if (ThreadLocalRandom.current().nextInt(0, 2) == 0) {
-                    if (enemy.getX() < Data.player.getX() && Constants.game.charRoom(enemy.getX()+1, enemy.getY()) == '.')
+                    if (enemy.getX() < Constants.data.player.getX() && Constants.game.charRoom(enemy.getX()+1, enemy.getY()) == '.')
                         a = 1;
-                    else if (enemy.getX() > Data.player.getX() && Constants.game.charRoom(enemy.getX()-1, enemy.getY()) == '.')
+                    else if (enemy.getX() > Constants.data.player.getX() && Constants.game.charRoom(enemy.getX()-1, enemy.getY()) == '.')
                         a = -1;
-                    else if (enemy.getY() < Data.player.getY() && Constants.game.charRoom(enemy.getX(), enemy.getY()+1) == '.')
+                    else if (enemy.getY() < Constants.data.player.getY() && Constants.game.charRoom(enemy.getX(), enemy.getY()+1) == '.')
                         b = 1;
-                    else if (enemy.getY() > Data.player.getY() && Constants.game.charRoom(enemy.getX(), enemy.getY()-1) == '.')
+                    else if (enemy.getY() > Constants.data.player.getY() && Constants.game.charRoom(enemy.getX(), enemy.getY()-1) == '.')
                         b = -1;
                 } else {
-                    if (enemy.getY() < Data.player.getY() && Constants.game.charRoom(enemy.getX(), enemy.getY()+1) == '.')
+                    if (enemy.getY() < Constants.data.player.getY() && Constants.game.charRoom(enemy.getX(), enemy.getY()+1) == '.')
                         b = 1;
-                    else if (enemy.getY() > Data.player.getY() && Constants.game.charRoom(enemy.getX(), enemy.getY()-1) == '.')
+                    else if (enemy.getY() > Constants.data.player.getY() && Constants.game.charRoom(enemy.getX(), enemy.getY()-1) == '.')
                         b = -1;
-                    else if (enemy.getX() < Data.player.getX() && Constants.game.charRoom(enemy.getX()+1, enemy.getY()) == '.')
+                    else if (enemy.getX() < Constants.data.player.getX() && Constants.game.charRoom(enemy.getX()+1, enemy.getY()) == '.')
                         a = 1;
-                    else if (enemy.getX() > Data.player.getX() && Constants.game.charRoom(enemy.getX()-1, enemy.getY()) == '.')
+                    else if (enemy.getX() > Constants.data.player.getX() && Constants.game.charRoom(enemy.getX()-1, enemy.getY()) == '.')
                         a = -1;
                 }
             } else {
@@ -115,25 +115,25 @@ public class Moves {
                 else if (j == 4 && Constants.game.charRoom(enemy.getX(), enemy.getY()-1) == '.')
                     b = -1;
             }
-            for (int j = 0; j < Data.enemies.size(); j++) {
-                if (enemy.getX() + a == Data.enemies.get(j).getX() && enemy.getY() + b == Data.enemies.get(j).getY() && enemy != Data.enemies.get(j)) {
+            for (int j = 0; j < Constants.data.enemies.size(); j++) {
+                if (enemy.getX() + a == Constants.data.enemies.get(j).getX() && enemy.getY() + b == Constants.data.enemies.get(j).getY() && enemy != Constants.data.enemies.get(j)) {
                     a = 0;
                     b = 0;
                 }
             }
             enemy.setX(enemy.getX() + a);
             enemy.setY(enemy.getY() + b);
-            Data.enemyAttacked = enemy;
-            if (enemy.getX() == Data.player.getX() + Data.x && enemy.getY() == Data.player.getY() + Data.y) {
-                Constants.game.affAttack(Data.enemyAttacked);
+            Constants.data.enemyAttacked = enemy;
+            if (enemy.getX() == Constants.data.player.getX() + Constants.data.x && enemy.getY() == Constants.data.player.getY() + Constants.data.y) {
+                Constants.game.affAttack(Constants.data.enemyAttacked);
                 break;
             }
-            if (!Data.inAttack)
-                Data.terminal.write(Character.toString(234), enemy.getX(), enemy.getY(), enemy.getColor(), Data.roomColor);
+            if (!Constants.data.inAttack)
+                Constants.data.terminal.write(Character.toString(234), enemy.getX(), enemy.getY(), enemy.getColor(), Constants.data.roomColor);
         }
-        if (!Data.inAttack) {
-            Constants.game.add(Data.terminal);
-            Data.terminal.repaint();
+        if (!Constants.data.inAttack) {
+            Constants.game.add(Constants.data.terminal);
+            Constants.data.terminal.repaint();
         }
     }
 

@@ -15,24 +15,26 @@ import roguelike.models.Room;
 import roguelike.utils.MapGenerator;
 
 public class Data implements Serializable {
-    static Preferences prefs = Preferences.userNodeForPackage(App.class);
+
+    public Data() {}
+    Preferences prefs = Preferences.userNodeForPackage(App.class);
 
     // Game data
-    public static final long serialVersionUID = 1060623638149583738L;
-    public static AsciiPanel terminal;
-    public static int x = 0, y = 0, itemSelected = 0, itemInv = 0, attackSelected = 1, spellSelected = 0, numberPotions = 0;
-    public static Player player;
-    public static ArrayList<Enemy> enemies;
-    public static ArrayList<Item> items;
-    public static ArrayList<Coin> coins;
-    public static int[] stats;
-    public static Color font, background, playerColor, roomColor, pathColor;
-    public static boolean invOpen = false, justPickedUp = false, pickUp = false, inAttack = false, waitingForAttack = false, waitingForEnemy = false, waitingForReturn = false, over = false, waitingForChoice = false; //état de jeu
-    public static long tempsInactif = 0;
-    public static ArrayList<Room> listRooms = MapGenerator.generate();
-    public static Enemy enemyAttacked = null;
+    public final long serialVersionUID = 1060623638149583738L;
+    public AsciiPanel terminal;
+    public int x = 0, y = 0, itemSelected = 0, itemInv = 0, attackSelected = 1, spellSelected = 0, numberPotions = 0;
+    public Player player;
+    public ArrayList<Enemy> enemies;
+    public ArrayList<Item> items;
+    public ArrayList<Coin> coins;
+    public int[] stats;
+    public Color font, background, playerColor, roomColor, pathColor;
+    public boolean invOpen = false, justPickedUp = false, pickUp = false, inAttack = false, waitingForAttack = false, waitingForEnemy = false, waitingForReturn = false, over = false, waitingForChoice = false; //état de jeu
+    public long tempsInactif = 0;
+    public ArrayList<Room> listRooms = MapGenerator.generate();
+    public Enemy enemyAttacked = null;
 
-    public static void getTheme(){
+    public void getTheme(){
         String theme = prefs.get("theme", "dark");
         if(theme.equals("dark")){
             font = Assets.green;
@@ -43,7 +45,7 @@ public class Data implements Serializable {
         }
     }
 
-    public static void getPlayer(){
+    public void getPlayer(){
         String username = prefs.get("username", "Undefined");
         String type = prefs.get("class", "Warrior");
         player = new Player(username, type);

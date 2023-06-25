@@ -7,32 +7,32 @@ import javax.swing.*;
 public class Inventory extends JFrame {
 
     public static void affInv() {
-        if (!Data.invOpen)
+        if (!Constants.data.invOpen)
             Constants.game.aff();
         else {
             Constants.game.clearSideAff();
-            Data.terminal.write("Inventory: (0 /10)", 140, 35, Data.font, Data.background);
-            if (Data.player.getInv().size() != 10)
-                Data.terminal.write(String.valueOf(Data.player.getInv().size()), 153, 35, Data.font, Data.background);
+            Constants.data.terminal.write("Inventory: (0 /10)", 140, 35, Constants.data.font, Constants.data.background);
+            if (Constants.data.player.getInv().size() != 10)
+                Constants.data.terminal.write(String.valueOf(Constants.data.player.getInv().size()), 153, 35, Constants.data.font, Constants.data.background);
             else
-                Data.terminal.write("10", 152, 35, Data.font, Data.background);
+                Constants.data.terminal.write("10", 152, 35, Constants.data.font, Constants.data.background);
 
-            Data.terminal.write("[A] to drop an item", 140, 77, Data.font, Data.background);
-            Data.terminal.write("[E] to equip an item", 140, 75, Data.font, Data.background);
+            Constants.data.terminal.write("[A] to drop an item", 140, 77, Constants.data.font, Constants.data.background);
+            Constants.data.terminal.write("[E] to equip an item", 140, 75, Constants.data.font, Constants.data.background);
 
-            if (Data.player.getInv().size() != 0) {
-                for (int i = 0; i < Data.player.getInv().size(); i++) {
-                    if (i == Data.itemInv)
-                        Data.terminal.write("> " + Data.player.getInv().get(i).getName(), 140, 38 + 2 * i, Data.font, Data.background);
+            if (Constants.data.player.getInv().size() != 0) {
+                for (int i = 0; i < Constants.data.player.getInv().size(); i++) {
+                    if (i == Constants.data.itemInv)
+                        Constants.data.terminal.write("> " + Constants.data.player.getInv().get(i).getName(), 140, 38 + 2 * i, Constants.data.font, Constants.data.background);
                     else
-                        Data.terminal.write(Data.player.getInv().get(i).getName() + "  ", 140, 38 + 2 * i, Data.font, Data.background);
-                    if (Data.player.getInv().get(i).isEquipped())
-                        Data.terminal.write("Equipped", 160, 38 + 2 * i, Data.font, Data.background);
+                        Constants.data.terminal.write(Constants.data.player.getInv().get(i).getName() + "  ", 140, 38 + 2 * i, Constants.data.font, Constants.data.background);
+                    if (Constants.data.player.getInv().get(i).isEquipped())
+                        Constants.data.terminal.write("Equipped", 160, 38 + 2 * i, Constants.data.font, Constants.data.background);
                 }
             } else {
-                Data.terminal.write("Nothing seems to be here...", 140, 38, Data.font, Data.background);
+                Constants.data.terminal.write("Nothing seems to be here...", 140, 38, Constants.data.font, Constants.data.background);
             }
-            Data.terminal.repaint();
+            Constants.data.terminal.repaint();
         }
     }
 }
