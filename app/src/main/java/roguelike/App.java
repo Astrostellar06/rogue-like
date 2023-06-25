@@ -16,6 +16,7 @@ public class App extends JFrame implements KeyListener {
   Preferences prefs = Preferences.userNodeForPackage(App.class);
   String font = prefs.get("font", "medium");
 
+  public static Player player = new Player();
   private AsciiPanel terminal;
   private Screen screen;
 
@@ -27,6 +28,7 @@ public class App extends JFrame implements KeyListener {
     screen = new HomeScreen();
     addKeyListener(this);
     repaint();
+    player.playMusic("music.wav");
   }
   
   public void repaint(){

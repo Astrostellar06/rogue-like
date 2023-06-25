@@ -8,6 +8,7 @@ import java.util.prefs.Preferences;
 import asciiPanel.AsciiPanel;
 import roguelike.App;
 import roguelike.Assets;
+import roguelike.Player;
 
 public class LaunchScreen implements Screen {
   Preferences prefs = Preferences.userNodeForPackage(App.class);
@@ -94,6 +95,8 @@ public class LaunchScreen implements Screen {
         System.out.println(username);
         prefs.put("username", username);
         prefs.put("class", selected == 0 ? "warrior" : selected == 1 ? "archer" : "mage");
+        App.player.stop();
+        App.player.playMusic("music.wav");
         return new GameScreen(true);
       }
     }

@@ -3,6 +3,7 @@
 !src/**/build/
 .vscode
 .idea
+save.txt
 
 # Ignore Gradle GUI config
 gradle-app.setting
