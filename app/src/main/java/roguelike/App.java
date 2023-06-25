@@ -28,7 +28,7 @@ public class App extends JFrame implements KeyListener {
     screen = new HomeScreen();
     addKeyListener(this);
     repaint();
-    player.playMusic("music.wav");
+    player.playMusic("menu.wav", true);
   }
   
   public void repaint(){

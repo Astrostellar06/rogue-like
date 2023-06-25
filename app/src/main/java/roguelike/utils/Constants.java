@@ -18,7 +18,7 @@ public class Constants {
     static Preferences prefs = Preferences.userNodeForPackage(App.class);
     static public AsciiPanel terminal;
     public static Enemy enemyAttacked = null;
-    public static boolean invOpen = false, justPickedUp = false, pickUp = false, inAttack = false, waitingForAttack = false, waitingForEnemy = false, waitingForReturn = false, over = false, waitingForChoice = false; //état de jeu
+    public static boolean invOpen = false, justPickedUp = false, pickUp = false, inAttack = false, waitingForAttack = false, waitingForEnemy = false, waitingForReturn = false, over = false, waitingForChoice = false, musicCombat = false; //état de jeu
 
 
     public static void getTheme(){

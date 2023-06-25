@@ -9,14 +9,17 @@ public class Player {
   AudioInputStream audioInput;
   Clip clip;
 
-  public void playMusic(String musicLoc){
+  public void playMusic(String musicLoc, boolean loop){
     try {
       File musicPath = new File(musicLoc);
       if(musicPath.exists()){ 
         audioInput = AudioSystem.getAudioInputStream(musicPath);
         clip = AudioSystem.getClip();
         clip.open(audioInput);
-        clip.loop(Clip.LOOP_CONTINUOUSLY);
+        if (loop)
+          clip.loop(Clip.LOOP_CONTINUOUSLY);
+        else
+          clip.start();
       } else{
         System.out.println("Couldn't find Music file");
       }

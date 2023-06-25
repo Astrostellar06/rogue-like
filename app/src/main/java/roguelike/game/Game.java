@@ -9,6 +9,7 @@ import java.util.Random;
 import javax.swing.*;
 
 import asciiPanel.AsciiPanel;
+import roguelike.App;
 import roguelike.Assets;
 import roguelike.enums.Classe;
 import roguelike.models.*;
@@ -21,6 +22,8 @@ public class Game extends JFrame implements KeyListener {
     public Game(AsciiPanel terminal, boolean newGame) { //Création du jeu
         super(); //Utilisation de JFrame et de AsciiPanel
         Constants.terminal = terminal;
+        App.player.stop();
+        App.player.playMusic("main.wav", true);
         if (newGame) {
             Constants.data = new Data();
             Constants.data.enemies = new ArrayList<>();
@@ -244,6 +247,7 @@ public class Game extends JFrame implements KeyListener {
                     Constants.data.coins.remove(i);
                     Constants.data.player.setCoins(Constants.data.player.getCoins()+1);
                     clearSideAff();
+                    //App.player.playMusic("coin.wav", false);
                     Constants.terminal.write("+1 coin", 140, 35, Constants.data.font, Constants.data.background);
                     add(Constants.terminal);
                     Constants.terminal.repaint();
@@ -308,6 +312,11 @@ public class Game extends JFrame implements KeyListener {
         Constants.data.tempsInactif = System.currentTimeMillis();
     }
     public void attack(Enemy enemy) {
+        if (!Constants.musicCombat) {
+            App.player.stop();
+            App.player.playMusic("combat.wav", true);
+        }
+        Constants.musicCombat = true;
         Constants.data.attackSelected = 1;
         Constants.waitingForAttack = false;
         for (int i = 1 ; i < 169 ; i++) {
@@ -466,7 +475,13 @@ public class Game extends JFrame implements KeyListener {
                 if (Constants.data.player.getManaRegen() < 0)
                     Constants.data.player.setManaRegen(0);
 
-                enemy.setHp(enemy.getHp() - Constants.data.player.getSpells().get(Constants.data.spellSelected).getHpEnemy());
+                int dmg = Constants.data.player.getSpells().get(Constants.data.spellSelected).getHpEnemy();
+                if (dmg < 0) {
+                    dmg += enemy.getMagicDef();
+                    if (dmg > 0)
+                        dmg = 0;
+                }
+                enemy.setHp(enemy.getHp() + dmg);
                 if (enemy.getHp() <= 0)
                     enemy.setHp(0);
                 if (enemy.getHp() > enemy.getHpMax())
@@ -538,7 +553,7 @@ public class Game extends JFrame implements KeyListener {
             if (Constants.data.player.getManaRegen() < 0)
                 Constants.data.player.setManaRegen(0);
 
-            enemy.setHp(enemy.getHp() - potionUsed.getHpEnemy());
+            enemy.setHp(enemy.getHp() + potionUsed.getHpEnemy());
             if (enemy.getHp() <= 0)
                 enemy.setHp(0);
             if (enemy.getHp() > enemy.getHpMax())
@@ -685,6 +700,8 @@ public class Game extends JFrame implements KeyListener {
     }
 
     public void gameOver() {
+        App.player.stop();
+        App.player.playMusic("gameOver.wav", false);
         for (int i = 1; i < 84; i++) {
             for (int j = 1; j < 169; j++) {
                 Constants.terminal.write(Character.toString(32), j, i, Constants.data.font, Constants.data.background);
@@ -708,6 +725,8 @@ public class Game extends JFrame implements KeyListener {
     }
 
     public void winCombat(Enemy enemy) {
+        App.player.stop();
+        App.player.playMusic("win.wav", false);
         Constants.waitingForEnemy = false;
         Constants.waitingForAttack = false;
         Constants.inAttack = false;
@@ -721,7 +740,7 @@ public class Game extends JFrame implements KeyListener {
         Constants.data.player.setManaRegen(Constants.data.stats[6]);
         Constants.data.player.setMana(Constants.data.player.getManaMax());
         Constants.data.player.setXp(Constants.data.player.getXp() + enemy.getXp());
-        if (Constants.data.player.getXp() > getXpNeeded(Constants.data.player.getLevel())) {
+        if (Constants.data.player.getXp() >= getXpNeeded(Constants.data.player.getLevel())) {
             Constants.data.player.setXp(Constants.data.player.getXp() - getXpNeeded(Constants.data.player.getLevel()));
             Constants.data.player.setLevel(Constants.data.player.getLevel() + 1);
         }
@@ -917,6 +936,9 @@ public class Game extends JFrame implements KeyListener {
                 }
             } else if (Constants.waitingForReturn) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    App.player.stop();
+                    App.player.playMusic("main.wav", true);
+                    Constants.musicCombat = false;
                     aff();
                     Constants.waitingForReturn = false;
                 }

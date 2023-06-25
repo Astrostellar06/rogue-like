@@ -89,11 +89,15 @@ public class LaunchScreen implements Screen {
       if(nameLength == 0){
         noNameWarning = true;
       } else {
-        System.out.println(username);
         prefs.put("username", username);
         prefs.put("class", selected == 0 ? "KNIGHT" : selected == 1 ? "ARCHER" : "MAGE");
         App.player.stop();
-        App.player.playMusic("music.wav");
+        App.player.playMusic("start.wav", false);
+        try {
+          Thread.sleep(2000);
+        } catch (InterruptedException e) {
+          throw new RuntimeException(e);
+        }
         return new GameScreen(true);
       }
     }
