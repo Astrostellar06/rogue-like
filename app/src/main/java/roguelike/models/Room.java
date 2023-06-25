@@ -1,6 +1,8 @@
 package roguelike.models;
 
-public class Room {
+import java.io.Serializable;
+
+public class Room implements Serializable {
 
     int x, y, sx, sy, roomtype;
     String[] room;

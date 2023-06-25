@@ -10,14 +10,14 @@ public class Moves {
 
     public static void updateAff() { //Mise à jour de l'affichage après un déplacement + test de la case sur laquelle le joueur se trouve
         if (Constants.game.charRoom(Constants.data.player.getX(), Constants.data.player.getY()) == '.')
-            Constants.data.terminal.write(Character.toString(32), Constants.data.player.getX(), Constants.data.player.getY(), Constants.data.font, Constants.data.roomColor);
+            Constants.terminal.write(Character.toString(32), Constants.data.player.getX(), Constants.data.player.getY(), Constants.data.font, Constants.data.roomColor);
         else if (Constants.game.charRoom(Constants.data.player.getX(), Constants.data.player.getY()) == '*')
-            Constants.data.terminal.write(Character.toString(32), Constants.data.player.getX(), Constants.data.player.getY(), Constants.data.font, Constants.data.pathColor);
+            Constants.terminal.write(Character.toString(32), Constants.data.player.getX(), Constants.data.player.getY(), Constants.data.font, Constants.data.pathColor);
 
         if (Constants.game.charRoom(Constants.data.player.getX()+Constants.data.x, Constants.data.player.getY()+Constants.data.y) == '.')
-            Constants.data.terminal.write(Character.toString(1), Constants.data.player.getX() + Constants.data.x, Constants.data.player.getY() + Constants.data.y, Constants.data.playerColor, Constants.data.roomColor);
+            Constants.terminal.write(Character.toString(1), Constants.data.player.getX() + Constants.data.x, Constants.data.player.getY() + Constants.data.y, Constants.data.playerColor, Constants.data.roomColor);
         else if (Constants.game.charRoom(Constants.data.player.getX()+Constants.data.x, Constants.data.player.getY()+Constants.data.y) == '*')
-            Constants.data.terminal.write(Character.toString(1), Constants.data.player.getX() + Constants.data.x, Constants.data.player.getY() + Constants.data.y, Constants.data.playerColor, Constants.data.pathColor);
+            Constants.terminal.write(Character.toString(1), Constants.data.player.getX() + Constants.data.x, Constants.data.player.getY() + Constants.data.y, Constants.data.playerColor, Constants.data.pathColor);
 
         for (int i = 0; i < Constants.data.enemies.size(); i++) {
             if (Constants.data.enemies.get(i).getX() == Constants.data.player.getX() + Constants.data.x && Constants.data.enemies.get(i).getY() == Constants.data.player.getY() + Constants.data.y) {
@@ -32,7 +32,7 @@ public class Moves {
                     Constants.data.coins.remove(i);
                     Constants.data.player.setCoins(Constants.data.player.getCoins()+1);
                     Constants.game.clearSideAff();
-                    Constants.data.terminal.write("+1 coin", 140, 35, Constants.data.font, Constants.data.background);
+                    Constants.terminal.write("+1 coin", 140, 35, Constants.data.font, Constants.data.background);
                     Constants.game.affStats(Constants.data.player);
                 }
             }
@@ -48,8 +48,8 @@ public class Moves {
             for (int i = 0; i < Constants.data.items.size(); i++) {
                 if (Constants.data.items.get(i).getX() == Constants.data.player.getX() + Constants.data.x && Constants.data.items.get(i).getY() == Constants.data.player.getY() + Constants.data.y) {
                     for (int j = 0; j < 6; j++) {
-                        Constants.data.terminal.write(Character.toString(2 - j % 2), Constants.data.player.getX() + Constants.data.x, Constants.data.player.getY() + Constants.data.y, Constants.data.playerColor, Constants.data.background);
-                        Constants.data.terminal.paintImmediately(Constants.data.terminal.getBounds());
+                        Constants.terminal.write(Character.toString(2 - j % 2), Constants.data.player.getX() + Constants.data.x, Constants.data.player.getY() + Constants.data.y, Constants.data.playerColor, Constants.data.background);
+                        Constants.terminal.paintImmediately(Constants.terminal.getBounds());
                         try {
                             Thread.sleep(250);
                         } catch (InterruptedException e) {
@@ -57,7 +57,7 @@ public class Moves {
                         }
                     }
                     for (int j = 140; j < 169; j++)
-                        Constants.data.terminal.write(Character.toString(32), j, 35, Constants.data.font, Constants.data.background);
+                        Constants.terminal.write(Character.toString(32), j, 35, Constants.data.font, Constants.data.background);
                     Constants.data.pickUp = true;
                     Constants.data.itemSelected = i;
                     Constants.game.clearSideAff();
@@ -81,7 +81,7 @@ public class Moves {
             int a = 0;
             int b = 0;
             if (!Constants.data.inAttack)
-                Constants.data.terminal.write(Character.toString(32), enemy.getX(), enemy.getY(), enemy.getColor(), Constants.data.roomColor);
+                Constants.terminal.write(Character.toString(32), enemy.getX(), enemy.getY(), enemy.getColor(), Constants.data.roomColor);
             //test si le joueur est dans la même salle que l'ennemi + petit random pour que l'ennemi ne soit pas trop prévisible
             if (ThreadLocalRandom.current().nextInt(0, 8) != 0 && MapGenerator.getRoomByXY(Constants.data.listRooms, (Constants.data.player.getX())/17, (Constants.data.player.getY())/17).getX() == MapGenerator.getRoomByXY(Constants.data.listRooms, (enemy.getX())/17, (enemy.getY())/17).getX() && MapGenerator.getRoomByXY(Constants.data.listRooms, (Constants.data.player.getX())/17, (Constants.data.player.getY())/17).getY() == MapGenerator.getRoomByXY(Constants.data.listRooms, (enemy.getX())/17, (enemy.getY())/17).getY()) {
                 //petit random pour que l'ennemi se rapproche soit en x soit en y du joueur
@@ -129,11 +129,11 @@ public class Moves {
                 break;
             }
             if (!Constants.data.inAttack)
-                Constants.data.terminal.write(Character.toString(234), enemy.getX(), enemy.getY(), enemy.getColor(), Constants.data.roomColor);
+                Constants.terminal.write(Character.toString(234), enemy.getX(), enemy.getY(), enemy.getColor(), Constants.data.roomColor);
         }
         if (!Constants.data.inAttack) {
-            Constants.game.add(Constants.data.terminal);
-            Constants.data.terminal.repaint();
+            Constants.game.add(Constants.terminal);
+            Constants.terminal.repaint();
         }
     }
 

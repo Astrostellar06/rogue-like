@@ -5,10 +5,11 @@ import roguelike.game.Game;
 import roguelike.utils.Constants;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-public abstract class Item {
+public abstract class Item implements Serializable {
 
     int x, y;
     boolean equipped;

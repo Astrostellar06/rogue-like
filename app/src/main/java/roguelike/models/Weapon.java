@@ -4,10 +4,11 @@ import roguelike.enums.Classe;
 import roguelike.enums.Rarity;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Weapon extends Item {
+public class Weapon extends Item implements Serializable {
     int atk, mana;
     Classe classe;
 

@@ -3,10 +3,11 @@ package roguelike.models;
 import roguelike.enums.Rarity;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Potion extends Item {
+public class Potion extends Item implements Serializable {
     Rarity rarity;
     int hpPlayer, hpMaxPlayer, atkPlayer, defPlayer, magicDefPlayer, critChancePlayer, manaPlayer, manaMaxPlayer, manaRegenPlayer, hpEnemy, atkEnemy, defEnemy, magicDefEnemy, critChanceEnemy;
 

@@ -12,8 +12,8 @@ public class FileConfiguration {
 
     public static void save() {
         try {
-            String fileName = "datas\\save.data";
-            File f1 = new File("datas\\save.data");
+            String fileName = "save.txt";
+            File f1 = new File("save.txt");
             if (!f1.exists()) f1.createNewFile();
             FileOutputStream fos = new FileOutputStream(fileName);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -29,13 +29,13 @@ public class FileConfiguration {
     public static void load() {
         Constants.data = new Data();
         try {
-            File f1 = new File("datas\\save.data");
+            File f1 = new File("save.txt");
             if (!f1.exists()) f1.createNewFile();
             String fileName;
             FileInputStream fin = null;
             ObjectInputStream ois = null;
             if (f1.length() != 0) {
-                fileName = "datas\\save.data";
+                fileName = "save.txt";
                 fin = new FileInputStream(fileName);
                 ois = new ObjectInputStream(fin);
                 Constants.data = (Data) ois.readObject();

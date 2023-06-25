@@ -1,10 +1,11 @@
 package roguelike.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import roguelike.game.Game;
 
-public class Player extends Entity {
+public class Player extends Entity implements Serializable {
     int mana, manaMax,manaRegen;
     ArrayList<Item> inv;
     ArrayList<Spell> spells;

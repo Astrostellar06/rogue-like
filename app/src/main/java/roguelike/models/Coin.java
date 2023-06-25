@@ -4,9 +4,10 @@ import roguelike.game.Data;
 import roguelike.game.Game;
 import roguelike.utils.Constants;
 
+import java.io.Serializable;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Coin {
+public class Coin implements Serializable {
     int x,y,value;
 
     public Coin(int x, int y, int value) {

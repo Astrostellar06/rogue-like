@@ -19,15 +19,16 @@ public class Game extends JFrame implements KeyListener {
 
     public Game(AsciiPanel terminal, boolean newGame) { //Création du jeu
         super(); //Utilisation de JFrame et de AsciiPanel
+        Constants.terminal = terminal;
         if (newGame) {
             Constants.data = new Data();
             Constants.data.enemies = new ArrayList<>();
             Constants.data.items = new ArrayList<>();
             Constants.data.coins = new ArrayList<>();
             Constants.data.stats = new int[7];
-            Constants.data.getTheme();
-            Constants.data.getPlayer();
-            Constants.data.terminal = terminal;
+            Constants.getTheme();
+            Constants.getPlayer();
+
 
             for (int i = 0 ; i < 10; i++) {
                 addItem(new Weapon());
@@ -73,29 +74,29 @@ public class Game extends JFrame implements KeyListener {
     public void aff() { //Affichage de la fenêtre
         for (int i = 0; i < 85; i++) {
             for (int j = 0; j < 170; j++) {
-                Constants.data.terminal.write(Character.toString(32), j, i, Constants.data.font, Constants.data.background);
+                Constants.terminal.write(Character.toString(32), j, i, Constants.data.font, Constants.data.background);
             }
         }
 
         for (Room room : Constants.data.listRooms)
             affRooms(room);
 
-        Constants.data.terminal.write(Character.toString(1), Constants.data.player.getX(), Constants.data.player.getY(), Constants.data.playerColor, Constants.data.roomColor);
+        Constants.terminal.write(Character.toString(1), Constants.data.player.getX(), Constants.data.player.getY(), Constants.data.playerColor, Constants.data.roomColor);
 
         for (Enemy enemy : Constants.data.enemies)
-            Constants.data.terminal.write(Character.toString(234), enemy.getX(), enemy.getY(), enemy.getColor(), Constants.data.roomColor);
+            Constants.terminal.write(Character.toString(234), enemy.getX(), enemy.getY(), enemy.getColor(), Constants.data.roomColor);
 
         for (Item item : Constants.data.items)
-            Constants.data.terminal.write(Character.toString(235), item.getX(), item.getY(), item.getColorItem(), Constants.data.roomColor);
+            Constants.terminal.write(Character.toString(235), item.getX(), item.getY(), item.getColorItem(), Constants.data.roomColor);
 
         affCoins();
         deco();
         affStats(Constants.data.player);
 
         for (int i = 0; i < 31; i++)
-            Constants.data.terminal.write(Character.toString(196), 138 + i, 31, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(199), 137, 31, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(180), 169, 31, Constants.data.font, Constants.data.background);
+            Constants.terminal.write(Character.toString(196), 138 + i, 31, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(199), 137, 31, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(180), 169, 31, Constants.data.font, Constants.data.background);
 
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -106,32 +107,32 @@ public class Game extends JFrame implements KeyListener {
 
     public void deco() {
         for (int i = 1; i < 84; i++) {
-            Constants.data.terminal.write(Character.toString(186), 137, i, Constants.data.font, Constants.data.background);
-            Constants.data.terminal.write(Character.toString(179), 0, i, Constants.data.font, Constants.data.background);
-            Constants.data.terminal.write(Character.toString(179), 169, i, Constants.data.font, Constants.data.background);
+            Constants.terminal.write(Character.toString(186), 137, i, Constants.data.font, Constants.data.background);
+            Constants.terminal.write(Character.toString(179), 0, i, Constants.data.font, Constants.data.background);
+            Constants.terminal.write(Character.toString(179), 169, i, Constants.data.font, Constants.data.background);
         }
         for (int i = 1; i < 169; i++) {
-            Constants.data.terminal.write(Character.toString(196), i, 84, Constants.data.font, Constants.data.background);
-            Constants.data.terminal.write(Character.toString(196), i, 0, Constants.data.font, Constants.data.background);
+            Constants.terminal.write(Character.toString(196), i, 84, Constants.data.font, Constants.data.background);
+            Constants.terminal.write(Character.toString(196), i, 0, Constants.data.font, Constants.data.background);
         }
-        Constants.data.terminal.write(Character.toString(210), 137, 0, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(208), 137, 84, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(210), 137, 0, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(208), 137, 84, Constants.data.font, Constants.data.background);
 
-        Constants.data.terminal.write(Character.toString(218), 1, 0, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(218), 0, 1, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(217), 1, 1, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(218), 1, 0, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(218), 0, 1, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(217), 1, 1, Constants.data.font, Constants.data.background);
 
-        Constants.data.terminal.write(Character.toString(191), 168, 0, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(191), 169, 1, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(192), 168, 1, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(191), 168, 0, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(191), 169, 1, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(192), 168, 1, Constants.data.font, Constants.data.background);
 
-        Constants.data.terminal.write(Character.toString(192), 1, 84, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(192), 0, 83, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(191), 1, 83, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(192), 1, 84, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(192), 0, 83, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(191), 1, 83, Constants.data.font, Constants.data.background);
 
-        Constants.data.terminal.write(Character.toString(217), 168, 84, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(217), 169, 83, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(218), 168, 83, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(217), 168, 84, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(217), 169, 83, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(218), 168, 83, Constants.data.font, Constants.data.background);
     }
 
     public void affRooms(Room room) {
@@ -139,23 +140,23 @@ public class Game extends JFrame implements KeyListener {
             char[] line = room.getRoom()[cy].toCharArray();
             for (int cx = 0; cx < line.length; cx++) {
                 if (line[cx] == '|')
-                    Constants.data.terminal.write(Character.toString(179), room.getX() * 17 + cx, room.getY() * 17 + cy, Constants.data.font, Constants.data.background);
+                    Constants.terminal.write(Character.toString(179), room.getX() * 17 + cx, room.getY() * 17 + cy, Constants.data.font, Constants.data.background);
                 else if (line[cx] == '-')
-                    Constants.data.terminal.write(Character.toString(196), room.getX() * 17 + cx, room.getY() * 17 + cy, Constants.data.font, Constants.data.background);
+                    Constants.terminal.write(Character.toString(196), room.getX() * 17 + cx, room.getY() * 17 + cy, Constants.data.font, Constants.data.background);
                 else if (line[cx] == '1')
-                    Constants.data.terminal.write(Character.toString(218), room.getX() * 17 + cx, room.getY() * 17 + cy, Constants.data.font, Constants.data.background);
+                    Constants.terminal.write(Character.toString(218), room.getX() * 17 + cx, room.getY() * 17 + cy, Constants.data.font, Constants.data.background);
                 else if (line[cx] == '2')
-                    Constants.data.terminal.write(Character.toString(191), room.getX() * 17 + cx, room.getY() * 17 + cy, Constants.data.font, Constants.data.background);
+                    Constants.terminal.write(Character.toString(191), room.getX() * 17 + cx, room.getY() * 17 + cy, Constants.data.font, Constants.data.background);
                 else if (line[cx] == '3')
-                    Constants.data.terminal.write(Character.toString(192), room.getX() * 17 + cx, room.getY() * 17 + cy, Constants.data.font, Constants.data.background);
+                    Constants.terminal.write(Character.toString(192), room.getX() * 17 + cx, room.getY() * 17 + cy, Constants.data.font, Constants.data.background);
                 else if (line[cx] == '4')
-                    Constants.data.terminal.write(Character.toString(217), room.getX() * 17 + cx, room.getY() * 17 + cy, Constants.data.font, Constants.data.background);
+                    Constants.terminal.write(Character.toString(217), room.getX() * 17 + cx, room.getY() * 17 + cy, Constants.data.font, Constants.data.background);
                 else if (line[cx] == '.')
-                    Constants.data.terminal.write(Character.toString(32), room.getX() * 17 + cx, room.getY() * 17 + cy, Constants.data.font, Constants.data.roomColor);
+                    Constants.terminal.write(Character.toString(32), room.getX() * 17 + cx, room.getY() * 17 + cy, Constants.data.font, Constants.data.roomColor);
                 else if (line[cx] == '*')
-                    Constants.data.terminal.write(Character.toString(32), room.getX() * 17 + cx, room.getY() * 17 + cy, Constants.data.font, Constants.data.pathColor);
+                    Constants.terminal.write(Character.toString(32), room.getX() * 17 + cx, room.getY() * 17 + cy, Constants.data.font, Constants.data.pathColor);
                 else
-                    Constants.data.terminal.write(Character.toString(32), room.getX() * 17 + cx, room.getY() * 17 + cy, Constants.data.font, Constants.data.background);
+                    Constants.terminal.write(Character.toString(32), room.getX() * 17 + cx, room.getY() * 17 + cy, Constants.data.font, Constants.data.background);
             }
         }
     }
@@ -179,38 +180,38 @@ public class Game extends JFrame implements KeyListener {
                 dy = 60;
             }
 
-            Constants.data.terminal.write(entity.getName(), dx, dy + 2, entity instanceof Player ? Constants.data.font : ((Enemy) entity).getColor(), Constants.data.background);
+            Constants.terminal.write(entity.getName(), dx, dy + 2, entity instanceof Player ? Constants.data.font : ((Enemy) entity).getColor(), Constants.data.background);
             for (int i = 0; i < entity.getName().length(); i++)
-                Constants.data.terminal.write(Character.toString(196), dx + i, dy + 3, entity instanceof Player ? Constants.data.font : ((Enemy) entity).getColor(), Constants.data.background);
+                Constants.terminal.write(Character.toString(196), dx + i, dy + 3, entity instanceof Player ? Constants.data.font : ((Enemy) entity).getColor(), Constants.data.background);
 
-            Constants.data.terminal.write("HP: " + entity.getHp() + "/" + entity.getHpMax() + "  ", dx, dy+7, Color.red, Constants.data.background);
-            Constants.data.terminal.write("Attack: " + entity.getAtk() + "  ", dx, dy+9, new Color(255, 115, 0), Constants.data.background);
-            Constants.data.terminal.write("Defense: " + entity.getDef() + "  ", dx, dy+11, new Color(0, 128, 255), Constants.data.background);
+            Constants.terminal.write("HP: " + entity.getHp() + "/" + entity.getHpMax() + "  ", dx, dy+7, Color.red, Constants.data.background);
+            Constants.terminal.write("Attack: " + entity.getAtk() + "  ", dx, dy+9, new Color(255, 115, 0), Constants.data.background);
+            Constants.terminal.write("Defense: " + entity.getDef() + "  ", dx, dy+11, new Color(0, 128, 255), Constants.data.background);
             if (entity instanceof Player) {
-                Constants.data.terminal.write("Mana: " + Constants.data.player.getMana() + "/" + Constants.data.player.getManaMax() + "  ", dx, dy + 13, new Color(153, 0, 255), Constants.data.background);
-                Constants.data.terminal.write("Mana regen: " + Constants.data.player.getManaRegen() + "  ", dx, dy + 15, new Color(153, 0, 255), Constants.data.background);
+                Constants.terminal.write("Mana: " + Constants.data.player.getMana() + "/" + Constants.data.player.getManaMax() + "  ", dx, dy + 13, new Color(153, 0, 255), Constants.data.background);
+                Constants.terminal.write("Mana regen: " + Constants.data.player.getManaRegen() + "  ", dx, dy + 15, new Color(153, 0, 255), Constants.data.background);
             } else
                 dy -= 4;
-            Constants.data.terminal.write("Magic defense: " + entity.getMagicDef() + "  ", dx, dy+17, new Color(94, 0, 255), Constants.data.background);
-            Constants.data.terminal.write("Crit chance: " + entity.getCritChance() + "  ", dx, dy+19, new Color(41, 168, 33), Constants.data.background);
+            Constants.terminal.write("Magic defense: " + entity.getMagicDef() + "  ", dx, dy+17, new Color(94, 0, 255), Constants.data.background);
+            Constants.terminal.write("Crit chance: " + entity.getCritChance() + "  ", dx, dy+19, new Color(41, 168, 33), Constants.data.background);
         }
         if (!Constants.data.inAttack) {
-            Constants.data.terminal.write("Coins: " + Constants.data.player.getCoins() + "  ", 140, 21, new Color(255, 204, 0), Constants.data.background);
+            Constants.terminal.write("Coins: " + Constants.data.player.getCoins() + "  ", 140, 21, new Color(255, 204, 0), Constants.data.background);
             int x = 0;
             for (int i = 1; i <= Constants.data.player.getLevel(); i++) {
                 x += Game.getXpNeeded(i);
             }
-            Constants.data.terminal.write("Level: " + Constants.data.player.getLevel() + "  (" + (x - Game.getXpNeeded(Constants.data.player.getLevel()) + Constants.data.player.getXp()) + "/" + x + ")  ", 140, 25, Constants.data.font, Constants.data.background);
+            Constants.terminal.write("Level: " + Constants.data.player.getLevel() + "  (" + (x - Game.getXpNeeded(Constants.data.player.getLevel()) + Constants.data.player.getXp()) + "/" + x + ")  ", 140, 25, Constants.data.font, Constants.data.background);
 
-            Constants.data.terminal.write(Character.toString(60), 140, 27, Constants.data.font, Constants.data.background);
-            Constants.data.terminal.write(Character.toString(62), 166, 27, Constants.data.font, Constants.data.background);
+            Constants.terminal.write(Character.toString(60), 140, 27, Constants.data.font, Constants.data.background);
+            Constants.terminal.write(Character.toString(62), 166, 27, Constants.data.font, Constants.data.background);
             for (int i = 141; i < 166; i++)
-                Constants.data.terminal.write(Character.toString(196), i, 27, Constants.data.font, Constants.data.background);
+                Constants.terminal.write(Character.toString(196), i, 27, Constants.data.font, Constants.data.background);
             for (int i = 141; i < 141 + 25 * Constants.data.player.getXp() / Game.getXpNeeded(Constants.data.player.getLevel()); i++)
-                Constants.data.terminal.write(Character.toString(219), i, 27, Constants.data.font, Constants.data.background);
+                Constants.terminal.write(Character.toString(219), i, 27, Constants.data.font, Constants.data.background);
         }
-        add(Constants.data.terminal);
-        Constants.data.terminal.repaint();
+        add(Constants.terminal);
+        Constants.terminal.repaint();
     }
 
     public static int getXpNeeded(int x) {
@@ -219,16 +220,16 @@ public class Game extends JFrame implements KeyListener {
     //Méthode très importante
     public void updateAff() { //Mise à jour de l'affichage après un déplacement + test de la case sur laquelle le joueur se trouve
         if (charRoom(Constants.data.player.getX(), Constants.data.player.getY()) == '.')
-            Constants.data.terminal.write(Character.toString(32), Constants.data.player.getX(), Constants.data.player.getY(), Constants.data.font, Constants.data.roomColor);
+            Constants.terminal.write(Character.toString(32), Constants.data.player.getX(), Constants.data.player.getY(), Constants.data.font, Constants.data.roomColor);
         else if (charRoom(Constants.data.player.getX(), Constants.data.player.getY()) == '*')
-            Constants.data.terminal.write(Character.toString(32), Constants.data.player.getX(), Constants.data.player.getY(), Constants.data.font, Constants.data.pathColor);
+            Constants.terminal.write(Character.toString(32), Constants.data.player.getX(), Constants.data.player.getY(), Constants.data.font, Constants.data.pathColor);
 
         if (charRoom(Constants.data.player.getX()+Constants.data.x, Constants.data.player.getY()+Constants.data.y) == '.')
-            Constants.data.terminal.write(Character.toString(1), Constants.data.player.getX() + Constants.data.x, Constants.data.player.getY() + Constants.data.y, Constants.data.playerColor, Constants.data.roomColor);
+            Constants.terminal.write(Character.toString(1), Constants.data.player.getX() + Constants.data.x, Constants.data.player.getY() + Constants.data.y, Constants.data.playerColor, Constants.data.roomColor);
         else if (charRoom(Constants.data.player.getX()+Constants.data.x, Constants.data.player.getY()+Constants.data.y) == '*')
-            Constants.data.terminal.write(Character.toString(1), Constants.data.player.getX() + Constants.data.x, Constants.data.player.getY() + Constants.data.y, Constants.data.playerColor, Constants.data.pathColor);
+            Constants.terminal.write(Character.toString(1), Constants.data.player.getX() + Constants.data.x, Constants.data.player.getY() + Constants.data.y, Constants.data.playerColor, Constants.data.pathColor);
 
-        add(Constants.data.terminal);
+        add(Constants.terminal);
         for (int i = 0; i < Constants.data.enemies.size(); i++) {
             if (Constants.data.enemies.get(i).getX() == Constants.data.player.getX() + Constants.data.x && Constants.data.enemies.get(i).getY() == Constants.data.player.getY() + Constants.data.y) {
                 Constants.data.enemyAttacked = Constants.data.enemies.get(i);
@@ -242,9 +243,9 @@ public class Game extends JFrame implements KeyListener {
                     Constants.data.coins.remove(i);
                     Constants.data.player.setCoins(Constants.data.player.getCoins()+1);
                     clearSideAff();
-                    Constants.data.terminal.write("+1 coin", 140, 35, Constants.data.font, Constants.data.background);
-                    add(Constants.data.terminal);
-                    Constants.data.terminal.repaint();
+                    Constants.terminal.write("+1 coin", 140, 35, Constants.data.font, Constants.data.background);
+                    add(Constants.terminal);
+                    Constants.terminal.repaint();
                     affStats(Constants.data.player);
                 }
             }
@@ -260,9 +261,9 @@ public class Game extends JFrame implements KeyListener {
             for (int i = 0; i < Constants.data.items.size(); i++) {
                 if (Constants.data.items.get(i).getX() == Constants.data.player.getX() + Constants.data.x && Constants.data.items.get(i).getY() == Constants.data.player.getY() + Constants.data.y) {
                     for (int j = 0; j < 6; j++) {
-                        Constants.data.terminal.write(Character.toString(2 - j % 2), Constants.data.player.getX() + Constants.data.x, Constants.data.player.getY() + Constants.data.y, Constants.data.playerColor, Constants.data.background);
-                        add(Constants.data.terminal);
-                        Constants.data.terminal.paintImmediately(Constants.data.terminal.getBounds());
+                        Constants.terminal.write(Character.toString(2 - j % 2), Constants.data.player.getX() + Constants.data.x, Constants.data.player.getY() + Constants.data.y, Constants.data.playerColor, Constants.data.background);
+                        add(Constants.terminal);
+                        Constants.terminal.paintImmediately(Constants.terminal.getBounds());
                         try {
                             Thread.sleep(250);
                         } catch (InterruptedException e) {
@@ -270,7 +271,7 @@ public class Game extends JFrame implements KeyListener {
                         }
                     }
                     for (int j = 140; j < 169; j++)
-                        Constants.data.terminal.write(Character.toString(32), j, 35, Constants.data.font, Constants.data.background);
+                        Constants.terminal.write(Character.toString(32), j, 35, Constants.data.font, Constants.data.background);
                     Constants.data.pickUp = true;
                     Constants.data.itemSelected = i;
                     clearSideAff();
@@ -310,60 +311,60 @@ public class Game extends JFrame implements KeyListener {
         Constants.data.waitingForAttack = false;
         for (int i = 1 ; i < 169 ; i++) {
             for (int j = 1 ; j < 84 ; j++) {
-                Constants.data.terminal.write(" ", i, j, Constants.data.font, Constants.data.background);
+                Constants.terminal.write(" ", i, j, Constants.data.font, Constants.data.background);
             }
         }
 
         for (int i = 1 ; i < 169 ; i++) {
-            Constants.data.terminal.write(Character.toString(196), i, 60, Constants.data.font, Constants.data.background);
+            Constants.terminal.write(Character.toString(196), i, 60, Constants.data.font, Constants.data.background);
         }
-        Constants.data.terminal.write(Character.toString(195), 0, 60, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(180), 169, 60, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(196), 137, 0, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(196), 137, 84, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(217), 1, 1, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(192), 168, 1, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(179), 169, 31, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(191), 1, 83, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(218), 168, 83, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(195), 0, 60, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(180), 169, 60, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(196), 137, 0, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(196), 137, 84, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(217), 1, 1, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(192), 168, 1, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(179), 169, 31, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(191), 1, 83, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(218), 168, 83, Constants.data.font, Constants.data.background);
         for (int i = 61 ; i < 84 ; i++) {
-            Constants.data.terminal.write(Character.toString(179), 142, i, Constants.data.font, Constants.data.background);
-            Constants.data.terminal.write(Character.toString(186), 117, i, Constants.data.font, Constants.data.background);
+            Constants.terminal.write(Character.toString(179), 142, i, Constants.data.font, Constants.data.background);
+            Constants.terminal.write(Character.toString(186), 117, i, Constants.data.font, Constants.data.background);
         }
-        Constants.data.terminal.write(Character.toString(194), 142, 60, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(210), 117, 60, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(193), 142, 84, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(208), 117, 84, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(194), 142, 60, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(210), 117, 60, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(193), 142, 84, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(208), 117, 84, Constants.data.font, Constants.data.background);
 
         for (int i = 0 ; i < 6 ; i++) {
-            Constants.data.terminal.write(Assets.attack[i], 13, 63 + i, Constants.data.font, Constants.data.background);
-            Constants.data.terminal.write(Assets.item[i], 68, 63 + i, Constants.data.font, Constants.data.background);
-            Constants.data.terminal.write(Assets.selected[i], 7, 63 + i, Constants.data.font, Constants.data.background);
+            Constants.terminal.write(Assets.attack[i], 13, 63 + i, Constants.data.font, Constants.data.background);
+            Constants.terminal.write(Assets.item[i], 68, 63 + i, Constants.data.font, Constants.data.background);
+            Constants.terminal.write(Assets.selected[i], 7, 63 + i, Constants.data.font, Constants.data.background);
         }
 
         for (int i = 0 ; i < 59 ; i++)
-            Constants.data.terminal.write(Assets.knight[i], 2, 1+i, Constants.data.font, Constants.data.background);
+            Constants.terminal.write(Assets.knight[i], 2, 1+i, Constants.data.font, Constants.data.background);
         switch (enemy.getName()) {
             case "Goblin":
                 for (int i = 0 ; i < 21 ; i++)
-                    Constants.data.terminal.write(Assets.goblin[i], 100, 20+i, Constants.data.font, Constants.data.background);
+                    Constants.terminal.write(Assets.goblin[i], 100, 20+i, Constants.data.font, Constants.data.background);
                 break;
             case "Skeleton":
                 for (int i = 0 ; i < 38 ; i++)
-                    Constants.data.terminal.write(Assets.skeleton[i], 100, 10+i, Constants.data.font, Constants.data.background);
+                    Constants.terminal.write(Assets.skeleton[i], 100, 10+i, Constants.data.font, Constants.data.background);
                 break;
             case "Reaper":
                 for (int i = 0 ; i < 39 ; i++)
-                    Constants.data.terminal.write(Assets.reaper[i], 100, 10+i, Constants.data.font, Constants.data.background);
+                    Constants.terminal.write(Assets.reaper[i], 100, 10+i, Constants.data.font, Constants.data.background);
                 break;
             case "Dragon":
                 for (int i = 0 ; i < 52 ; i++)
-                    Constants.data.terminal.write(Assets.dragon[i], 85, 5+i, Constants.data.font, Constants.data.background);
+                    Constants.terminal.write(Assets.dragon[i], 85, 5+i, Constants.data.font, Constants.data.background);
                 break;
 
         }
         for (int i = 0 ; i < 8 ; i++)
-            Constants.data.terminal.write(Assets.spell[i], 13, 73 + i, Constants.data.font, Constants.data.background);
+            Constants.terminal.write(Assets.spell[i], 13, 73 + i, Constants.data.font, Constants.data.background);
         affStats(enemy);
         Constants.data.tempsInactif = System.currentTimeMillis();
     }
@@ -376,14 +377,14 @@ public class Game extends JFrame implements KeyListener {
         else if (Constants.data.attackSelected == 3)
             dx = 62;
         for (int i = 0 ; i < 6 ; i++) {
-            Constants.data.terminal.write("      ", 7, 63 + i, Constants.data.font, Constants.data.background);
-            Constants.data.terminal.write("      ", 62, 63 + i, Constants.data.font, Constants.data.background);
-            Constants.data.terminal.write("      ", 7, 73 + i, Constants.data.font, Constants.data.background);
+            Constants.terminal.write("      ", 7, 63 + i, Constants.data.font, Constants.data.background);
+            Constants.terminal.write("      ", 62, 63 + i, Constants.data.font, Constants.data.background);
+            Constants.terminal.write("      ", 7, 73 + i, Constants.data.font, Constants.data.background);
         }
         for (int i = 0 ; i < 6 ; i++)
-            Constants.data.terminal.write(Assets.selected[i], dx, dy + i, Constants.data.font, Constants.data.background);
-        add(Constants.data.terminal);
-        Constants.data.terminal.repaint();
+            Constants.terminal.write(Assets.selected[i], dx, dy + i, Constants.data.font, Constants.data.background);
+        add(Constants.terminal);
+        Constants.terminal.repaint();
     }
 
     public void attack2(Enemy enemy) {
@@ -574,7 +575,7 @@ public class Game extends JFrame implements KeyListener {
                 if (Constants.data.player.getInv().get(i) instanceof Potion) {
                     Constants.data.numberPotions++;
                     if (Constants.data.spellSelected == i) {
-                        Constants.data.terminal.write("> " + Constants.data.player.getInv().get(i).getName() + "  ", dx, dy, Constants.data.font, Constants.data.background);
+                        Constants.terminal.write("> " + Constants.data.player.getInv().get(i).getName() + "  ", dx, dy, Constants.data.font, Constants.data.background);
                         String[] potionDesc = new String[6];
                         potionDesc[0] = ("(" + ((Potion) Constants.data.player.getInv().get(i)).getHpPlayer() + "," + ((Potion) Constants.data.player.getInv().get(i)).getHpMaxPlayer() + ",");
                         potionDesc[1] = (((Potion) Constants.data.player.getInv().get(i)).getAtkPlayer() + ",");
@@ -592,7 +593,7 @@ public class Game extends JFrame implements KeyListener {
 
                         affDesc(dx, dy, potionDesc, potionDesc2);
                     } else
-                        Constants.data.terminal.write(Constants.data.player.getInv().get(i).getName() + "  ", dx, dy, Constants.data.font, Constants.data.background);
+                        Constants.terminal.write(Constants.data.player.getInv().get(i).getName() + "  ", dx, dy, Constants.data.font, Constants.data.background);
 
                     dx += 38;
                     if (dx > 80) {
@@ -604,7 +605,7 @@ public class Game extends JFrame implements KeyListener {
         } else {
             for (int i = 0; i < Constants.data.player.getSpells().size(); i++) {
                 if (Constants.data.spellSelected == i) {
-                    Constants.data.terminal.write("> " + Constants.data.player.getSpells().get(i).getName() + " (" + Constants.data.player.getSpells().get(i).getManaCost() + " mana)  ", dx, dy, Constants.data.font, Constants.data.background);
+                    Constants.terminal.write("> " + Constants.data.player.getSpells().get(i).getName() + " (" + Constants.data.player.getSpells().get(i).getManaCost() + " mana)  ", dx, dy, Constants.data.font, Constants.data.background);
                     String[] potionDesc = new String[6];
                     potionDesc[0] = ("(" + (Constants.data.player.getSpells().get(i)).getHpPlayer() + "," + ( Constants.data.player.getSpells().get(i)).getHpMaxPlayer() + ",");
                     potionDesc[1] = (( Constants.data.player.getSpells().get(i)).getAtkPlayer() + ",");
@@ -622,7 +623,7 @@ public class Game extends JFrame implements KeyListener {
 
                     affDesc(dx, dy, potionDesc, potionDesc2);
                 } else
-                    Constants.data.terminal.write(Constants.data.player.getSpells().get(i).getName() + " (" + Constants.data.player.getSpells().get(i).getManaCost() + " mana)  ", dx, dy, Constants.data.font, Constants.data.background);
+                    Constants.terminal.write(Constants.data.player.getSpells().get(i).getName() + " (" + Constants.data.player.getSpells().get(i).getManaCost() + " mana)  ", dx, dy, Constants.data.font, Constants.data.background);
                 dx += 38;
                 if (dx > 80) {
                     dx = 4;
@@ -630,23 +631,23 @@ public class Game extends JFrame implements KeyListener {
                 }
             }
         }
-        Constants.data.terminal.write("[Esc] to go back", 4, 81, Constants.data.font, Constants.data.background);
-        add(Constants.data.terminal);
-        Constants.data.terminal.repaint();
+        Constants.terminal.write("[Esc] to go back", 4, 81, Constants.data.font, Constants.data.background);
+        add(Constants.terminal);
+        Constants.terminal.repaint();
     }
 
     public void affDesc(int dx, int dy, String[] potionDesc, String[] potionDesc2) {
-        Constants.data.terminal.write(potionDesc[0], dx, dy + 1, Color.red, Constants.data.background);
-        Constants.data.terminal.write(potionDesc[1], dx + potionDesc[0].length(), dy + 1, new Color(255, 115, 0), Constants.data.background);
-        Constants.data.terminal.write(potionDesc[2], dx + potionDesc[0].length() + potionDesc[1].length(), dy + 1, new Color(0, 128, 255), Constants.data.background);
-        Constants.data.terminal.write(potionDesc[3], dx + potionDesc[0].length() + potionDesc[1].length() + potionDesc[2].length(), dy + 1, new Color(153, 0, 255), Constants.data.background);
-        Constants.data.terminal.write(potionDesc[4], dx + potionDesc[0].length() + potionDesc[1].length() + potionDesc[2].length() + potionDesc[3].length(), dy + 1, new Color(94, 0, 255), Constants.data.background);
-        Constants.data.terminal.write(potionDesc[5], dx + potionDesc[0].length() + potionDesc[1].length() + potionDesc[2].length() + potionDesc[3].length() + potionDesc[4].length(), dy + 1, new Color(41, 168, 33), Constants.data.background);
-        Constants.data.terminal.write(potionDesc2[0], dx, dy + 2, Color.red, Constants.data.background);
-        Constants.data.terminal.write(potionDesc2[1], dx + potionDesc2[0].length(), dy + 2, new Color(255, 115, 0), Constants.data.background);
-        Constants.data.terminal.write(potionDesc2[2], dx + potionDesc2[0].length() + potionDesc2[1].length(), dy + 2, new Color(0, 128, 255), Constants.data.background);
-        Constants.data.terminal.write(potionDesc2[3], dx + potionDesc2[0].length() + potionDesc2[1].length() + potionDesc2[2].length(), dy + 2, new Color(94, 0, 255), Constants.data.background);
-        Constants.data.terminal.write(potionDesc2[4], dx + potionDesc2[0].length() + potionDesc2[1].length() + potionDesc2[2].length() + potionDesc2[3].length(), dy + 2, new Color(41, 168, 33), Constants.data.background);
+        Constants.terminal.write(potionDesc[0], dx, dy + 1, Color.red, Constants.data.background);
+        Constants.terminal.write(potionDesc[1], dx + potionDesc[0].length(), dy + 1, new Color(255, 115, 0), Constants.data.background);
+        Constants.terminal.write(potionDesc[2], dx + potionDesc[0].length() + potionDesc[1].length(), dy + 1, new Color(0, 128, 255), Constants.data.background);
+        Constants.terminal.write(potionDesc[3], dx + potionDesc[0].length() + potionDesc[1].length() + potionDesc[2].length(), dy + 1, new Color(153, 0, 255), Constants.data.background);
+        Constants.terminal.write(potionDesc[4], dx + potionDesc[0].length() + potionDesc[1].length() + potionDesc[2].length() + potionDesc[3].length(), dy + 1, new Color(94, 0, 255), Constants.data.background);
+        Constants.terminal.write(potionDesc[5], dx + potionDesc[0].length() + potionDesc[1].length() + potionDesc[2].length() + potionDesc[3].length() + potionDesc[4].length(), dy + 1, new Color(41, 168, 33), Constants.data.background);
+        Constants.terminal.write(potionDesc2[0], dx, dy + 2, Color.red, Constants.data.background);
+        Constants.terminal.write(potionDesc2[1], dx + potionDesc2[0].length(), dy + 2, new Color(255, 115, 0), Constants.data.background);
+        Constants.terminal.write(potionDesc2[2], dx + potionDesc2[0].length() + potionDesc2[1].length(), dy + 2, new Color(0, 128, 255), Constants.data.background);
+        Constants.terminal.write(potionDesc2[3], dx + potionDesc2[0].length() + potionDesc2[1].length() + potionDesc2[2].length(), dy + 2, new Color(94, 0, 255), Constants.data.background);
+        Constants.terminal.write(potionDesc2[4], dx + potionDesc2[0].length() + potionDesc2[1].length() + potionDesc2[2].length() + potionDesc2[3].length(), dy + 2, new Color(41, 168, 33), Constants.data.background);
     }
 
     public void attackEnemy(Enemy enemy) {
@@ -685,24 +686,24 @@ public class Game extends JFrame implements KeyListener {
     public void gameOver() {
         for (int i = 1; i < 84; i++) {
             for (int j = 1; j < 169; j++) {
-                Constants.data.terminal.write(Character.toString(32), j, i, Constants.data.font, Constants.data.background);
+                Constants.terminal.write(Character.toString(32), j, i, Constants.data.font, Constants.data.background);
             }
         }
-        Constants.data.terminal.write(Character.toString(217), 1, 1, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(192), 168, 1, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(191), 1, 83, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(218), 168, 83, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(179), 0, 60, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(179), 169, 60, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(196), 142, 84, Constants.data.font, Constants.data.background);
-        Constants.data.terminal.write(Character.toString(196), 117, 84, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(217), 1, 1, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(192), 168, 1, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(191), 1, 83, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(218), 168, 83, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(179), 0, 60, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(179), 169, 60, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(196), 142, 84, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(196), 117, 84, Constants.data.font, Constants.data.background);
 
         for (int i = 30 ; i < 44 ; i++) {
-            Constants.data.terminal.write(Assets.gameOver[i-30], 19, i, Constants.data.font, Constants.data.background);
+            Constants.terminal.write(Assets.gameOver[i-30], 19, i, Constants.data.font, Constants.data.background);
         }
         Constants.data.over = true;
-        add(Constants.data.terminal);
-        Constants.data.terminal.repaint();
+        add(Constants.terminal);
+        Constants.terminal.repaint();
     }
 
     public void winCombat(Enemy enemy) {
@@ -733,16 +734,16 @@ public class Game extends JFrame implements KeyListener {
     public void clearSideAff() {
         for (int i = 35; i < 84; i++)
             for (int j = 140; j < 169; j++)
-                Constants.data.terminal.write(Character.toString(32), j, i);
-        Constants.data.terminal.write(Character.toString(218), 168, 83, Constants.data.font, Constants.data.background);
+                Constants.terminal.write(Character.toString(32), j, i);
+        Constants.terminal.write(Character.toString(218), 168, 83, Constants.data.font, Constants.data.background);
     }
 
     public void  clearBottomAff() {
         for (int i = 61 ; i < 83 ; i ++)
             for (int j = 1 ; j < 117 ; j++)
-                Constants.data.terminal.write(Character.toString(32), j, i);
-        add(Constants.data.terminal);
-        Constants.data.terminal.repaint();
+                Constants.terminal.write(Character.toString(32), j, i);
+        add(Constants.terminal);
+        Constants.terminal.repaint();
     }
 
     public void pickedUp(char keyPressed, int i) { //Méthode pour ramasser un item, called seulement lors d'un input E ou R
@@ -789,30 +790,30 @@ public class Game extends JFrame implements KeyListener {
             return;
         }
         for (int i = 0; i < msg.length(); i++) {
-            Constants.data.terminal.write(msg.charAt(i), x + i, y, Constants.data.font, Constants.data.background);
-            add(Constants.data.terminal);
-            Constants.data.terminal.paintImmediately(Constants.data.terminal.getBounds());
+            Constants.terminal.write(msg.charAt(i), x + i, y, Constants.data.font, Constants.data.background);
+            add(Constants.terminal);
+            Constants.terminal.paintImmediately(Constants.terminal.getBounds());
             long temps = System.currentTimeMillis();
             while (System.currentTimeMillis() - temps < 20) {
             }
         }
-        add(Constants.data.terminal);
-        Constants.data.terminal.repaint();
+        add(Constants.terminal);
+        Constants.terminal.repaint();
         Constants.data.tempsInactif = System.currentTimeMillis();
     }
 
     public void addEnemy(Enemy enemy) {
         Constants.data.enemies.add(enemy);
-        Constants.data.terminal.write(Character.toString(234), enemy.getX(), enemy.getY(), enemy.getColor(), Constants.data.roomColor);
-        add(Constants.data.terminal);
-        Constants.data.terminal.repaint();
+        Constants.terminal.write(Character.toString(234), enemy.getX(), enemy.getY(), enemy.getColor(), Constants.data.roomColor);
+        add(Constants.terminal);
+        Constants.terminal.repaint();
     }
 
     public void addItem(Item item) {
         Constants.data.items.add(item);
-        Constants.data.terminal.write(Character.toString(235), item.getX(), item.getY(), item.getColorItem(), Constants.data.roomColor);
-        add(Constants.data.terminal);
-        Constants.data.terminal.repaint();
+        Constants.terminal.write(Character.toString(235), item.getX(), item.getY(), item.getColorItem(), Constants.data.roomColor);
+        add(Constants.terminal);
+        Constants.terminal.repaint();
     }
 
     public void addCoins(int x) {
@@ -827,10 +828,10 @@ public class Game extends JFrame implements KeyListener {
                 if (coin.getX() == enemy.getX() && coin.getY() == enemy.getY())
                     continue coins;
             }
-            Constants.data.terminal.write(Character.toString(7), coin.getX(), coin.getY(), new Color(255, 204, 0), Constants.data.roomColor);
+            Constants.terminal.write(Character.toString(7), coin.getX(), coin.getY(), new Color(255, 204, 0), Constants.data.roomColor);
         }
-        add(Constants.data.terminal);
-        Constants.data.terminal.repaint();
+        add(Constants.terminal);
+        Constants.terminal.repaint();
     }
 
     public void affAllItems() {
@@ -843,7 +844,7 @@ public class Game extends JFrame implements KeyListener {
                 }
             }
             if (aff)
-                Constants.data.terminal.write(Character.toString(235), item.getX(), item.getY(), item.getColorItem(), Constants.data.roomColor);
+                Constants.terminal.write(Character.toString(235), item.getX(), item.getY(), item.getColorItem(), Constants.data.roomColor);
         }
     }
 
@@ -934,9 +935,9 @@ public class Game extends JFrame implements KeyListener {
                     Inventory.affInv();
                 }
                 if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_E || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    Constants.data.terminal.write("                 ", 140, 71, Color.WHITE, Color.BLACK);
-                    add(Constants.data.terminal);
-                    Constants.data.terminal.repaint();
+                    Constants.terminal.write("                 ", 140, 71, Color.WHITE, Color.BLACK);
+                    add(Constants.terminal);
+                    Constants.terminal.repaint();
                 }
                 if (e.getKeyCode() == KeyEvent.VK_UP) {
                     Constants.data.itemInv--;
@@ -985,8 +986,8 @@ public class Game extends JFrame implements KeyListener {
                         Inventory.affInv();
                         affStats(Constants.data.player);
                     } else if (Constants.data.player.getInv().get(Constants.data.itemInv) instanceof Potion) {
-                        Constants.data.terminal.write("Cannot be equiped", 140, 71, Constants.data.font, Constants.data.background);
-                        add(Constants.data.terminal);
+                        Constants.terminal.write("Cannot be equiped", 140, 71, Constants.data.font, Constants.data.background);
+                        add(Constants.terminal);
                     }
                 }
             } else {

@@ -4,9 +4,10 @@ import roguelike.enums.Classe;
 import roguelike.enums.Rarity;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.Random;
 
-public class Shield extends Item {
+public class Shield extends Item implements Serializable {
     int def;
 
     Rarity rarity;

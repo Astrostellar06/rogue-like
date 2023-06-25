@@ -6,10 +6,11 @@ import roguelike.game.Game;
 import roguelike.utils.Constants;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Enemy extends Entity {
+public class Enemy extends Entity implements Serializable {
     Color color;
     Enemies enemy;
 
