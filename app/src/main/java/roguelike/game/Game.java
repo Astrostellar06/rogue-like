@@ -39,11 +39,11 @@ public class Game extends JFrame implements KeyListener {
                 addItem(new Potion());
             }
 
-            for (int i = 0 ; i < 1 ; i++) {
+            for (int i = 0 ; i < 5; i++) {
                 addEnemy(new Enemy(1));
-                //addEnemy(new Enemy(2));
-                //addEnemy(new Enemy(3));
-                //addEnemy(new Enemy(4));
+                addEnemy(new Enemy(2));
+                addEnemy(new Enemy(3));
+                addEnemy(new Enemy(4));
             }
 
             Constants.data.player.getSpells().add(new Spell(1));
@@ -763,7 +763,10 @@ public class Game extends JFrame implements KeyListener {
         Constants.terminal.write(Character.toString(192), 168, 1, Constants.data.font, Constants.data.background);
         Constants.terminal.write(Character.toString(191), 1, 83, Constants.data.font, Constants.data.background);
         Constants.terminal.write(Character.toString(218), 168, 83, Constants.data.font, Constants.data.background);
-
+        Constants.terminal.write(Character.toString(179), 0, 60, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(179), 169, 60, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(196), 142, 84, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(196), 117, 84, Constants.data.font, Constants.data.background);
         for (int i = 33 ; i < 46 ; i++) {
             Constants.terminal.write(Assets.win[i-33], 30, i, Constants.data.font, Constants.data.background);
         }
@@ -1000,6 +1003,7 @@ public class Game extends JFrame implements KeyListener {
                     if (Constants.over) {
                         setVisible(false);
                         dispose();
+                        System.exit(0);
                     } else if (Constants.data.player.getHp() == 0)
                         gameOver();
                     else
