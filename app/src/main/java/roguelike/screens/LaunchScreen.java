@@ -5,7 +5,6 @@ import java.util.prefs.Preferences;
 import asciiPanel.AsciiPanel;
 import roguelike.App;
 import roguelike.Assets;
-import roguelike.Player;
 
 public class LaunchScreen implements Screen {
   public Preferences prefs = Preferences.userNodeForPackage(App.class);
@@ -58,6 +57,7 @@ public class LaunchScreen implements Screen {
 
   public Screen respondToUserInput(KeyEvent key) {
     if (key.getKeyCode() >= 65 && key.getKeyCode() <= 90){
+      App.sfx.playMusic("select.wav", false);
       if(nameLength > 12-1){ 
         maxLengthWarning = true;
       } else {
@@ -66,12 +66,14 @@ public class LaunchScreen implements Screen {
       }
     }
     if(key.getKeyCode() == KeyEvent.VK_BACK_SPACE){
+      App.sfx.playMusic("select.wav", false);
       name = new String[]{"","","","","","","","",};
       nameLength = 0;
       username = "";
       maxLengthWarning = false;
     }
     if (key.getKeyCode() == KeyEvent.VK_LEFT){
+      App.sfx.playMusic("select.wav", false);
       if(selected > 0){
         selected -=1;
       } else {
@@ -79,6 +81,7 @@ public class LaunchScreen implements Screen {
       }
     }
     if (key.getKeyCode() == KeyEvent.VK_RIGHT){
+      App.sfx.playMusic("select.wav", false);
       if(selected < 2){
         selected +=1;
       } else {
@@ -88,11 +91,12 @@ public class LaunchScreen implements Screen {
     if(key.getKeyCode() == KeyEvent.VK_ENTER){
       if(nameLength == 0){
         noNameWarning = true;
+        App.sfx.playMusic("error.wav", false);
       } else {
         prefs.put("username", username);
         prefs.put("class", selected == 0 ? "KNIGHT" : selected == 1 ? "ARCHER" : "MAGE");
-        App.player.stop();
-        App.player.playMusic("start.wav", false);
+        App.musicPlayer.stop();
+        App.musicPlayer.playMusic("start.wav", false);
         try {
           Thread.sleep(2000);
         } catch (InterruptedException e) {

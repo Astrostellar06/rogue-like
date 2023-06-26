@@ -5,7 +5,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.*;
 
-public class Player {
+public class MusicPlayer {
   AudioInputStream audioInput;
   Clip clip;
 

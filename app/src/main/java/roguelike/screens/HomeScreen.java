@@ -3,6 +3,7 @@ package roguelike.screens;
 import java.awt.event.KeyEvent;
 
 import asciiPanel.AsciiPanel;
+import roguelike.App;
 import roguelike.Assets;
 
 public class HomeScreen implements Screen {
@@ -26,6 +27,7 @@ public class HomeScreen implements Screen {
 
   public Screen respondToUserInput(KeyEvent key) {
     if (key.getKeyCode() == KeyEvent.VK_DOWN){
+      App.sfx.playMusic("select.wav", false);
       if(selected < 2){
         selected += 1;
       } else {
@@ -33,6 +35,7 @@ public class HomeScreen implements Screen {
       }
     }
     if (key.getKeyCode() == KeyEvent.VK_UP){
+      App.sfx.playMusic("select.wav", false);
       if(selected > 0){
         selected -= 1;
       } else {
@@ -40,6 +43,7 @@ public class HomeScreen implements Screen {
       }
     }
     if (key.getKeyCode() == KeyEvent.VK_ENTER){
+      App.sfx.playMusic("select.wav", false);
       if(selected == 0){
         return new LaunchScreen();
       }

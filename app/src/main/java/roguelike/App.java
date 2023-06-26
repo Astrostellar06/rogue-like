@@ -16,7 +16,9 @@ public class App extends JFrame implements KeyListener {
   Preferences prefs = Preferences.userNodeForPackage(App.class);
   String font = prefs.get("font", "medium");
 
-  public static Player player = new Player();
+  public static MusicPlayer musicPlayer = new MusicPlayer();
+  public static MusicPlayer sfx = new MusicPlayer();
+
   private AsciiPanel terminal;
   private Screen screen;
 
@@ -28,7 +30,7 @@ public class App extends JFrame implements KeyListener {
     screen = new HomeScreen();
     addKeyListener(this);
     repaint();
-    player.playMusic("menu.wav", true);
+    musicPlayer.playMusic("menu.wav", true);
   }
   
   public void repaint(){
@@ -41,7 +43,7 @@ public class App extends JFrame implements KeyListener {
     if(font.equals("little")) return AsciiFont.CP437_8x8;
     if(font.equals("medium")) return AsciiFont.CP437_10x10;
     if(font.equals("big")) return AsciiFont.CP437_12x12;
-    if(font.equals("giant")) return AsciiFont.CP437_16x16;
+    if(font.equals("giant")) return AsciiFont.TALRYTH_15_15;
     return AsciiFont.CP437_10x10;
   }
 

@@ -11,7 +11,6 @@ import javax.swing.*;
 import asciiPanel.AsciiPanel;
 import roguelike.App;
 import roguelike.Assets;
-import roguelike.enums.Classe;
 import roguelike.models.*;
 import roguelike.utils.Constants;
 import roguelike.utils.FileConfiguration;
@@ -22,8 +21,8 @@ public class Game extends JFrame implements KeyListener {
     public Game(AsciiPanel terminal, boolean newGame) { //Création du jeu
         super(); //Utilisation de JFrame et de AsciiPanel
         Constants.terminal = terminal;
-        App.player.stop();
-        App.player.playMusic("main.wav", true);
+        App.musicPlayer.stop();
+        App.musicPlayer.playMusic("main.wav", true);
         if (newGame) {
             Constants.data = new Data();
             Constants.data.enemies = new ArrayList<>();
@@ -85,8 +84,6 @@ public class Game extends JFrame implements KeyListener {
         for (Room room : Constants.data.listRooms)
             affRooms(room);
 
-        Constants.terminal.write(Character.toString(1), Constants.data.player.getX(), Constants.data.player.getY(), Constants.data.playerColor, Constants.data.roomColor);
-
         for (Enemy enemy : Constants.data.enemies)
             Constants.terminal.write(Character.toString(234), enemy.getX(), enemy.getY(), enemy.getColor(), Constants.data.roomColor);
 
@@ -101,7 +98,7 @@ public class Game extends JFrame implements KeyListener {
             Constants.terminal.write(Character.toString(196), 138 + i, 31, Constants.data.font, Constants.data.background);
         Constants.terminal.write(Character.toString(199), 137, 31, Constants.data.font, Constants.data.background);
         Constants.terminal.write(Character.toString(180), 169, 31, Constants.data.font, Constants.data.background);
-
+        Constants.terminal.write(Character.toString(1), Constants.data.player.getX(), Constants.data.player.getY(), Constants.data.playerColor, Constants.data.roomColor);
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setAlwaysOnTop(true);
@@ -247,7 +244,7 @@ public class Game extends JFrame implements KeyListener {
                     Constants.data.coins.remove(i);
                     Constants.data.player.setCoins(Constants.data.player.getCoins()+1);
                     clearSideAff();
-                    //App.player.playMusic("coin.wav", false);
+                    App.sfx.playMusic("coin.wav", false);
                     Constants.terminal.write("+1 coin", 140, 35, Constants.data.font, Constants.data.background);
                     add(Constants.terminal);
                     Constants.terminal.repaint();
@@ -288,8 +285,8 @@ public class Game extends JFrame implements KeyListener {
                     }
                     affMsg("Do you want to pick it up ?", 140, 39);
                     affMsg("Press [E] to Pick-Up", 140, 41);
-                    affMsg("Press [R] to Ignore", 140, 42);
-                    //Laisse le jeu dans un état ou les seuls inputs possibles sont E ou R
+                    affMsg("Press [A] to Ignore", 140, 42);
+                    //Laisse le jeu dans un état ou les seuls inputs possibles sont E ou A
                 }
             }
         }
@@ -313,8 +310,8 @@ public class Game extends JFrame implements KeyListener {
     }
     public void attack(Enemy enemy) {
         if (!Constants.musicCombat) {
-            App.player.stop();
-            App.player.playMusic("combat.wav", true);
+            App.musicPlayer.stop();
+            App.musicPlayer.playMusic("combat.wav", true);
         }
         Constants.musicCombat = true;
         Constants.data.attackSelected = 1;
@@ -586,11 +583,11 @@ public class Game extends JFrame implements KeyListener {
         int dx = 4;
         int dy = 63;
         if (Constants.data.attackSelected == 3) {
-            Constants.data.numberPotions = 0;
+            Constants.data.numberPotions = -1;
             for (int i = 0; i < Constants.data.player.getInv().size(); i++) {
                 if (Constants.data.player.getInv().get(i) instanceof Potion) {
                     Constants.data.numberPotions++;
-                    if (Constants.data.spellSelected == i) {
+                    if (Constants.data.spellSelected == Constants.data.numberPotions) {
                         Constants.terminal.write("> " + Constants.data.player.getInv().get(i).getName() + "  ", dx, dy, Constants.data.font, Constants.data.background);
                         String[] potionDesc = new String[6];
                         potionDesc[0] = ("(" + ((Potion) Constants.data.player.getInv().get(i)).getHpPlayer() + "," + ((Potion) Constants.data.player.getInv().get(i)).getHpMaxPlayer() + ",");
@@ -700,8 +697,8 @@ public class Game extends JFrame implements KeyListener {
     }
 
     public void gameOver() {
-        App.player.stop();
-        App.player.playMusic("gameOver.wav", false);
+        App.musicPlayer.stop();
+        App.musicPlayer.playMusic("gameOver.wav", false);
         for (int i = 1; i < 84; i++) {
             for (int j = 1; j < 169; j++) {
                 Constants.terminal.write(Character.toString(32), j, i, Constants.data.font, Constants.data.background);
@@ -725,13 +722,15 @@ public class Game extends JFrame implements KeyListener {
     }
 
     public void winCombat(Enemy enemy) {
-        App.player.stop();
-        App.player.playMusic("win.wav", false);
+        App.musicPlayer.stop();
+        App.musicPlayer.playMusic("win.wav", false);
         Constants.waitingForEnemy = false;
         Constants.waitingForAttack = false;
         Constants.inAttack = false;
         clearBottomAff();
         Constants.data.player.setHpMax(Constants.data.stats[0]);
+        if (Constants.data.player.getHp() > Constants.data.player.getHpMax())
+            Constants.data.player.setHp(Constants.data.player.getHpMax());
         Constants.data.player.setAtk(Constants.data.stats[1]);
         Constants.data.player.setDef(Constants.data.stats[2]);
         Constants.data.player.setMagicDef(Constants.data.stats[3]);
@@ -899,30 +898,30 @@ public class Game extends JFrame implements KeyListener {
                     Constants.data.attackSelected = 3;
                 else if (e.getKeyCode() == KeyEvent.VK_LEFT && Constants.data.attackSelected == 3)
                     Constants.data.attackSelected = 1;
-                else if (e.getKeyCode() == KeyEvent.VK_ENTER)
+                else if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_SPACE)
                     attack2(Constants.enemyAttacked);
                 if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT) {
                     affSelection();
                 }
             } else if (Constants.inAttack && !Constants.waitingForAttack && !Constants.waitingForEnemy) {
-                if (e.getKeyCode() == KeyEvent.VK_DOWN && ((Constants.data.attackSelected == 2 && Constants.data.player.getSpells().size() > Constants.data.spellSelected + 3) || (Constants.data.attackSelected == 3 && Constants.data.numberPotions > Constants.data.spellSelected + 3)))
+                if (e.getKeyCode() == KeyEvent.VK_DOWN && ((Constants.data.attackSelected == 2 && Constants.data.player.getSpells().size() > Constants.data.spellSelected + 3) || (Constants.data.attackSelected == 3 && Constants.data.numberPotions >= Constants.data.spellSelected + 3)))
                     Constants.data.spellSelected += 3;
                 else if (e.getKeyCode() == KeyEvent.VK_UP && Constants.data.spellSelected > 2)
                     Constants.data.spellSelected -= 3;
-                else if (e.getKeyCode() == KeyEvent.VK_RIGHT && ((Constants.data.attackSelected == 2 && Constants.data.player.getSpells().size() > Constants.data.spellSelected + 1) || (Constants.data.attackSelected == 3 && Constants.data.numberPotions > Constants.data.spellSelected + 1)))
+                else if (e.getKeyCode() == KeyEvent.VK_RIGHT && ((Constants.data.attackSelected == 2 && Constants.data.player.getSpells().size() > Constants.data.spellSelected + 1) || (Constants.data.attackSelected == 3 && Constants.data.numberPotions >= Constants.data.spellSelected + 1)))
                     Constants.data.spellSelected += 1;
                 else if (e.getKeyCode() == KeyEvent.VK_LEFT && Constants.data.spellSelected > 0)
                     Constants.data.spellSelected -= 1;
                 else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     Constants.waitingForChoice = false;
                     attack(Constants.enemyAttacked);
-                } else if (e.getKeyCode() == KeyEvent.VK_ENTER && ((Constants.data.numberPotions > 0 && Constants.data.attackSelected == 3) || (Constants.data.player.getSpells().size() != 0 && Constants.data.attackSelected == 2)))
+                } else if ((e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_SPACE) && ((Constants.data.numberPotions > 0 && Constants.data.attackSelected == 3) || (Constants.data.player.getSpells().size() != 0 && Constants.data.attackSelected == 2)))
                     attackPlayer(Constants.enemyAttacked);
                 if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT) {
                     affSpellSelected();
                 }
             } else if (Constants.inAttack && !Constants.waitingForAttack) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER)
+                if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_SPACE)
                     attackEnemy(Constants.enemyAttacked);
             } else if (Constants.inAttack) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -936,8 +935,8 @@ public class Game extends JFrame implements KeyListener {
                 }
             } else if (Constants.waitingForReturn) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    App.player.stop();
-                    App.player.playMusic("main.wav", true);
+                    App.musicPlayer.stop();
+                    App.musicPlayer.playMusic("main.wav", true);
                     Constants.musicCombat = false;
                     aff();
                     Constants.waitingForReturn = false;
@@ -947,12 +946,12 @@ public class Game extends JFrame implements KeyListener {
                     Constants.pickUp = false;
                     pickedUp('E', Constants.data.itemSelected);
                 }
-                if (e.getKeyCode() == KeyEvent.VK_R) {
+                if (e.getKeyCode() == KeyEvent.VK_A) {
                     Constants.pickUp = false;
-                    pickedUp('R', Constants.data.itemSelected);
+                    pickedUp('A', Constants.data.itemSelected);
                 }
             } else if (Constants.invOpen) {
-                if (e.getKeyCode() == KeyEvent.VK_I) {
+                if (e.getKeyCode() == KeyEvent.VK_I || e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     Constants.data.itemInv = 0;
                     Constants.invOpen = !Constants.invOpen;
                     Inventory.affInv();

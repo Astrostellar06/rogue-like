@@ -57,6 +57,7 @@ public class SettingsScreen implements Screen {
   public Screen respondToUserInput(KeyEvent key) {
 
     if (key.getKeyCode() == KeyEvent.VK_RIGHT && inSetting) {
+      App.sfx.playMusic("select.wav", false);
       int maxSetting = 0;
       if(selected == 0) maxSetting = 3; // font size
       if(selected == 1) maxSetting = 2; // theme
@@ -67,6 +68,7 @@ public class SettingsScreen implements Screen {
       }
     }
     if (key.getKeyCode() == KeyEvent.VK_LEFT && inSetting) {
+      App.sfx.playMusic("select.wav", false);
       int maxSetting = 0;
       if(selected == 0) maxSetting = 3; // font size
       if(selected == 1) maxSetting = 2; // theme
@@ -77,6 +79,7 @@ public class SettingsScreen implements Screen {
       }
     }
     if (key.getKeyCode() == KeyEvent.VK_UP && !inSetting) {
+      App.sfx.playMusic("select.wav", false);
       if(selected < 1){
         selected += 1;
       } else {
@@ -84,6 +87,7 @@ public class SettingsScreen implements Screen {
       }
     }
     if (key.getKeyCode() == KeyEvent.VK_DOWN && !inSetting) {
+      App.sfx.playMusic("select.wav", false);
       if(selected > 0){
         selected -= 1;
       } else {
@@ -91,6 +95,7 @@ public class SettingsScreen implements Screen {
       }
     }
     if (key.getKeyCode() == KeyEvent.VK_ENTER){
+      App.sfx.playMusic("select.wav", false);
       if(!inSetting){
         selectedSetting = 0;
         enterSetting();
@@ -133,6 +138,7 @@ public class SettingsScreen implements Screen {
       }
     }
     if(key.getKeyCode() == KeyEvent.VK_ESCAPE){
+      App.sfx.playMusic("select.wav", false);
       if(inSetting){
         leaveSetting();
       } else {
