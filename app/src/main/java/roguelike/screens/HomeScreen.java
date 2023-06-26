@@ -1,6 +1,7 @@
 package roguelike.screens;
 
 import java.awt.event.KeyEvent;
+import java.io.File;
 
 import asciiPanel.AsciiPanel;
 import roguelike.App;
@@ -48,7 +49,8 @@ public class HomeScreen implements Screen {
         return new LaunchScreen();
       }
       if(selected == 1){
-        return new GameScreen(false);
+        File save = new File("save.txt");
+        if(save.exists()){ return new GameScreen(false); }
       }
       if(selected == 2){
         return new SettingsScreen();
