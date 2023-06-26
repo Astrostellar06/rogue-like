@@ -962,11 +962,11 @@ public class Game extends JFrame implements KeyListener {
                 else if (e.getKeyCode() == KeyEvent.VK_LEFT && Constants.data.attackSelected == 3)
                     Constants.data.attackSelected = 1;
                 else if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    App.sfx.playMusic("menu.wav", false);
+                    App.sfx.playMusic("select.wav", false);
                     attack2(Constants.enemyAttacked);
                 }
                 if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT) {
-                    App.sfx.playMusic("menu.wav", false);
+                    App.sfx.playMusic("select.wav", false);
                     affSelection();
                 }
             } else if (Constants.inAttack && !Constants.waitingForAttack && !Constants.waitingForEnemy) {
@@ -980,19 +980,19 @@ public class Game extends JFrame implements KeyListener {
                     Constants.data.spellSelected -= 1;
                 else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     Constants.waitingForChoice = false;
-                    App.sfx.playMusic("menu.wav", false);
+                    App.sfx.playMusic("select.wav", false);
                     attack(Constants.enemyAttacked);
                 } else if ((e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_SPACE) && ((Constants.data.numberPotions > 0 && Constants.data.attackSelected == 3) || (Constants.data.player.getSpells().size() != 0 && Constants.data.attackSelected == 2))) {
                     attackPlayer(Constants.enemyAttacked);
-                    App.sfx.playMusic("menu.wav", false);
+                    App.sfx.playMusic("select.wav", false);
                 }
                 if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT) {
-                    App.sfx.playMusic("menu.wav", false);
+                    App.sfx.playMusic("select.wav", false);
                     affSpellSelected();
                 }
             } else if (Constants.inAttack && !Constants.waitingForAttack) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    App.sfx.playMusic("menu.wav", false);
+                    App.sfx.playMusic("select.wav", false);
                     attackEnemy(Constants.enemyAttacked);
                 }
             } else if (Constants.inAttack) {
