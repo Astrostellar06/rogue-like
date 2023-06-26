@@ -764,8 +764,8 @@ public class Game extends JFrame implements KeyListener {
         Constants.terminal.write(Character.toString(191), 1, 83, Constants.data.font, Constants.data.background);
         Constants.terminal.write(Character.toString(218), 168, 83, Constants.data.font, Constants.data.background);
 
-        for (int i = 30 ; i < 43 ; i++) {
-            Constants.terminal.write(Assets.win[i-30], 30, i, Constants.data.font, Constants.data.background);
+        for (int i = 33 ; i < 46 ; i++) {
+            Constants.terminal.write(Assets.win[i-33], 30, i, Constants.data.font, Constants.data.background);
         }
         add(Constants.terminal);
         Constants.terminal.paintImmediately(Constants.terminal.getBounds());
@@ -793,23 +793,24 @@ public class Game extends JFrame implements KeyListener {
             addEnemy(new Enemy(4));
         }
 
+        Constants.data.coins.clear();
         addCoins(60);
 
         boolean empty;
         Constants.data.player.setX(-7);
         Constants.data.player.setY(10);
         do {
-            Constants.data.player.setX(17);
+            Constants.data.player.setX(Constants.data.player.getX() + 17);
             if (Constants.data.player.getX() >= 136) {
                 Constants.data.player.setX(10);
-                Constants.data.player.setY(17);
+                Constants.data.player.setY(Constants.data.player.getY() + 17);
             }
             empty = true;
-            System.out.println();
             if (empty && Game.charRoom(Constants.data.player.getX(), Constants.data.player.getY()) != '.')
                 empty = false;
         } while (!empty);
-        System.out.println("ping");
+        App.musicPlayer.stop();
+        App.musicPlayer.playMusic("main.wav", true);
     }
 
     public void clearSideAff() {
@@ -1069,8 +1070,6 @@ public class Game extends JFrame implements KeyListener {
                                     i.setEquipped(false);
                             }
                             Constants.data.player.getInv().get(Constants.data.itemInv).setEquipped(true);
-                            System.out.println(Constants.data.player.getInv().get(Constants.data.itemInv).isEquipped());
-
                             if (Constants.data.player.getInv().get(Constants.data.itemInv) instanceof Weapon)
                                 Constants.data.player.setAtk(((Weapon) Constants.data.player.getInv().get(Constants.data.itemInv)).getAtk());
                             else if (Constants.data.player.getInv().get(Constants.data.itemInv) instanceof Shield)

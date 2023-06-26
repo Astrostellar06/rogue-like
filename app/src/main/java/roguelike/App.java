@@ -43,7 +43,7 @@ public class App extends JFrame implements KeyListener {
     if(font.equals("little")) return AsciiFont.CP437_8x8;
     if(font.equals("medium")) return AsciiFont.CP437_10x10;
     if(font.equals("big")) return AsciiFont.CP437_12x12;
-    if(font.equals("giant")) return AsciiFont.TALRYTH_15_15;
+    if(font.equals("giant")) return AsciiFont.CP437_16x16;
     return AsciiFont.CP437_10x10;
   }
 
