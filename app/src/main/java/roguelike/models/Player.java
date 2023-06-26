@@ -40,7 +40,7 @@ public class Player extends Entity implements Serializable {
         this.inv = new ArrayList<>();
         this.spells = new ArrayList<>();
         boolean empty;
-        this.x = 10;
+        this.x = -7;
         this.y = 10;
         do {
             this.x += 17;

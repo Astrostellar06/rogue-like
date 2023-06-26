@@ -39,11 +39,11 @@ public class Game extends JFrame implements KeyListener {
                 addItem(new Potion());
             }
 
-            for (int i = 0 ; i < 5 ; i++) {
+            for (int i = 0 ; i < 1 ; i++) {
                 addEnemy(new Enemy(1));
-                addEnemy(new Enemy(2));
-                addEnemy(new Enemy(3));
-                addEnemy(new Enemy(4));
+                //addEnemy(new Enemy(2));
+                //addEnemy(new Enemy(3));
+                //addEnemy(new Enemy(4));
             }
 
             Constants.data.player.getSpells().add(new Spell(1));
@@ -750,6 +750,68 @@ public class Game extends JFrame implements KeyListener {
         Constants.waitingForReturn = true;
     }
 
+    public void newLevel() {
+        App.musicPlayer.stop();
+        App.musicPlayer.playMusic("win.wav", false);
+
+        for (int i = 1; i < 84; i++) {
+            for (int j = 1; j < 169; j++) {
+                Constants.terminal.write(Character.toString(32), j, i, Constants.data.font, Constants.data.background);
+            }
+        }
+        Constants.terminal.write(Character.toString(217), 1, 1, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(192), 168, 1, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(191), 1, 83, Constants.data.font, Constants.data.background);
+        Constants.terminal.write(Character.toString(218), 168, 83, Constants.data.font, Constants.data.background);
+
+        for (int i = 30 ; i < 43 ; i++) {
+            Constants.terminal.write(Assets.win[i-30], 30, i, Constants.data.font, Constants.data.background);
+        }
+        add(Constants.terminal);
+        Constants.terminal.paintImmediately(Constants.terminal.getBounds());
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        Constants.data.player.setHp(Constants.data.player.getHpMax());
+        Constants.data.listRooms.clear();
+        Constants.data.listRooms = MapGenerator.generate();
+        System.out.println(Constants.data.listRooms);
+        Constants.data.items.clear();
+        for (int i = 0 ; i < 10; i++) {
+            addItem(new Weapon());
+            addItem(new Shield());
+            addItem(new Potion());
+        }
+
+        for (int i = 0 ; i < 5 ; i++) {
+            addEnemy(new Enemy(1));
+            addEnemy(new Enemy(2));
+            addEnemy(new Enemy(3));
+            addEnemy(new Enemy(4));
+        }
+
+        addCoins(60);
+
+        boolean empty;
+        Constants.data.player.setX(-7);
+        Constants.data.player.setY(10);
+        do {
+            Constants.data.player.setX(17);
+            if (Constants.data.player.getX() >= 136) {
+                Constants.data.player.setX(10);
+                Constants.data.player.setY(17);
+            }
+            empty = true;
+            System.out.println();
+            if (empty && Game.charRoom(Constants.data.player.getX(), Constants.data.player.getY()) != '.')
+                empty = false;
+        } while (!empty);
+        System.out.println("ping");
+    }
+
     public void clearSideAff() {
         for (int i = 35; i < 84; i++)
             for (int j = 140; j < 169; j++)
@@ -938,6 +1000,8 @@ public class Game extends JFrame implements KeyListener {
                     App.musicPlayer.stop();
                     App.musicPlayer.playMusic("main.wav", true);
                     Constants.musicCombat = false;
+                    if (Constants.data.enemies.size() == 0)
+                        newLevel();
                     aff();
                     Constants.waitingForReturn = false;
                 }

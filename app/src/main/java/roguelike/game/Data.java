@@ -29,7 +29,7 @@ public class Data implements Serializable {
     public ArrayList<Coin> coins;
     public int[] stats;
     public Color font, background, playerColor, roomColor, pathColor;
-   public long tempsInactif = 0;
+    public long tempsInactif = 0;
     public ArrayList<Room> listRooms = MapGenerator.generate();
 
 
